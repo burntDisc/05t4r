@@ -114,19 +114,6 @@ int main()
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
-	// Load in models
-	std::string parentDir = fs::current_path().string();
-	std::string groundPath = "/models/ground/scene.gltf";
-	std::string statuePath = "/models/statue/scene.gltf";
-	std::string airplanePath = "/models/airplane/scene.gltf";
-	std::string testPath = "/models/sword/scene.gltf";
-
-	Model ground((parentDir + groundPath).c_str());
-	Model statue0((parentDir + statuePath).c_str());
-	Model statue1((parentDir + statuePath).c_str());
-	Model airplane((parentDir + airplanePath).c_str());
-	Model test((parentDir + testPath).c_str());
-
 	// Create VertexArrayObject, VertexBufferObject, and ElementBufferObject for the skybox
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
 	glGenVertexArrays(1, &skyboxVAO);
@@ -144,6 +131,8 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
+
+	std::string parentDir = fs::current_path().string();
 	// All the faces of the cubemap in order
 	std::string skycubeTexturePaths[6] =
 	{
@@ -197,29 +186,39 @@ int main()
 		}
 	}
 
+	//Create Models
 	// set translation for ground object
+	std::string groundPath = "/models/ground/scene.gltf";
 	glm::vec3 groundTranslation = glm::vec3(0.0f, -1.2f, 0.0f);
 	glm::vec3 groundRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 groundScale = glm::vec3(10.0f, 2.0f, 10.0f);
+	Model ground((parentDir + groundPath).c_str());
 
 	// set translation for airplane object
+	std::string airplanePath = "/models/airplane/scene.gltf";
 	glm::vec3 airplaneTranslation = glm::vec3(0.0f, -4.0f, -50.0f);
 	glm::vec3 airplaneRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 airplaneScale = glm::vec3(5.0f, 5.0f, 5.0f);
+	Model airplane((parentDir + airplanePath).c_str());
 
 	// set translation for test object
+	std::string testPath = "/models/sword/scene.gltf";
 	glm::vec3 testTranslation = glm::vec3(-50.0f, 40.0f, -20.0f);
 	glm::vec3 testRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 testScale = glm::vec3(10.0f, 10.0f, 10.0f);
+	Model test((parentDir + testPath).c_str());
 
 	// set translation for statue objects
+	std::string statuePath = "/models/statue/scene.gltf";
 	glm::vec3 statue0Translation = glm::vec3(30.0f, 20.0f, -80.0f);
 	glm::vec3 statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue0Scale = glm::vec3(40.0f, 40.0f, 40.0f);
+	Model statue0((parentDir + statuePath).c_str());
 
 	glm::vec3 statue1Translation = glm::vec3(-20.0f, 20.0f, -80.0f);
 	glm::vec3 statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale = glm::vec3(40.0f, 40.0f, 40.0f);
+	Model statue1((parentDir + statuePath).c_str());
 
 	// Variables to track FPS
 	float lastTime = 0.0;
@@ -258,8 +257,18 @@ int main()
 		// Handles camera inputs (Ok with Vsync)
 		camera.Inputs(window);
 
-		// Updates and exports the camera matrix to the Vertex Shader
-		camera.update(45.0f, 0.1f, 1000.0f);
+		// Updates and camera matrix
+		camera.update(45.0f, 0.1f, 1000.0f);		//set camera position for each shader
+		explosionShader.Activate();
+		camera.setPositionUniform(explosionShader, "camPos");
+		camera.setViewUniform(explosionShader);
+		camera.setProjectionUniform(explosionShader);
+
+		standardShader.Activate();
+		camera.setPositionUniform(standardShader, "camPos");
+		camera.setViewUniform(standardShader);
+		camera.setProjectionUniform(standardShader);
+
 
 		// Switch back to the normal depth function
 		glDepthFunc(GL_LESS);
@@ -268,20 +277,20 @@ int main()
 		explosionShader.Activate();
 		glUniform1fv(glGetUniformLocation(explosionShader.ID, "time"), 1, &time);
 		glUniform1i(glGetUniformLocation(explosionShader.ID, "explode"), false);
-		statue1.Draw(explosionShader, camera, statue1Translation, statue1Rotation, statue1Scale);
+		statue1.Draw(explosionShader, statue1Translation, statue1Rotation, statue1Scale);
 
 		// Draw statue object
 		glUniform1i(glGetUniformLocation(explosionShader.ID, "explode"), true);
-		statue0.Draw(explosionShader, camera, statue0Translation, statue0Rotation, statue0Scale);
+		statue0.Draw(explosionShader, statue0Translation, statue0Rotation, statue0Scale);
 
 		// Draw airplane object
-		airplane.Draw(standardShader, camera, airplaneTranslation, airplaneRotation, airplaneScale);
+		airplane.Draw(standardShader, airplaneTranslation, airplaneRotation, airplaneScale);
 
 		// Draw test object
-		test.Draw(standardShader, camera, testTranslation, testRotation, testScale);
+		test.Draw(standardShader, testTranslation, testRotation, testScale);
 
 		// Draw ground object
-		ground.Draw(standardShader, camera, groundTranslation, groundRotation, groundScale);
+		ground.Draw(standardShader, groundTranslation, groundRotation, groundScale);
 
 		// Setup and Draw skybox--------------------------
 		// set constant depth for skybox

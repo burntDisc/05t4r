@@ -17,12 +17,12 @@ Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> i
 	traverseNode(0);
 }
 
-void Model::Draw(Shader& shader, Camera& camera, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
+void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
 {
 	// Go over all meshes and draw each one
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Mesh::Draw(shader, camera, matricesMeshes[i], translation, rotation, scale);
+		meshes[i].Mesh::Draw(shader, matricesMeshes[i], translation, rotation, scale);
 	}
 }
 

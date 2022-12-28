@@ -51,7 +51,6 @@ Mesh::Mesh
 void Mesh::Draw
 (
 	Shader& shader,
-	Camera& camera,
 	glm::mat4 matrix,
 	glm::vec3 translation,
 	glm::quat rotation,
@@ -81,10 +80,6 @@ void Mesh::Draw
 		textures[i].texUnit(shader, (type + num).c_str(), i);
 		textures[i].Bind();
 	}
-	// Set Camera position view and projection
-	camera.setPositionUniform(shader, "camPos");
-	camera.setViewUniform(shader);
-	camera.setProjectionUniform(shader);
 
 	// Check if instance drawing should be performed
 	if (instancing == 1)
