@@ -2,8 +2,19 @@
 
 Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> instanceMatrix)
 {
+	std::string text;
 	// Make a gtlfJSON object
-	std::string text = get_file_contents(file);
+	try
+	{
+		text = get_file_contents(file);
+	}
+	catch(...)
+	{
+		std::cout << "Model failed to load" << std::endl;
+			std::cout << "File: " << file << std::endl;
+	}
+
+
 	gtlfJSON = json::parse(text);
 
 	// Get the binary data
