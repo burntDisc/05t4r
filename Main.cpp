@@ -241,7 +241,7 @@ int main()
 	glm::vec3 statue1Translation = glm::vec3(-20.0f, 20.0f, -80.0f);
 	glm::vec3 statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale = glm::vec3(40.0f, 40.0f, 40.0f);
-	GameObject statueExploding(
+	ExplodingObject statueExploding(
 		statueModelPath.c_str(),
 		statue1Translation,
 		statue1Rotation,
@@ -292,11 +292,13 @@ int main()
 		// Switch back to the normal depth function
 		glDepthFunc(GL_LESS);
 
-		// Draw exploding statue object
-		statueExploding.Draw(explosionShader);
 
-		// Draw normal statue object
+		// Draw statue object
 		statueNormal.Draw(standardShader);
+
+		// Draw statue object
+		statueExploding.Update(time);
+		statueExploding.Draw(explosionShader);
 
 		// Draw airplane object
 		airplane.Draw(standardShader);
