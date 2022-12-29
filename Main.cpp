@@ -6,6 +6,7 @@ namespace fs = std::experimental::filesystem;
 
 #include<math.h>
 #include"GameObject.h"
+#include"ExplodingObject.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -64,7 +65,7 @@ int main()
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
 	// FULL SCREEN DISABLED FOR DEBUGGING
-	GLFWwindow* window = glfwCreateWindow(500, 500, "5t4r", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1500, 900, "5t4r", NULL, NULL);
 	// GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
 
 	if (window == NULL)
@@ -230,7 +231,7 @@ int main()
 	glm::vec3 statue0Translation = glm::vec3(30.0f, 20.0f, -80.0f);
 	glm::vec3 statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue0Scale = glm::vec3(40.0f, 40.0f, 40.0f);
-	GameObject statue0(
+	GameObject statueNormal(
 		statueModelPath.c_str(),
 		statue0Translation,
 		statue0Rotation,
@@ -240,7 +241,7 @@ int main()
 	glm::vec3 statue1Translation = glm::vec3(-20.0f, 20.0f, -80.0f);
 	glm::vec3 statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale = glm::vec3(40.0f, 40.0f, 40.0f);
-	GameObject statue1(
+	GameObject statueExploding(
 		statueModelPath.c_str(),
 		statue1Translation,
 		statue1Rotation,
@@ -284,31 +285,18 @@ int main()
 		// Handles camera inputs (Ok with Vsync)
 		camera.Inputs(window);
 
-		// Updates and camera matrix
-		camera.update(45.0f, 0.1f, 1000.0f);		//set camera position for each shader
-		explosionShader.Activate();
-		camera.setPositionUniform(explosionShader, "camPos");
-		camera.setViewUniform(explosionShader);
-		camera.setProjectionUniform(explosionShader);
-
-		standardShader.Activate();
-		camera.setPositionUniform(standardShader, "camPos");
-		camera.setViewUniform(standardShader);
-		camera.setProjectionUniform(standardShader);
-
+		// Updates and camera matrices
+		camera.setCameraUniforms(standardShader);
+		camera.setCameraUniforms(explosionShader);
 
 		// Switch back to the normal depth function
 		glDepthFunc(GL_LESS);
 
-		// Draw statue object
-		explosionShader.Activate();
-		glUniform1fv(glGetUniformLocation(explosionShader.ID, "time"), 1, &time);
-		glUniform1i(glGetUniformLocation(explosionShader.ID, "explode"), false);
-		statue1.Draw(explosionShader);
+		// Draw exploding statue object
+		statueExploding.Draw(explosionShader);
 
-		// Draw statue object
-		glUniform1i(glGetUniformLocation(explosionShader.ID, "explode"), true);
-		statue0.Draw(explosionShader);
+		// Draw normal statue object
+		statueNormal.Draw(standardShader);
 
 		// Draw airplane object
 		airplane.Draw(standardShader);

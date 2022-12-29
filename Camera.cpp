@@ -6,34 +6,22 @@ Camera::Camera(int width, int height, glm::vec3 startPosition):
 	position(startPosition)
 {}
 
-void Camera::update(float FOVdeg, float nearPlane, float farPlane)
+void Camera::setCameraUniforms(Shader& shader)
 {
+	float feildOfView = 45.0f;
+	float nearPlane = 0.01;
+	float farPlane = 100000.0;
 	// Makes camera look in the right direction from the right position
 	view = glm::lookAt(position, position + orientation, up);
 	// Adds perspective to the scene
 	float aspectRatio = (float)windowWidth / windowHeight;
-	projection = glm::perspective(glm::radians(FOVdeg), aspectRatio, nearPlane, farPlane);
-}
 
-void Camera::setPositionUniform(Shader& shader, const char* uniformName)
-{
-	// Exports camera view uniform
-	const char* name = uniformName ? uniformName : "position";
+	projection = glm::perspective(glm::radians(feildOfView), aspectRatio, nearPlane, farPlane);
+
+	shader.Activate();
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), position.x, position.y, position.z);
-}
-
-void Camera::setViewUniform(Shader& shader, const char* uniformName)
-{
-	// Exports camera view uniform
-	const char* name = uniformName ? uniformName : "view";
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, name), 1, GL_FALSE, glm::value_ptr(view));
-}
-
-void Camera::setProjectionUniform(Shader& shader, const char* uniformName)
-{
-	// Exports camera projection uniform
-	const char* name = uniformName ? uniformName : "projection";
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, name), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
 
 // TODO_SOON move input handler

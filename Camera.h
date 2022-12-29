@@ -34,17 +34,8 @@ public:
 
 	Camera(int width, int height, glm::vec3 position);
 
-	// Updates the camera matrix to the Vertex Shader
-	void update(float FOVdeg, float nearPlane, float farPlane);
-
-	// Exports the camera view uniform
-	void setPositionUniform(Shader& shader, const char* uniformName = nullptr);
-
-	// Exports the camera view uniform
-	void setViewUniform(Shader& shader, const char* uniformName = nullptr);
-
-	// Exports the camera projection uniform
-	void setProjectionUniform(Shader& shader, const char* uniformName = nullptr);
+	// Exports the POV related unifroms
+	void setCameraUniforms(Shader& shader);
 
 	// Handles camera inputs
 	void Inputs(GLFWwindow* window);
