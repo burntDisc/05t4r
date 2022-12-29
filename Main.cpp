@@ -5,7 +5,7 @@ namespace fs = std::experimental::filesystem;
 //------------------------------
 
 #include<math.h>
-#include"Model.h"
+#include"GameObject.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -54,7 +54,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Create window and add to Context
+	// Create window with screen width of monitor
 	auto monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
@@ -63,7 +63,9 @@ int main()
 	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
+	// FULL SCREEN DISABLED FOR DEBUGGING
+	GLFWwindow* window = glfwCreateWindow(500, 500, "5t4r", NULL, NULL);
+	// GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
 
 	if (window == NULL)
 	{
@@ -186,39 +188,64 @@ int main()
 		}
 	}
 
-	//Create Models
-	// set translation for ground object
-	std::string groundPath = "/models/ground/scene.gltf";
+	// Create Game objects ----------------------------------------------------------
+	// Create ground object
+	std::string groundModelPath = parentDir + "/models/ground/scene.gltf";
 	glm::vec3 groundTranslation = glm::vec3(0.0f, -1.2f, 0.0f);
 	glm::vec3 groundRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 groundScale = glm::vec3(10.0f, 2.0f, 10.0f);
-	Model ground((parentDir + groundPath).c_str());
+	GameObject ground(
+		groundModelPath.c_str(),
+		groundTranslation,
+		groundRotation,
+		groundScale
+	);
 
-	// set translation for airplane object
-	std::string airplanePath = "/models/airplane/scene.gltf";
+	// Create airplane object
+	std::string airplaneModelPath = parentDir + "/models/airplane/scene.gltf";
 	glm::vec3 airplaneTranslation = glm::vec3(0.0f, -4.0f, -50.0f);
 	glm::vec3 airplaneRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 airplaneScale = glm::vec3(5.0f, 5.0f, 5.0f);
-	Model airplane((parentDir + airplanePath).c_str());
+	GameObject airplane(
+		airplaneModelPath.c_str(),
+		airplaneTranslation,
+		airplaneRotation,
+		airplaneScale
+	);
 
-	// set translation for test object
-	std::string testPath = "/models/sword/scene.gltf";
+	// Create sword object
+	std::string testModelPath = parentDir + "/models/sword/scene.gltf";
 	glm::vec3 testTranslation = glm::vec3(-50.0f, 40.0f, -20.0f);
 	glm::vec3 testRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 testScale = glm::vec3(10.0f, 10.0f, 10.0f);
-	Model test((parentDir + testPath).c_str());
+	GameObject test(
+		testModelPath.c_str(),
+		testTranslation,
+		testRotation,
+		testScale
+	);
 
-	// set translation for statue objects
-	std::string statuePath = "/models/statue/scene.gltf";
+	// Create statue objects
+	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
 	glm::vec3 statue0Translation = glm::vec3(30.0f, 20.0f, -80.0f);
 	glm::vec3 statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue0Scale = glm::vec3(40.0f, 40.0f, 40.0f);
-	Model statue0((parentDir + statuePath).c_str());
+	GameObject statue0(
+		statueModelPath.c_str(),
+		statue0Translation,
+		statue0Rotation,
+		statue0Scale
+	);
 
 	glm::vec3 statue1Translation = glm::vec3(-20.0f, 20.0f, -80.0f);
 	glm::vec3 statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale = glm::vec3(40.0f, 40.0f, 40.0f);
-	Model statue1((parentDir + statuePath).c_str());
+	GameObject statue1(
+		statueModelPath.c_str(),
+		statue1Translation,
+		statue1Rotation,
+		statue1Scale
+	);
 
 	// Variables to track FPS
 	float lastTime = 0.0;
@@ -277,20 +304,20 @@ int main()
 		explosionShader.Activate();
 		glUniform1fv(glGetUniformLocation(explosionShader.ID, "time"), 1, &time);
 		glUniform1i(glGetUniformLocation(explosionShader.ID, "explode"), false);
-		statue1.Draw(explosionShader, statue1Translation, statue1Rotation, statue1Scale);
+		statue1.Draw(explosionShader);
 
 		// Draw statue object
 		glUniform1i(glGetUniformLocation(explosionShader.ID, "explode"), true);
-		statue0.Draw(explosionShader, statue0Translation, statue0Rotation, statue0Scale);
+		statue0.Draw(explosionShader);
 
 		// Draw airplane object
-		airplane.Draw(standardShader, airplaneTranslation, airplaneRotation, airplaneScale);
+		airplane.Draw(standardShader);
 
 		// Draw test object
-		test.Draw(standardShader, testTranslation, testRotation, testScale);
+		test.Draw(standardShader);
 
 		// Draw ground object
-		ground.Draw(standardShader, groundTranslation, groundRotation, groundScale);
+		ground.Draw(standardShader);
 
 		// Setup and Draw skybox--------------------------
 		// set constant depth for skybox
