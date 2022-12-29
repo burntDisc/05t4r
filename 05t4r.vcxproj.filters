@@ -42,6 +42,12 @@
     <ClInclude Include="VertexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplodingObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -77,6 +83,12 @@
     <ClCompile Include="libraries\include\stb\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplodingObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="standard.frag">
@@ -100,5 +112,6 @@
     <None Include="explosion.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
