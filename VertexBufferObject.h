@@ -1,6 +1,4 @@
-#ifndef VertexBufferObject_CLASS_H
-#define VertexBufferObject_CLASS_H
-
+#pragma once
 #include "glm/glm.hpp"
 #include<glad/glad.h>
 #include<vector>
@@ -32,5 +30,3 @@ public:
 	// Deletes the VertexBufferObject
 	void Delete();
 };
-
-#endif

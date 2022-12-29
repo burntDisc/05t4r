@@ -1,6 +1,4 @@
-#ifndef VertexArrayObject_CLASS_H
-#define VertexArrayObject_CLASS_H
-
+#pragma once
 #include<glad/glad.h>
 #include"VertexBufferObject.h"
 
@@ -21,5 +19,3 @@ public:
 	// Deletes the VertexArrayObject
 	void Delete();
 };
-
-#endif

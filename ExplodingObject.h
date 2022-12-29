@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
-class ExplodingObject : public GameObject
+class ExplodingObject :
+	public GameObject
 {
 public:
 	using GameObject::GameObject;

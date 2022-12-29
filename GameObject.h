@@ -1,6 +1,4 @@
-#ifndef GAMEOBJECT_CLASS_H
-#define GAMEOBJECT_CLASS_H
-
+#pragma once
 #include"Model.h"
 
 class GameObject
@@ -21,5 +19,3 @@ protected:
 	glm::vec3 rotation;
 	glm::vec3 scale;
 };
-
-#endif

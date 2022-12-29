@@ -1,6 +1,4 @@
-#ifndef MESH_CLASS_H
-#define MESH_CLASS_H
-
+#pragma once
 #include<string>
 
 #include"VertexArrayObject.h"
@@ -41,4 +39,3 @@ public:
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
 };
-#endif

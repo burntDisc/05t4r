@@ -1,6 +1,4 @@
-#ifndef ElementBufferObject_CLASS_H
-#define ElementBufferObject_CLASS_H
-
+#pragma once
 #include <glad/glad.h>
 #include <vector>
 
@@ -18,5 +16,3 @@ public:
 	// Deletes the ElementBufferObject
 	void Delete();
 };
-
-#endif
