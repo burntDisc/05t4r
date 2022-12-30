@@ -1,6 +1,6 @@
 #include "ExplodingObject.h"
 
-void ExplodingObject::Update(float currentTime)
+void ExplodingObject::Step(float currentTime)
 {
 	time = currentTime;
 }

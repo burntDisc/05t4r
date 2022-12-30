@@ -15,29 +15,25 @@ namespace fs = std::experimental::filesystem;
 
 int main()
 {
+	// Set up OpenGl stack and window------------------------------------------
 	// initilize glfw to handle input and window
 	glfwInit();
-
 	// Set GLFW version to OpenGL 3.3 with Core profile
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
 	// Create window with screen width of monitor (DISABLED)
 	auto monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
 	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-
 	// FULL SCREEN DISABLED FOR DEBUGGING
 	unsigned int width = 1500;
 	unsigned int height = 900;
 	GLFWwindow* window = glfwCreateWindow(1500, 900, "5t4r", NULL, NULL);
 	// GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
-
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -45,31 +41,11 @@ int main()
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-
 	//Load GLAD to configure opengl
 	gladLoadGL();
-
 	glViewport(0, 0, width, height);
-
-	// Generate Shader objects
-	Shader standardShader("standard.vert", "standard.frag");
-	Shader explosionShader("explosion.vert", "explosion.geo", "explosion.frag");
-	Shader skyboxShader("skybox.vert", "skybox.frag");
-
-	// Set Lighting
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(20.0f, 20.0f, 20.0f);
-
-	standardShader.Activate();
-	glUniform4f(glGetUniformLocation(standardShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(standardShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-	explosionShader.Activate();
-	glUniform4f(glGetUniformLocation(explosionShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(explosionShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
 	// Enables the Depth Testing
-	glEnable(GL_DEPTH_TEST);
-
+	glEnable(GL_DEPTH_TEST);	\
 	// Uncomment to ignore internals of models for performance
 	//glEnable(GL_CULL_FACE);
 	// Keeps front faces
@@ -79,70 +55,37 @@ int main()
 	//Configures the blending function
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// Generate Shader objects-------------------------------------------------
+	Shader standardShader("standard.vert", "standard.frag");
+	Shader explosionShader("explosion.vert", "explosion.geo", "explosion.frag");
+	Shader skyboxShader("skybox.vert", "skybox.frag");
+
+	// Set Lighting------------------------------------------------------------
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(20.0f, 20.0f, 20.0f);
+
+	standardShader.Activate();
+	glUniform4f(glGetUniformLocation(standardShader.ID, "lightColor"),
+		lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(standardShader.ID, "lightPos"),
+		lightPos.x, lightPos.y, lightPos.z);
+	explosionShader.Activate();
+	glUniform4f(glGetUniformLocation(explosionShader.ID, "lightColor"),
+		lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(explosionShader.ID, "lightPos"),
+		lightPos.x, lightPos.y, lightPos.z);
+
+	// Create Game objects ----------------------------------------------------------
+	// get current directory
+
+	std::string parentDir = fs::current_path().string();
 	// Creates camera object
 	Camera camera(window, width, height, glm::vec3(0.0f, 0.0f, 2.0f));
-
-	//Setup input handler
-	InputHandler::SetWindow(window);
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_W,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			return camera.Forward();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_A,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			return camera.TranslateLeft();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_S,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			return camera.Back();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_D,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			return camera.TranslateRight();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_SPACE,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			return camera.TranslateUp();
-		});
-	InputHandler::Subscribe(
-		InputHandler::mouse,
-		GLFW_MOUSE_BUTTON_LEFT,
-		GLFW_PRESS,
-		[&camera, window]() -> void {
-			return camera.BindCursor();
-		});
-	InputHandler::Subscribe(
-		InputHandler::mouse,
-		GLFW_MOUSE_BUTTON_LEFT,
-		GLFW_RELEASE,
-		[&camera, window]() -> void {
-			return camera.UnbindCursor();
-		});
-
-	// get current directory
-	std::string parentDir = fs::current_path().string();
 
 	// Create SkyBox
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
 	Skybox skybox(skyboxFacesDirectory);
 
-
-	// Create Game objects ----------------------------------------------------------
 	// Create ground object
 	std::string groundModelPath = parentDir + "/models/ground/scene.gltf";
 	glm::vec3 groundTranslation = glm::vec3(0.0f, -1.2f, 0.0f);
@@ -201,13 +144,65 @@ int main()
 		statue1Scale
 	);
 
+	//Setup input handler------------------------------------------------------
+	InputHandler::SetWindow(window);
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_W,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			return camera.Forward();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_A,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			return camera.TranslateLeft();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_S,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			return camera.Back();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_D,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			return camera.TranslateRight();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_SPACE,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			return camera.TranslateUp();
+		});
+	InputHandler::Subscribe(
+		InputHandler::mouse,
+		GLFW_MOUSE_BUTTON_LEFT,
+		GLFW_PRESS,
+		[&camera, window]() -> void {
+			return camera.BindCursor();
+		});
+	InputHandler::Subscribe(
+		InputHandler::mouse,
+		GLFW_MOUSE_BUTTON_LEFT,
+		GLFW_RELEASE,
+		[&camera, window]() -> void {
+			return camera.UnbindCursor();
+		});
+	// Main Render loop--------------------------------------------------------
+
 	// Variables to track FPS
 	float lastTime = 0.0;
 	float time = 0.0;
 	float deltaTime;
 	unsigned int counter = 0;
 
-	// Main while loop------------------------------------------------------------------------------------------------------
 	while (!glfwWindowShouldClose(window))
 	{
 		// Updates counter and times
@@ -215,7 +210,7 @@ int main()
 		deltaTime = time - lastTime;
 		counter++;
 
-		// don't overwrite title every loop
+		// overwrite fps every loop 1/30 seconds
 		if (deltaTime >= 1.0 / 30.0)
 		{
 			// Creates new title
@@ -229,44 +224,35 @@ int main()
 			counter = 0;
 		}
 
-		// Specify the color of the background
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		// Specify the color of the background PINK For debug
+		// (Skybox Draws over)
+		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
 		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// Handles Inputs and downstream effects
-		InputHandler::ReadandProcessInput();
 
 		// Updates and camera matrices
 		camera.SetCameraUniforms(standardShader);
 		camera.SetCameraUniforms(explosionShader);
 		camera.SetSkyboxUniforms(skyboxShader);
 
-		// Draw statue object
+		// Draw
 		statueNormal.Draw(standardShader);
-
-		// Draw statue object
-		statueExploding.Update(time);
 		statueExploding.Draw(explosionShader);
-
-		// Draw airplane object
 		airplane.Draw(standardShader);
-
-		// Draw test object
 		test.Draw(standardShader);
-
-		// Draw ground object
 		ground.Draw(standardShader);
-
 		skybox.Draw(skyboxShader);
-
 
 		// Swap back with front buffer
 		glfwSwapBuffers(window);
 
 		// Process glfw events
 		glfwPollEvents();
+
+		// Handles Inputs and downstream effects
+		InputHandler::ReadandProcessInput();
+		statueExploding.Step(time);
 	}
 
 	// Delete and clean up

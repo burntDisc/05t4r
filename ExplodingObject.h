@@ -5,7 +5,7 @@ class ExplodingObject :
 {
 public:
 	using GameObject::GameObject;
-	void Update(float time);
+	void Step(float time);
 	void Draw(Shader& shader);
 private:
 	float time = 0;
