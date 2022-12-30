@@ -14,3 +14,8 @@ void GameObject::Draw(Shader& shader)
 void GameObject::Update(float time)
 {
 }
+
+std::vector<Mesh>& GameObject::getMeshes()
+{
+	return model.getMeshes();
+}

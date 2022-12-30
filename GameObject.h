@@ -13,6 +13,8 @@ public:
 	void Draw(Shader& shader);
 
 	void Update(float time);
+
+	std::vector<Mesh>& getMeshes();
 protected:
 	Model model;
 	glm::vec3 translation;

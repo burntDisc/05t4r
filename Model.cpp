@@ -2,7 +2,7 @@
 #include <iostream>
 #include "FileLoader.h"
 
-Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> instanceMatrix)
+Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> instanceMatrices)
 {
 	std::string text;
 	// Make a gtlfJSON object
@@ -24,7 +24,7 @@ Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> i
 	bin = LoadBin();
 
 	Model::instancing = instancing;
-	Model::instanceMatrix = instanceMatrix;
+	Model::instanceMatrices = instanceMatrices;
 
 	// Traverse all nodes
 	TraverseNode(0);
@@ -35,8 +35,13 @@ void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm:
 	// Go over all meshes and draw each one
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Mesh::Draw(shader, matricesMeshes[i], translation, rotation, scale);
+		meshes[i].Mesh::Draw(shader, transformMatrices[i], translation, rotation, scale);
 	}
+}
+
+std::vector<Mesh>& Model::getMeshes()
+{
+	return meshes;
 }
 
 void Model::LoadMesh(unsigned int indMesh)
@@ -65,7 +70,7 @@ void Model::LoadMesh(unsigned int indMesh)
 	std::vector<Texture> textures = TexturesFromBin();
 
 	// create Mesh
-	meshes.push_back(Mesh(vertices, indices, textures, instancing, instanceMatrix));
+	meshes.push_back(Mesh(vertices, indices, textures, instancing, instanceMatrices));
 }
 
 void Model::TraverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix)
@@ -128,10 +133,10 @@ void Model::TraverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix)
 	// Load mesh if present
 	if (node.find("mesh") != node.end())
 	{
-		translationsMeshes.push_back(translation);
-		rotationsMeshes.push_back(rotation);
-		scalesMeshes.push_back(scale);
-		matricesMeshes.push_back(finalTransformMatrix);
+		translations.push_back(translation);
+		rotations.push_back(rotation);
+		scales.push_back(scale);
+		transformMatrices.push_back(finalTransformMatrix);
 
 		LoadMesh(node["mesh"]);
 	}

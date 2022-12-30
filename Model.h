@@ -18,6 +18,8 @@ public:
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
 
+	std::vector<Mesh>& getMeshes();
+
 private:
 	// gtlf file data
 	const char* file;
@@ -29,11 +31,11 @@ private:
 
 	// meshes and transforms
 	std::vector<Mesh> meshes;
-	std::vector<glm::vec3> translationsMeshes;
-	std::vector<glm::quat> rotationsMeshes;
-	std::vector<glm::vec3> scalesMeshes;
-	std::vector<glm::mat4> matricesMeshes;
-	std::vector<glm::mat4> instanceMatrix;
+	std::vector<glm::vec3> translations;
+	std::vector<glm::quat> rotations;
+	std::vector<glm::vec3> scales;
+	std::vector<glm::mat4> transformMatrices;
+	std::vector<glm::mat4> instanceMatrices;
 
 	std::vector<std::string> loadedTexturePaths;
 	std::vector<Texture> loadedTextures;
