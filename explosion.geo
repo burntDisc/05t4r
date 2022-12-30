@@ -16,7 +16,9 @@ out vec2 texCoordF;
 // Imports the camera matrix
 uniform mat4 projection;
 
-uniform float time;
+uniform float phase;
+uniform float amplitude;
+uniform float speed;
 uniform bool explode;
 
 void main() {
@@ -34,10 +36,7 @@ void main() {
         colorF = color[i];
         texCoordF = texCoord[i];
 
-        float speedMult = 10;
-        float distMult = 0.1;
-
-        vec3 direction = NormalF * ((sin(time*speedMult))) * distMult;
+        vec3 direction = NormalF * ((sin(phase*speed))) * amplitude;
 
         gl_Position = explode?
             projection * (gl_in[i].gl_Position + vec4(direction, 0.0)) :

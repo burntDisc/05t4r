@@ -12,7 +12,6 @@ namespace fs = std::experimental::filesystem;
 #include "InputHandler.h"
 #include "Skybox.h"
 
-
 int main()
 {
 	// Set up OpenGl stack and window------------------------------------------
@@ -195,6 +194,7 @@ int main()
 		[&camera, window]() -> void {
 			return camera.UnbindCursor();
 		});
+
 	// Main Render loop--------------------------------------------------------
 
 	// Variables to track FPS
@@ -227,11 +227,10 @@ int main()
 		// Specify the color of the background PINK For debug
 		// (Skybox Draws over)
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-
 		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Updates and camera matrices
+		// Updates camera matrices
 		camera.SetCameraUniforms(standardShader);
 		camera.SetCameraUniforms(explosionShader);
 		camera.SetSkyboxUniforms(skyboxShader);
@@ -252,7 +251,7 @@ int main()
 
 		// Handles Inputs and downstream effects
 		InputHandler::ReadandProcessInput();
-		statueExploding.Step(time);
+		statueExploding.Set(time);
 	}
 
 	// Delete and clean up

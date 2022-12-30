@@ -5,9 +5,11 @@ class ExplodingObject :
 {
 public:
 	using GameObject::GameObject;
-	void Step(float time);
+	void Set(float phase);
 	void Draw(Shader& shader);
 private:
-	float time = 0;
+	float phase = 0;
+	float amplitude = 1;
+	float speed = 1;
 };
 
