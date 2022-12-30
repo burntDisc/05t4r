@@ -1,6 +1,7 @@
 #include"Camera.h"
 
-Camera::Camera(int width, int height, glm::vec3 startPosition):
+Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition):
+	window(window),
 	windowWidth(width), 
 	windowHeight(height), 
 	position(startPosition)
@@ -44,53 +45,50 @@ void Camera::Back()
 {
 	position += speed * -orientation;
 }
-// TODO_SOON move input handler
-void Camera::Inputs(GLFWwindow* window)
+
+void Camera::BindCursor()
 {
-	// Handles mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+	// Prevents camera from jumping on the first click
+	if (firstClick)
 	{
-		// Hides mouse cursor
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-		// Prevents camera from jumping on the first click
-		if (firstClick)
-		{
-			glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
-			firstClick = false;
-		}
-
-		// Stores the coordinates of the cursor
-		double mouseX;
-		double mouseY;
-		// Fetches the coordinates of the cursor
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-
-		// Normalizes and shifts the coordinates of the cursor such that they begin in the middle of the screen
-		// and then "transforms" them into degrees 
-		float rotX = sensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
-		float rotY = sensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
-
-		// Calculates upcoming vertical change in the orientation
-		glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
-
-		// Decides whether or not the next vertical orientation is legal or not
-		if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
-		{
-			orientation = newOrientation;
-		}
-
-		// Rotates the orientation left and right
-		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
-
-		// Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
 		glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
+		firstClick = false;
 	}
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+
+	// Stores the coordinates of the cursor
+	double mouseX;
+	double mouseY;
+	// Fetches the coordinates of the cursor
+	glfwGetCursorPos(window, &mouseX, &mouseY);
+
+	// Normalizes and shifts the coordinates of the cursor such that they begin in the middle of the screen
+	// and then "transforms" them into degrees 
+	float rotX = sensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
+	float rotY = sensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
+
+	// Calculates upcoming vertical change in the orientation
+	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+
+	// Decides whether or not the next vertical orientation is legal or not
+	if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
 	{
-		// Unhides cursor since camera is not looking around anymore
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		// Makes sure the next time the camera looks around it doesn't jump
-		firstClick = true;
+		orientation = newOrientation;
 	}
+
+	// Rotates the orientation left and right
+	orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+
+	// Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
+	glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
+
+}
+
+void Camera::UnbindCursor()
+{		
+	// Unhides cursor since camera is not looking around anymore
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	// Makes sure the next time the camera looks around it doesn't jump
+	firstClick = true;
 }

@@ -5,18 +5,21 @@
 #include <functional>
 #include "Camera.h"
 
-struct Subscription {
-	int event;
-	std::function<void(void)> callback;
-
-};
-
 class InputHandler
 {
 public:
+	enum InputType { keyboard, mouse };
+
+	struct Subscription {
+		InputType type;
+		int input;
+		int event;
+		std::function<void(void)> callback;
+
+	};
 
 	static void SetWindow(GLFWwindow* window);
-	static void Subscribe(int GLFWKey, std::function<void(void)> callback);
+	static void Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> callback);
 	static void ReadandProcessInput();
 private:
 	static std::vector<Subscription> subscriptions;

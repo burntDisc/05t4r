@@ -25,21 +25,24 @@ public:
 	// window dimensions
 	int windowWidth;
 	int windowHeight;
-
+	GLFWwindow* window;
 	// camera movement
 	float speed = 0.5f;
 	float sensitivity = 100.0f;
 
-	Camera(int width, int height, glm::vec3 position);
+	Camera(GLFWwindow* window, int width, int height, glm::vec3 position);
 
 	// Exports the POV related unifroms
 	void SetCameraUniforms(Shader& shader);
-	void Forward();// TODO_SOON move input handler
+
+	// movement
+	void Forward();
 	void TranslateLeft();
 	void Back();
 	void TranslateRight();
 	void TranslateUp();
 
-	// Handles camera inputs
-	void Inputs(GLFWwindow* window);
+	// mouse behavior callbacks
+	void BindCursor();
+	void UnbindCursor();
 };

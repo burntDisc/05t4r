@@ -117,36 +117,60 @@ int main()
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Creates camera object
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(window, width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 	//Setup input handler
 	InputHandler::SetWindow(window);
 	InputHandler::Subscribe(
+		InputHandler::keyboard,
 		GLFW_KEY_W,
+		GLFW_PRESS,
 		[&camera]() -> void {
 			return camera.Forward();
 		});
 	InputHandler::Subscribe(
+		InputHandler::keyboard,
 		GLFW_KEY_A,
+		GLFW_PRESS,
 		[&camera]() -> void {
 			return camera.TranslateLeft();
 		});
 	InputHandler::Subscribe(
+		InputHandler::keyboard,
 		GLFW_KEY_S,
+		GLFW_PRESS,
 		[&camera]() -> void {
 			return camera.Back();
 		});
 	InputHandler::Subscribe(
+		InputHandler::keyboard,
 		GLFW_KEY_D,
+		GLFW_PRESS,
 		[&camera]() -> void {
 			return camera.TranslateRight();
 		});
 	InputHandler::Subscribe(
+		InputHandler::keyboard,
 		GLFW_KEY_SPACE,
+		GLFW_PRESS,
 		[&camera]() -> void {
 			return camera.TranslateUp();
 		});
-
+	InputHandler::Subscribe(
+		InputHandler::mouse,
+		GLFW_MOUSE_BUTTON_LEFT,
+		GLFW_PRESS,
+		[&camera, window]() -> void {
+			return camera.BindCursor();
+		});
+	InputHandler::Subscribe(
+		InputHandler::mouse,
+		GLFW_MOUSE_BUTTON_LEFT,
+		GLFW_RELEASE,
+		[&camera, window]() -> void {
+			return camera.UnbindCursor();
+		});
+	
 
 	// Create VertexArrayObject, VertexBufferObject, and ElementBufferObject for the skybox
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
@@ -313,9 +337,8 @@ int main()
 		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Handles camera inputs (Ok with Vsync)
+		// Handles Inputs and downstream effects
 		InputHandler::ReadandProcessInput();
-		camera.Inputs(window);
 
 		// Updates and camera matrices
 		camera.SetCameraUniforms(standardShader);

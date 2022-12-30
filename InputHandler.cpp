@@ -2,7 +2,7 @@
 // FOR DEBUG REMOVE
 #include<iostream>
 //
-std::vector<Subscription> InputHandler::subscriptions;
+std::vector<InputHandler::Subscription> InputHandler::subscriptions;
 GLFWwindow* InputHandler::window;
 
 void InputHandler::SetWindow(GLFWwindow* newWindow)
@@ -10,10 +10,12 @@ void InputHandler::SetWindow(GLFWwindow* newWindow)
 	window = newWindow;
 }
 
-void InputHandler::Subscribe(int GLFWKey, std::function<void(void)> callback)
+void InputHandler::Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> callback)
 {
 	Subscription newSubscription = {
-		GLFWKey,
+		type,
+		inputSpecifier,
+		event,
 		callback
 	};
 
@@ -24,11 +26,23 @@ void InputHandler::ReadandProcessInput()
 {
 	for (int i = 0; i < subscriptions.size(); ++i)
 	{
-		int keycode = subscriptions[i].event;
-		if (glfwGetKey(window, keycode) == GLFW_PRESS)
-		{
-			std::cout << "CALLED" << std::endl;
-			subscriptions[i].callback();
+		int code = subscriptions[i].input;
+		int event = subscriptions[i].event;
+		switch (subscriptions[i].type) {
+		case keyboard:
+			if (glfwGetKey(window, code) == event)
+			{
+				subscriptions[i].callback();
+			}
+			break;
+		case mouse:
+			if (glfwGetMouseButton(window, code) == event)
+			{
+				subscriptions[i].callback();
+			}
+			break;
+		default:
+			break;
 		}
 	}
 }
