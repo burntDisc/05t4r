@@ -126,6 +126,26 @@ int main()
 		[&camera]() -> void {
 			return camera.Forward();
 		});
+	InputHandler::Subscribe(
+		GLFW_KEY_A,
+		[&camera]() -> void {
+			return camera.TranslateLeft();
+		});
+	InputHandler::Subscribe(
+		GLFW_KEY_S,
+		[&camera]() -> void {
+			return camera.Back();
+		});
+	InputHandler::Subscribe(
+		GLFW_KEY_D,
+		[&camera]() -> void {
+			return camera.TranslateRight();
+		});
+	InputHandler::Subscribe(
+		GLFW_KEY_SPACE,
+		[&camera]() -> void {
+			return camera.TranslateUp();
+		});
 
 
 	// Create VertexArrayObject, VertexBufferObject, and ElementBufferObject for the skybox

@@ -28,40 +28,25 @@ void Camera::Forward()
 {
 	position += speed * orientation;
 }
-// TODO_SOON move input handler
-void Camera::Inputs(GLFWwindow* window)
-{
-
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+void Camera::TranslateLeft()
 {
 	position += speed * -glm::normalize(glm::cross(orientation, up));
 }
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-{
-	position += speed * -orientation;
-}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-{
-	position += speed * glm::normalize(glm::cross(orientation, up));
-}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+void Camera::TranslateUp()
 {
 	position += speed * up;
 }
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-	{
-		position += speed * -up;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-	{
-		speed = 0.1f;
-	}
-	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+void Camera::TranslateRight()
 {
-		speed = 0.025f;
-	}
-
-
+	position += speed * glm::normalize(glm::cross(orientation, up));
+}
+void Camera::Back()
+{
+	position += speed * -orientation;
+}
+// TODO_SOON move input handler
+void Camera::Inputs(GLFWwindow* window)
+{
 	// Handles mouse inputs
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
