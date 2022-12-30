@@ -39,21 +39,21 @@ private:
 	std::vector<Texture> loadedTextures;
 
 	// Load Mesh by index
-	void loadMesh(unsigned int indMesh);
+	void LoadMesh(unsigned int indMesh);
 
 	// Traverse node and children recursively set object data members
-	void traverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix = glm::mat4(1.0f));
+	void TraverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix = glm::mat4(1.0f));
 
 	// Gets the binary data from a file
 	std::vector<unsigned char> LoadBin();
 
 	// Interpret binary data into values
-	std::vector<float> floatsFromBin(json accessor);
-	std::vector<GLuint> indicesFromBin(json accessor);
-	std::vector<Texture> texturesFromBin();
+	std::vector<float> FloatsFromBin(json accessor);
+	std::vector<GLuint> IndicesFromBin(json accessor);
+	std::vector<Texture> TexturesFromBin();
 
 	// Assembles all the floats into vertices
-	std::vector<Vertex> assembleVertices
+	std::vector<Vertex> AssembleVertices
 	(
 		std::vector<glm::vec3> positions,
 		std::vector<glm::vec3> normals,
@@ -61,7 +61,7 @@ private:
 	);
 
 	// Helps with the assembly from above by grouping floats
-	std::vector<glm::vec2> groupFloatsVec2(std::vector<float> floatVec);
-	std::vector<glm::vec3> groupFloatsVec3(std::vector<float> floatVec);
-	std::vector<glm::vec4> groupFloatsVec4(std::vector<float> floatVec);
+	std::vector<glm::vec2> GroupFloatsVec2(std::vector<float> floatVec);
+	std::vector<glm::vec3> GroupFloatsVec3(std::vector<float> floatVec);
+	std::vector<glm::vec4> GroupFloatsVec4(std::vector<float> floatVec);
 };

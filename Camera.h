@@ -6,7 +6,7 @@
 #include<glm/gtc/type_ptr.hpp>
 #include<glm/gtx/rotate_vector.hpp>
 #include<glm/gtx/vector_angle.hpp>
-
+#include "InputHandler.h"
 #include"Shader.h"
 
 class Camera
@@ -33,8 +33,8 @@ public:
 	Camera(int width, int height, glm::vec3 position);
 
 	// Exports the POV related unifroms
-	void setCameraUniforms(Shader& shader);
-
+	void SetCameraUniforms(Shader& shader);
+	void Forward();
 	// Handles camera inputs
 	void Inputs(GLFWwindow* window);
 };

@@ -1,4 +1,6 @@
 #include"Model.h"
+#include <iostream>
+#include "FileLoader.h"
 
 Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> instanceMatrix)
 {
@@ -6,7 +8,7 @@ Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> i
 	// Make a gtlfJSON object
 	try
 	{
-		text = get_file_contents(file);
+		text = FileLoader::GetFileContents(file);
 	}
 	catch(...)
 	{
@@ -25,7 +27,7 @@ Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> i
 	Model::instanceMatrix = instanceMatrix;
 
 	// Traverse all nodes
-	traverseNode(0);
+	TraverseNode(0);
 }
 
 void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
@@ -37,7 +39,7 @@ void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm:
 	}
 }
 
-void Model::loadMesh(unsigned int indMesh)
+void Model::LoadMesh(unsigned int indMesh)
 {
 	// Get all mesh accessor indices
 	unsigned int positionAccessorIndex
@@ -50,23 +52,23 @@ void Model::loadMesh(unsigned int indMesh)
 		= gtlfJSON["meshes"][indMesh]["primitives"][0]["indices"];
 
 	// Get vertex components from binary
-	std::vector<float> posVec = floatsFromBin(gtlfJSON["accessors"][positionAccessorIndex]);
-	std::vector<glm::vec3> positions = groupFloatsVec3(posVec);
-	std::vector<float> normalVec = floatsFromBin(gtlfJSON["accessors"][normalAccessorIndex]);
-	std::vector<glm::vec3> normals = groupFloatsVec3(normalVec);
-	std::vector<float> texVec = floatsFromBin(gtlfJSON["accessors"][textureAccessorIndex]);
-	std::vector<glm::vec2> texUVs = groupFloatsVec2(texVec);
+	std::vector<float> posVec = FloatsFromBin(gtlfJSON["accessors"][positionAccessorIndex]);
+	std::vector<glm::vec3> positions = GroupFloatsVec3(posVec);
+	std::vector<float> normalVec = FloatsFromBin(gtlfJSON["accessors"][normalAccessorIndex]);
+	std::vector<glm::vec3> normals = GroupFloatsVec3(normalVec);
+	std::vector<float> texVec = FloatsFromBin(gtlfJSON["accessors"][textureAccessorIndex]);
+	std::vector<glm::vec2> texUVs = GroupFloatsVec2(texVec);
 
 	// prepare mesh components
-	std::vector<Vertex> vertices = assembleVertices(positions, normals, texUVs);
-	std::vector<GLuint> indices = indicesFromBin(gtlfJSON["accessors"][indiceAccessorIndex]);
-	std::vector<Texture> textures = texturesFromBin();
+	std::vector<Vertex> vertices = AssembleVertices(positions, normals, texUVs);
+	std::vector<GLuint> indices = IndicesFromBin(gtlfJSON["accessors"][indiceAccessorIndex]);
+	std::vector<Texture> textures = TexturesFromBin();
 
 	// create Mesh
 	meshes.push_back(Mesh(vertices, indices, textures, instancing, instanceMatrix));
 }
 
-void Model::traverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix)
+void Model::TraverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix)
 {
 	json node = gtlfJSON["nodes"][nextNode];
 
@@ -131,14 +133,14 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix)
 		scalesMeshes.push_back(scale);
 		matricesMeshes.push_back(finalTransformMatrix);
 
-		loadMesh(node["mesh"]);
+		LoadMesh(node["mesh"]);
 	}
 
 	// Pass Transformation Matrix to children
 	if (node.find("children") != node.end())
 	{
 		for (unsigned int i = 0; i < node["children"].size(); i++)
-			traverseNode(node["children"][i], finalTransformMatrix);
+			TraverseNode(node["children"][i], finalTransformMatrix);
 	}
 }
 
@@ -151,14 +153,14 @@ std::vector<unsigned char> Model::LoadBin()
 	// Store raw text data into bytesText
 	std::string fileStr = std::string(file);
 	std::string fileDirectory = fileStr.substr(0, fileStr.find_last_of('/') + 1);
-	bytesText = get_file_contents((fileDirectory + uri).c_str());
+	bytesText = FileLoader::GetFileContents((fileDirectory + uri).c_str());
 
 	// Transform the raw text data into bytes and put them in a vector
 	std::vector<unsigned char> data(bytesText.begin(), bytesText.end());
 	return data;
 }
 
-std::vector<float> Model::floatsFromBin(json accessor)
+std::vector<float> Model::FloatsFromBin(json accessor)
 {
 	std::vector<float> floatVec;
 
@@ -194,7 +196,7 @@ std::vector<float> Model::floatsFromBin(json accessor)
 	return floatVec;
 }
 
-std::vector<GLuint> Model::indicesFromBin(json accessor)
+std::vector<GLuint> Model::IndicesFromBin(json accessor)
 {
 	std::vector<GLuint> indices;
 
@@ -244,7 +246,7 @@ std::vector<GLuint> Model::indicesFromBin(json accessor)
 	return indices;
 }
 
-std::vector<Texture> Model::texturesFromBin()
+std::vector<Texture> Model::TexturesFromBin()
 {
 	std::vector<Texture> textures;
 
@@ -294,7 +296,7 @@ std::vector<Texture> Model::texturesFromBin()
 	return textures;
 }
 
-std::vector<Vertex> Model::assembleVertices
+std::vector<Vertex> Model::AssembleVertices
 (
 	std::vector<glm::vec3> positions,
 	std::vector<glm::vec3> normals,
@@ -318,7 +320,7 @@ std::vector<Vertex> Model::assembleVertices
 	return vertices;
 }
 
-std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec)
+std::vector<glm::vec2> Model::GroupFloatsVec2(std::vector<float> floatVec)
 {
 	std::vector<glm::vec2> vectors;
 	for (int i = 0; i < floatVec.size(); i)
@@ -327,7 +329,7 @@ std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec)
 	}
 	return vectors;
 }
-std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec)
+std::vector<glm::vec3> Model::GroupFloatsVec3(std::vector<float> floatVec)
 {
 	std::vector<glm::vec3> vectors;
 	for (int i = 0; i < floatVec.size(); i)
@@ -336,7 +338,7 @@ std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec)
 	}
 	return vectors;
 }
-std::vector<glm::vec4> Model::groupFloatsVec4(std::vector<float> floatVec)
+std::vector<glm::vec4> Model::GroupFloatsVec4(std::vector<float> floatVec)
 {
 	std::vector<glm::vec4> vectors;
 	for (int i = 0; i < floatVec.size(); i)

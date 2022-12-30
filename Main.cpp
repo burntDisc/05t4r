@@ -5,9 +5,11 @@ namespace fs = std::experimental::filesystem;
 //------------------------------
 
 #include<math.h>
+#include<iostream>
 #include"GameObject.h"
 #include"ExplodingObject.h"
-
+#include "InputHandler.h"
+#include <functional>
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 
@@ -48,6 +50,7 @@ unsigned int skyboxIndices[] =
 
 int main()
 {
+	// initilize glfw to handle input and window
 	glfwInit();
 
 	// Set GLFW version to OpenGL 3.3 with Core profile
@@ -113,9 +116,17 @@ int main()
 	//Configures the blending function
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
+	//Setup input handler
+	InputHandler::SetWindow(window);
+	InputHandler::Subscribe(
+		GLFW_KEY_W,
+		[&camera]() -> void {
+			return camera.Forward();
+		});
+
 
 	// Create VertexArrayObject, VertexBufferObject, and ElementBufferObject for the skybox
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
@@ -283,11 +294,12 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handles camera inputs (Ok with Vsync)
+		InputHandler::ReadandProcessInput();
 		camera.Inputs(window);
 
 		// Updates and camera matrices
-		camera.setCameraUniforms(standardShader);
-		camera.setCameraUniforms(explosionShader);
+		camera.SetCameraUniforms(standardShader);
+		camera.SetCameraUniforms(explosionShader);
 
 		// Switch back to the normal depth function
 		glDepthFunc(GL_LESS);

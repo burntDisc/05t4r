@@ -77,7 +77,7 @@ void Mesh::Draw
 		{
 			num = std::to_string(numSpecular++);
 		}
-		textures[i].texUnit(shader, (type + num).c_str(), i);
+		textures[i].TexUnit(shader, (type + num).c_str(), i);
 		textures[i].Bind();
 	}
 

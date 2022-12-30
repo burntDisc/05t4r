@@ -171,7 +171,9 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ElementBufferObject.h" />
     <ClInclude Include="ExplodingObject.h" />
+    <ClInclude Include="FileLoader.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Shader.h" />
@@ -183,7 +185,9 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />
     <ClCompile Include="ExplodingObject.cpp" />
+    <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="libraries\include\glad\glad.c" />
     <ClCompile Include="libraries\include\stb\stb_image.cpp" />
     <ClCompile Include="Main.cpp" />

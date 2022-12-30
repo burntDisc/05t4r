@@ -1,4 +1,5 @@
-#include"Texture.h"
+#include "Texture.h"
+#include <stdexcept>
 
 Texture::Texture(const char* image, const char* texType, GLuint slot)
 {
@@ -87,7 +88,7 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
+void Texture::TexUnit(Shader& shader, const char* uniform, GLuint unit)
 {
 	// Gets the location of the uniform
 	GLuint texUni = glGetUniformLocation(shader.ID, uniform);

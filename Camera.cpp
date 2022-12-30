@@ -6,7 +6,7 @@ Camera::Camera(int width, int height, glm::vec3 startPosition):
 	position(startPosition)
 {}
 
-void Camera::setCameraUniforms(Shader& shader)
+void Camera::SetCameraUniforms(Shader& shader)
 {
 	float feildOfView = 45.0f;
 	float nearPlane = 0.01;
@@ -24,30 +24,30 @@ void Camera::setCameraUniforms(Shader& shader)
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
 
+void Camera::Forward()
+{
+	position += speed * orientation;
+}
 // TODO_SOON move input handler
 void Camera::Inputs(GLFWwindow* window)
 {
-	// Handles key inputs
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
-		position += speed * orientation;
-	}
+
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	{
-		position += speed * -glm::normalize(glm::cross(orientation, up));
-	}
+{
+	position += speed * -glm::normalize(glm::cross(orientation, up));
+}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
-		position += speed * -orientation;
-	}
+{
+	position += speed * -orientation;
+}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	{
-		position += speed * glm::normalize(glm::cross(orientation, up));
-	}
+{
+	position += speed * glm::normalize(glm::cross(orientation, up));
+}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-	{
-		position += speed * up;
-	}
+{
+	position += speed * up;
+}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		position += speed * -up;
@@ -57,7 +57,7 @@ void Camera::Inputs(GLFWwindow* window)
 		speed = 0.1f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
-	{
+{
 		speed = 0.025f;
 	}
 
