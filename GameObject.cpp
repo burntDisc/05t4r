@@ -7,6 +7,7 @@ GameObject::GameObject(const char* modelFile, glm::vec3 initTranslation, glm::ve
 
 void GameObject::Draw(Shader& shader)
 {
+	glDepthFunc(GL_LESS);
 	model.Draw(shader, translation, rotation, scale);
 }
 

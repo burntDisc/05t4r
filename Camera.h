@@ -34,6 +34,7 @@ public:
 
 	// Exports the POV related unifroms
 	void SetCameraUniforms(Shader& shader);
+	void SetSkyboxUniforms(Shader& skyboxShader);
 
 	// movement
 	void Forward();

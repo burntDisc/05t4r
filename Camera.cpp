@@ -25,6 +25,20 @@ void Camera::SetCameraUniforms(Shader& shader)
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
 
+void Camera::SetSkyboxUniforms(Shader& skyboxShader)
+{
+
+	skyboxShader.Activate();
+	glm::mat4 skyboxView = glm::mat4(1.0f);
+	glm::mat4 skyboxProjection = glm::mat4(1.0f);
+
+	// mat4 -> mat3 -> mat4 removes last row and column for translation
+	skyboxView = glm::mat4(glm::mat3(glm::lookAt(position, position + orientation, up)));
+	skyboxProjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
+	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(skyboxView));
+	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(skyboxProjection));
+}
+
 void Camera::Forward()
 {
 	position += speed * orientation;
