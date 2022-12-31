@@ -20,6 +20,8 @@ public:
 
 	std::vector<Mesh>& getMeshes();
 
+	std::vector<glm::mat4>& getMeshMatrices();
+
 private:
 	// gtlf file data
 	const char* file;
@@ -31,10 +33,7 @@ private:
 
 	// meshes and transforms
 	std::vector<Mesh> meshes;
-	std::vector<glm::vec3> translations;
-	std::vector<glm::quat> rotations;
-	std::vector<glm::vec3> scales;
-	std::vector<glm::mat4> transformMatrices;
+	std::vector<glm::mat4> meshMatrices;
 	std::vector<glm::mat4> instanceMatrices;
 
 	std::vector<std::string> loadedTexturePaths;

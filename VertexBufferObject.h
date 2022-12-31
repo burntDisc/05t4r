@@ -12,8 +12,6 @@ struct Vertex
 	glm::vec2 texUV;
 };
 
-
-
 class VertexBufferObject
 {
 public:

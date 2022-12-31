@@ -15,9 +15,8 @@ public:
 	void Update(float time);
 
 	std::vector<Mesh>& getMeshes();
-protected:
 	Model model;
 	glm::vec3 translation;
-	glm::vec3 rotation;
+	glm::quat rotation;
 	glm::vec3 scale;
 };

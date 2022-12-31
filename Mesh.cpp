@@ -85,18 +85,18 @@ void Mesh::Draw
 	if (instancing == 1)
 	{
 		// set position to glm matrices
-		glm::mat4 trans = glm::mat4(1.0f);
-		glm::mat4 rot = glm::mat4(1.0f);
-		glm::mat4 sca = glm::mat4(1.0f);
+		glm::mat4 translationMatrix = glm::mat4(1.0f);
+		glm::mat4 rotationMatrix = glm::mat4(1.0f);
+		glm::mat4 scaleMatrix = glm::mat4(1.0f);
 
-		trans = glm::translate(trans, translation);
-		rot = glm::mat4_cast(rotation);
-		sca = glm::scale(sca, scale);
+		translationMatrix = glm::translate(translationMatrix, translation);
+		rotationMatrix = glm::mat4_cast(rotation);
+		scaleMatrix = glm::scale(scaleMatrix, scale);
 
 		// set position uniforms in shader
-		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
-		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
-		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(translationMatrix));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rotationMatrix));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(scaleMatrix));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
 
 		// Draw mesh
