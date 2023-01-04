@@ -151,56 +151,57 @@ int main()
 		InputHandler::joystick,
 		GLFW_JOYSTICK_1,
 		[&camera](const float* axes) -> void {
-			return camera.AdjustVelocity(axes);
+			camera.AdjustVelocity(axes);
+			camera.AdjustOrientation(axes + 2);
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_W,
 		GLFW_PRESS,
 		[&camera]() -> void {
-			return camera.Forward();
+			camera.Forward();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_A,
 		GLFW_PRESS,
 		[&camera]() -> void {
-			return camera.TranslateLeft();
+			camera.TranslateLeft();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_S,
 		GLFW_PRESS,
 		[&camera]() -> void {
-			return camera.Back();
+			camera.Back();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_D,
 		GLFW_PRESS,
 		[&camera]() -> void {
-			return camera.TranslateRight();
+			camera.TranslateRight();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_SPACE,
 		GLFW_PRESS,
 		[&camera]() -> void {
-			return camera.TranslateUp();
+			camera.TranslateUp();
 		});
 	InputHandler::Subscribe(
 		InputHandler::mouse,
 		GLFW_MOUSE_BUTTON_LEFT,
 		GLFW_PRESS,
 		[&camera, window]() -> void {
-			return camera.BindCursor();
+			camera.BindCursor();
 		});
 	InputHandler::Subscribe(
 		InputHandler::mouse,
 		GLFW_MOUSE_BUTTON_LEFT,
 		GLFW_RELEASE,
 		[&camera, window]() -> void {
-			return camera.UnbindCursor();
+			camera.UnbindCursor();
 		});
 
 	// Main Render loop--------------------------------------------------------
@@ -226,9 +227,6 @@ int main()
 			triggerTime = time + triggerInterval;
 			if (statueSolid.CheckCollison(camera.position)) {
 				std::cout << "!!!!!!!!!!!!!!Collision!!!!!!!!!!!!!!!!!" << std::endl;
-			}
-			else {
-				std::cout << "----------------------------------------" << std::endl;
 			}
 		}
 		// ####################################################################

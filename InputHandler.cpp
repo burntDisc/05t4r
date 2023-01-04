@@ -63,7 +63,7 @@ void InputHandler::ProcessInput()
 		switch (inputSubscriptions[i].type) {
 		case joystick:
 		{
-			int count = 2;
+			int count = 4;
 			const float* axes = glfwGetJoystickAxes(code, &count);
 			if (axes)
 			{

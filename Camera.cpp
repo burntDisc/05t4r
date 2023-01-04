@@ -88,7 +88,6 @@ void Camera::AdjustVelocity(const float* axes)
 {
 	if (abs(axes[0]) > threshold || abs(axes[1]) > threshold)
 	{
-		std::cout << "Forward: " << axes[0] << " Sideways: " << axes[1] << std::endl;
 		glm::vec3 stickDirection = glm::normalize(
 			axes[0] * glm::normalize(glm::cross(orientation, up)) -
 			axes[1] * orientation);
@@ -102,8 +101,32 @@ void Camera::AdjustVelocity(const float* axes)
 	}
 }
 
+void Camera::AdjustOrientation(const float* axes)
+{
+	float rotX = 0;
+	float rotY = 0;
+	if (abs(axes[0]) > threshold || abs(axes[1]) > threshold)
+	{
+		rotX = joystickLookSensitivity * axes[1];
+		rotY = joystickLookSensitivity * axes[0];
+	}
+
+	// Calculates upcoming vertical change in the orientation
+	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+
+	// Decides whether or not the next vertical orientation is legal or not
+	if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+	{
+		orientation = newOrientation;
+	}
+
+	// Rotates the orientation left and right
+	orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+}
+
 void Camera::BindCursor()
 {
+	//TODO finish moving mouse logic to inputhandler
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	// Prevents camera from jumping on the first click
@@ -121,8 +144,8 @@ void Camera::BindCursor()
 
 	// Normalizes and shifts the coordinates of the cursor such that they begin in the middle of the screen
 	// and then "transforms" them into degrees 
-	float rotX = sensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
-	float rotY = sensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
+	float rotX = mouseLookSensitivity * (float)(mouseY - (windowHeight / 2)) / windowHeight;
+	float rotY = mouseLookSensitivity * (float)(mouseX - (windowWidth / 2)) / windowWidth;
 
 	// Calculates upcoming vertical change in the orientation
 	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));

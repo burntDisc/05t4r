@@ -27,8 +27,6 @@ public:
 	int windowWidth;
 	int windowHeight;
 	GLFWwindow* window;
-	// camera movement
-	float sensitivity = 100.0f;
 
 	Camera(GLFWwindow* window, int width, int height, glm::vec3 position);
 
@@ -44,11 +42,15 @@ public:
 	void TranslateRight();
 	void TranslateUp();
 	void AdjustVelocity(const float* axes);
+	void AdjustOrientation(const float* axes);
 
 	// mouse behavior callbacks
 	void BindCursor();
 	void UnbindCursor();
 private:
+	// camera movement
+	const float mouseLookSensitivity = 100.0f;
+	const float joystickLookSensitivity = 0.5f;
 	const float friction = 0.01f;
 	const float acceleration = 0.1f;
 	const float maxSpeed = 0.5f;
