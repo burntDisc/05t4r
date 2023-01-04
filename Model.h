@@ -17,10 +17,10 @@ public:
 		glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
+	std::vector<Mesh> meshes;
 
-	std::vector<Mesh>& getMeshes();
-
-	std::vector<glm::mat4>& getMeshMatrices();
+	std::vector<glm::mat4>& GetMeshTransforms();
+	std::vector<Mesh>& GetMeshes();
 
 private:
 	// gtlf file data
@@ -32,8 +32,7 @@ private:
 	unsigned int instancing;
 
 	// meshes and transforms
-	std::vector<Mesh> meshes;
-	std::vector<glm::mat4> meshMatrices;
+	std::vector<glm::mat4> meshTransforms;
 	std::vector<glm::mat4> instanceMatrices;
 
 	std::vector<std::string> loadedTexturePaths;

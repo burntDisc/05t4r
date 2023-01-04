@@ -9,7 +9,7 @@ layout (location = 3) in vec2 aTex;
 
 
 // Outputs the current position for the Fragment Shader
-out vec3 shaderPosition;
+out vec3 vertexWorldPosition;
 // Outputs the normal for the Fragment Shader
 out vec3 Normal;
 // Outputs the texture coordinates to the Fragment Shader
@@ -30,12 +30,12 @@ uniform mat4 scale;
 void main()
 {
 	// calculates current position
-	shaderPosition = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
+	vertexWorldPosition = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
 	// Assigns the normal from the Vertex Data to "Normal"
 	Normal = aNormal;
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"
 	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
 	
 	// Outputs the positions/coordinates of all vertices
-	gl_Position = projection * view * model * vec4(shaderPosition, 1.0);
+	gl_Position = projection * view * vec4(vertexWorldPosition, 1.0);
 }

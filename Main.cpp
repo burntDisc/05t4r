@@ -11,6 +11,7 @@ namespace fs = std::experimental::filesystem;
 #include"ExplodingObject.h"
 #include "InputHandler.h"
 #include "Skybox.h"
+#include "SolidObject.h"
 
 int main()
 {
@@ -75,6 +76,7 @@ int main()
 		lightPos.x, lightPos.y, lightPos.z);
 
 	// Create Game objects ----------------------------------------------------------
+	std::vector<GameObject> objects;
 	// get current directory
 
 	std::string parentDir = fs::current_path().string();
@@ -126,7 +128,7 @@ int main()
 	glm::vec3 statue0Translation = glm::vec3(30.0f, 20.0f, -80.0f);
 	glm::vec3 statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue0Scale = glm::vec3(40.0f, 40.0f, 40.0f);
-	GameObject statueNormal(
+	SolidObject statueSolid(
 		statueModelPath.c_str(),
 		statue0Translation,
 		statue0Rotation,
@@ -203,13 +205,28 @@ int main()
 	float deltaTime;
 	unsigned int counter = 0;
 
+	float triggerInterval = 0.1;
+	float triggerTime = triggerInterval;
 	while (!glfwWindowShouldClose(window))
 	{
+
 		// Updates counter and times
 		time = glfwGetTime();
 		deltaTime = time - lastTime;
 		counter++;
 
+		// ############Collison testing area###################################
+		if (time > triggerTime) {
+			triggerTime = time + triggerInterval;
+			if (statueSolid.CheckCollison(camera.position)) {
+				std::cout << "!!!!!!!!!!!!!!Collision!!!!!!!!!!!!!!!!!" << std::endl;
+			}
+			else {
+				std::cout << "----------------------------------------" << std::endl;
+			}
+		}
+		// ####################################################################
+		// 
 		// overwrite fps every loop 1/30 seconds
 		if (deltaTime >= 1.0 / 30.0)
 		{
@@ -236,7 +253,7 @@ int main()
 		camera.SetSkyboxUniforms(skyboxShader);
 
 		// Draw
-		statueNormal.Draw(standardShader);
+		statueSolid.Draw(standardShader);
 		statueExploding.Draw(explosionShader);
 		airplane.Draw(standardShader);
 		test.Draw(standardShader);

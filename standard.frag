@@ -4,7 +4,7 @@
 out vec4 FragColor;
 
 // localization and details from the Vertex Shader
-in vec3 shaderPosition;
+in vec3 vertexWorldPosition;
 in vec3 Normal;
 in vec2 texCoord;
 
@@ -21,7 +21,7 @@ uniform vec3 camPos;
 vec4 pointLight()
 {	
 	// get light position relative to vertex position
-	vec3 relativeLightPosition = lightPos - shaderPosition;
+	vec3 relativeLightPosition = lightPos - vertexWorldPosition;
 
 	// intensity of light with respect to distance
 	float dist = length(relativeLightPosition);
@@ -39,7 +39,7 @@ vec4 pointLight()
 
 	// specular lighting
 	float specularLight = 0.50f;
-	vec3 viewDirection = normalize(camPos - shaderPosition);
+	vec3 viewDirection = normalize(camPos - vertexWorldPosition);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
 	float specular = specAmount * specularLight;
@@ -59,7 +59,7 @@ vec4 direcLight()
 
 	// specular lighting
 	float specularLight = 0.50f;
-	vec3 viewDirection = normalize(camPos - shaderPosition);
+	vec3 viewDirection = normalize(camPos - vertexWorldPosition);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
 	float specular = specAmount * specularLight;
@@ -78,17 +78,17 @@ vec4 spotLight()
 
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightPos - shaderPosition);
+	vec3 lightDirection = normalize(lightPos - vertexWorldPosition);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
 	// specular lighting
 	float specularLight = 0.50f;
-	vec3 viewDirection = normalize(camPos - shaderPosition);
+	vec3 viewDirection = normalize(camPos - vertexWorldPosition);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
 	float specular = specAmount * specularLight;
 
-	// calculates the intensity of the shaderPosition based on its angle to the center of the light cone
+	// calculates the intensity of the vertexWorldPosition based on its angle to the center of the light cone
 	float angle = dot(vec3(0.0f, -1.0f, 0.0f), -lightDirection);
 	float inten = clamp((angle - outerCone) / (innerCone - outerCone), 0.0f, 1.0f);
 

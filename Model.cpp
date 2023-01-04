@@ -35,11 +35,17 @@ void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm:
 	// Go over all meshes and draw each one
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Mesh::Draw(shader, transformMatrices[i], translation, rotation, scale);
+		meshes[i].Mesh::Draw(shader, meshTransforms[i], translation, rotation, scale);
 	}
 }
+  
+std::vector<glm::mat4>& Model::GetMeshTransforms()
+{
+	return meshTransforms;
+}
 
-std::vector<Mesh>& Model::getMeshes()
+
+std::vector<Mesh>& Model::GetMeshes()
 {
 	return meshes;
 }
@@ -133,10 +139,7 @@ void Model::TraverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix)
 	// Load mesh if present
 	if (node.find("mesh") != node.end())
 	{
-		translations.push_back(translation);
-		rotations.push_back(rotation);
-		scales.push_back(scale);
-		transformMatrices.push_back(finalTransformMatrix);
+		meshTransforms.push_back(finalTransformMatrix);
 
 		LoadMesh(node["mesh"]);
 	}
