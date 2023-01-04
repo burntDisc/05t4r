@@ -2,7 +2,8 @@
 // FOR DEBUG REMOVE
 #include<iostream>
 //
-std::vector<InputHandler::Subscription> InputHandler::subscriptions;
+std::vector<InputHandler::EventSubscription> InputHandler::eventSubscriptions;
+std::vector<InputHandler::InputSubscription> InputHandler::inputSubscriptions;
 GLFWwindow* InputHandler::window;
 
 void InputHandler::SetWindow(GLFWwindow* newWindow)
@@ -12,35 +13,64 @@ void InputHandler::SetWindow(GLFWwindow* newWindow)
 
 void InputHandler::Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> callback)
 {
-	Subscription newSubscription = {
+	EventSubscription newSubscription = {
 		type,
 		inputSpecifier,
 		event,
 		callback
 	};
 
-	subscriptions.push_back(newSubscription);
+	eventSubscriptions.push_back(newSubscription);
 }
 
-void InputHandler::ReadandProcessInput()
+void InputHandler::Subscribe(InputType type, int inputSpecifier, std::function<void(const float*)> callback)
 {
-	for (int i = 0; i < subscriptions.size(); ++i)
+	InputSubscription newSubscription = {
+		type,
+		inputSpecifier,
+		callback
+	};
+
+	inputSubscriptions.push_back(newSubscription);
+}
+
+void InputHandler::ProcessInput()
+{
+	for (int i = 0; i < eventSubscriptions.size(); ++i)
 	{
-		int code = subscriptions[i].input;
-		int event = subscriptions[i].event;
-		switch (subscriptions[i].type) {
+		int code = eventSubscriptions[i].input;
+		int event = eventSubscriptions[i].event;
+		switch (eventSubscriptions[i].type) {
 		case keyboard:
 			if (glfwGetKey(window, code) == event)
 			{
-				subscriptions[i].callback();
+				eventSubscriptions[i].callback();
 			}
 			break;
 		case mouse:
 			if (glfwGetMouseButton(window, code) == event)
 			{
-				subscriptions[i].callback();
+				eventSubscriptions[i].callback();
 			}
 			break;
+		default:
+			break;
+		}
+	}
+	for (int i = 0; i < inputSubscriptions.size(); ++i)
+	{
+		int code = inputSubscriptions[i].input;
+		switch (inputSubscriptions[i].type) {
+		case joystick:
+		{
+			int count = 2;
+			const float* axes = glfwGetJoystickAxes(code, &count);
+			if (axes)
+			{
+				inputSubscriptions[i].callback(axes);
+			}
+		}
+		break;
 		default:
 			break;
 		}

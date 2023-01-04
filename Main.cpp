@@ -148,6 +148,12 @@ int main()
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
 	InputHandler::Subscribe(
+		InputHandler::joystick,
+		GLFW_JOYSTICK_1,
+		[&camera](const float* axes) -> void {
+			return camera.AdjustVelocity(axes);
+		});
+	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_W,
 		GLFW_PRESS,
@@ -267,8 +273,9 @@ int main()
 		glfwPollEvents();
 
 		// Handles Inputs and downstream effects
-		InputHandler::ReadandProcessInput();
+		InputHandler::ProcessInput();
 		statueExploding.Set(time);
+		camera.Update();
 	}
 
 	// Delete and clean up

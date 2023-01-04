@@ -8,21 +8,29 @@
 class InputHandler
 {
 public:
-	enum InputType { keyboard, mouse };
+	enum InputType { keyboard, mouse, joystick };
 
-	struct Subscription {
+	struct EventSubscription {
 		InputType type;
 		int input;
 		int event;
 		std::function<void(void)> callback;
 
 	};
+	struct InputSubscription {
+		InputType type;
+		int input;
+		std::function<void(const float*)> callback;
+
+	};
 
 	static void SetWindow(GLFWwindow* window);
 	static void Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> callback);
-	static void ReadandProcessInput();
+	static void Subscribe(InputType type, int inputSpecifier, std::function<void(const float*)> callback);
+	static void ProcessInput();
 private:
-	static std::vector<Subscription> subscriptions;
+	static std::vector<EventSubscription> eventSubscriptions;
+	static std::vector<InputSubscription> inputSubscriptions;
 	static GLFWwindow* window;
 };
 

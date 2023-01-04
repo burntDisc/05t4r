@@ -1,9 +1,11 @@
 #include"Camera.h"
 
-Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition):
+#include <iostream> //TODO remove all of these in random files used for debug
+
+Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition) :
 	window(window),
-	windowWidth(width), 
-	windowHeight(height), 
+	windowWidth(width),
+	windowHeight(height),
 	position(startPosition)
 {}
 
@@ -41,23 +43,63 @@ void Camera::SetSkyboxUniforms(Shader& skyboxShader)
 
 void Camera::Forward()
 {
-	position += speed * orientation;
+	const float axes[2] = { 0.0, -1.0 };
+	AdjustVelocity(axes);
 }
 void Camera::TranslateLeft()
 {
-	position += speed * -glm::normalize(glm::cross(orientation, up));
+	const float axes[2] = { -1.0, 0.0 };
+	AdjustVelocity(axes);
 }
 void Camera::TranslateUp()
 {
-	position += speed * up;
+	glm::vec3 newVelocity = acceleration * up + velocity;
+	if (glm::length(newVelocity) > maxSpeed)
+	{
+		newVelocity = normalize(newVelocity) * maxSpeed;
+	}
+	velocity = newVelocity;
 }
 void Camera::TranslateRight()
 {
-	position += speed * glm::normalize(glm::cross(orientation, up));
+	const float axes[2] = { 1.0, 0.0 };
+	AdjustVelocity(axes);
 }
 void Camera::Back()
 {
-	position += speed * -orientation;
+	const float axes[2] = { 0.0, 1.0 };
+	AdjustVelocity(axes);
+}
+
+void Camera::Update()
+{
+	if (glm::length(velocity) > friction)
+	{
+		velocity = velocity - friction * glm::normalize(velocity);
+	}
+	else
+	{
+		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	}
+	position += velocity;
+}
+
+void Camera::AdjustVelocity(const float* axes)
+{
+	if (abs(axes[0]) > threshold || abs(axes[1]) > threshold)
+	{
+		std::cout << "Forward: " << axes[0] << " Sideways: " << axes[1] << std::endl;
+		glm::vec3 stickDirection = glm::normalize(
+			axes[0] * glm::normalize(glm::cross(orientation, up)) -
+			axes[1] * orientation);
+
+		glm::vec3 newVelocity = acceleration * stickDirection + velocity;
+		if (glm::length(newVelocity) > maxSpeed)
+		{
+			newVelocity = normalize(newVelocity) * maxSpeed;
+		}
+		velocity = newVelocity;
+	}
 }
 
 void Camera::BindCursor()
