@@ -1,6 +1,8 @@
 #include "Skybox.h"
+
 #include<stb/stb_image.h>
-#include<iostream>
+#include <glad/glad.h>
+#include <iostream>
 
 Skybox::Skybox(std::string facesDirectory):
 	skyboxVertices{

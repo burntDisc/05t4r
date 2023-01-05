@@ -1,10 +1,14 @@
 #pragma once
-#include<string>
 
-#include"VertexArrayObject.h"
-#include"ElementBufferObject.h"
-#include"Camera.h"
-#include"Texture.h"
+#include <vector>
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+
+#include "VertexBufferObject.h"
+#include "VertexArrayObject.h"
+#include "Texture.h"
+#include "Shader.h"
 
 class Mesh
 {

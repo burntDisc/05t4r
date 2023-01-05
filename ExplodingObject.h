@@ -1,5 +1,8 @@
 #pragma once
+
 #include "GameObject.h"
+#include "Shader.h"
+
 class ExplodingObject :
 	public GameObject
 {

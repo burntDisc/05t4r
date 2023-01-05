@@ -1,7 +1,5 @@
 #include "CollisionBox.h"
 
-#include <iostream>
-
 void CollisionBox::Set(Model model, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
 {
 	std::vector<glm::vec3> vertexPositions;

@@ -1,5 +1,8 @@
 #include "SolidObject.h"
-#include <iostream>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+
 SolidObject::SolidObject(
 	const char* modelFile, 
 	glm::vec3 initTranslation, 
@@ -12,10 +15,10 @@ SolidObject::SolidObject(
 		initRotation,
 		initScale)
 {
-	collisionBox.Set(model, initTranslation, initRotation, initScale);
+	collisionMesh.SetMesh(GameObject::model, initTranslation, initRotation, initScale);
 }
 
-bool SolidObject::CheckCollison(glm::vec3 position)
+glm::vec3 SolidObject::CheckCollison(glm::vec3 position)
 {
-	return collisionBox.CheckCollison(position);
+	return collisionMesh.CheckCollison(position);
 }

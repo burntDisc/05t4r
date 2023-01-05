@@ -1,6 +1,13 @@
 #pragma once
-#include<json/json.h>
-#include"Mesh.h"
+
+#include <json/json.h>
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#include "Mesh.h"
+#include "Shader.h"
+#include "Texture.h"
+#include "VertexBufferObject.h"
 
 using json = nlohmann::json;
 

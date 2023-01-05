@@ -1,5 +1,10 @@
 #include "Mesh.h"
 
+#include <string>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "ElementBufferObject.h"
+
 Mesh::Mesh
 (
 	std::vector <Vertex>& vertices,

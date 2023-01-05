@@ -1,17 +1,22 @@
-// TODO update filesystem include here
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <string>
+// TODO update filesystem include here----------------------
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
-//------------------------------
+//----------------------------------------------------------
 
-#include <functional>
-#include<math.h>
-#include<iostream>
-#include"GameObject.h"
-#include"ExplodingObject.h"
-#include "InputHandler.h"
+#include "Shader.h"
+#include "GameObject.h"
+#include "Camera.h"
 #include "Skybox.h"
 #include "SolidObject.h"
+#include "ExplodingObject.h"
+#include "InputHandler.h"
 
 int main()
 {
@@ -89,9 +94,9 @@ int main()
 
 	// Create ground object
 	std::string groundModelPath = parentDir + "/models/ground/scene.gltf";
-	glm::vec3 groundTranslation = glm::vec3(0.0f, -1.2f, 0.0f);
-	glm::vec3 groundRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 groundScale = glm::vec3(10.0f, 2.0f, 10.0f);
+	glm::vec3 groundTranslation(0.0f, -1.2f, 0.0f);
+	glm::quat groundRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 groundScale(10.0f, 2.0f, 10.0f);
 	GameObject ground(
 		groundModelPath.c_str(),
 		groundTranslation,
@@ -101,9 +106,9 @@ int main()
 
 	// Create airplane object
 	std::string airplaneModelPath = parentDir + "/models/airplane/scene.gltf";
-	glm::vec3 airplaneTranslation = glm::vec3(0.0f, -4.0f, -50.0f);
-	glm::vec3 airplaneRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 airplaneScale = glm::vec3(5.0f, 5.0f, 5.0f);
+	glm::vec3 airplaneTranslation(0.0f, -4.0f, -50.0f);
+	glm::quat airplaneRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 airplaneScale(5.0f, 5.0f, 5.0f);
 	GameObject airplane(
 		airplaneModelPath.c_str(),
 		airplaneTranslation,
@@ -113,9 +118,9 @@ int main()
 
 	// Create sword object
 	std::string testModelPath = parentDir + "/models/sword/scene.gltf";
-	glm::vec3 testTranslation = glm::vec3(-50.0f, 40.0f, -20.0f);
-	glm::vec3 testRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 testScale = glm::vec3(10.0f, 10.0f, 10.0f);
+	glm::vec3 testTranslation(-50.0f, 40.0f, -20.0f);
+	glm::quat testRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 testScale(10.0f, 10.0f, 10.0f);
 	GameObject test(
 		testModelPath.c_str(),
 		testTranslation,
@@ -125,9 +130,9 @@ int main()
 
 	// Create statue objects
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statue0Translation = glm::vec3(30.0f, 20.0f, -80.0f);
-	glm::vec3 statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
-	glm::vec3 statue0Scale = glm::vec3(40.0f, 40.0f, 40.0f);
+	glm::vec3 statue0Translation(30.0f, 20.0f, -80.0f);
+	glm::quat statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
+	glm::vec3 statue0Scale(40.0f, 40.0f, 40.0f);
 	SolidObject statueSolid(
 		statueModelPath.c_str(),
 		statue0Translation,
@@ -135,9 +140,9 @@ int main()
 		statue0Scale
 	);
 
-	glm::vec3 statue1Translation = glm::vec3(-20.0f, 20.0f, -80.0f);
-	glm::vec3 statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
-	glm::vec3 statue1Scale = glm::vec3(40.0f, 40.0f, 40.0f);
+	glm::vec3 statue1Translation(-20.0f, 20.0f, -80.0f);
+	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
+	glm::vec3 statue1Scale(40.0f, 40.0f, 40.0f);
 	ExplodingObject statueExploding(
 		statueModelPath.c_str(),
 		statue1Translation,
@@ -153,6 +158,13 @@ int main()
 		[&camera](const float* axes) -> void {
 			camera.AdjustVelocity(axes);
 			camera.AdjustOrientation(axes + 2);
+		});
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_A,
+		[&camera]() -> void {
+			camera.TranslateUp();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
@@ -225,9 +237,12 @@ int main()
 		// ############Collison testing area###################################
 		if (time > triggerTime) {
 			triggerTime = time + triggerInterval;
-			if (statueSolid.CheckCollison(camera.position)) {
+			glm::vec3 collision = statueSolid.CheckCollison(camera.position);
+			if (collision != glm::vec3(0))
+			{
 				std::cout << "!!!!!!!!!!!!!!Collision!!!!!!!!!!!!!!!!!" << std::endl;
 			}
+			camera.ProcessCollision(collision);
 		}
 		// ####################################################################
 		// 

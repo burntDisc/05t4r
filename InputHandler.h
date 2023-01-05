@@ -1,14 +1,13 @@
 #pragma once
-#include <functional>
-#include <string>
+
 #include <vector>
 #include <functional>
-#include "Camera.h"
+#include <GLFW/glfw3.h>
 
 class InputHandler
 {
 public:
-	enum InputType { keyboard, mouse, joystick };
+	enum InputType { keyboard, mouse, joystick, button };
 
 	struct EventSubscription {
 		InputType type;

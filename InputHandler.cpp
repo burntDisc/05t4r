@@ -1,7 +1,5 @@
 #include "InputHandler.h"
-// FOR DEBUG REMOVE
-#include<iostream>
-//
+
 std::vector<InputHandler::EventSubscription> InputHandler::eventSubscriptions;
 std::vector<InputHandler::InputSubscription> InputHandler::inputSubscriptions;
 GLFWwindow* InputHandler::window;
@@ -53,6 +51,15 @@ void InputHandler::ProcessInput()
 				eventSubscriptions[i].callback();
 			}
 			break;
+		case button:
+			GLFWgamepadstate state;
+			if (glfwGetGamepadState(code, &state))
+			{
+				if (state.buttons[event])
+				{
+					eventSubscriptions[i].callback();
+				}
+			}
 		default:
 			break;
 		}

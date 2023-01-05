@@ -1,6 +1,9 @@
 #include "Shader.h"
+
+#include <glm/glm.hpp>
 #include <string>
 #include <iostream>
+
 #include "FileLoader.h"
 
 // Constructor that build the Shader Program from 3 different shaders

@@ -1,7 +1,8 @@
 #pragma once
-#include "glm/glm.hpp"
-#include<glad/glad.h>
-#include<vector>
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <vector>
 
 // Structure to standardize the vertices used in the meshes
 struct Vertex

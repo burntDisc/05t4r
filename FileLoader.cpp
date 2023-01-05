@@ -1,5 +1,7 @@
 #include "FileLoader.h"
 
+#include<fstream>
+
 std::string FileLoader::GetFileContents(const char* filename)
 {
 	std::ifstream in(filename, std::ios::binary);

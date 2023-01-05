@@ -1,5 +1,10 @@
 #pragma once
-#include"Model.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+
+#include "Shader.h"
+#include "Model.h"
 
 class GameObject
 {

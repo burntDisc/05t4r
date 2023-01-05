@@ -1,6 +1,10 @@
-#include"Camera.h"
+#include "Camera.h"
 
-#include <iostream> //TODO remove all of these in random files used for debug
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
+#include <glm/gtx/projection.hpp>
 
 Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition) :
 	window(window),
@@ -97,6 +101,12 @@ void Camera::AdjustVelocity(const float* axes)
 		{
 			newVelocity = normalize(newVelocity) * maxSpeed;
 		}
+
+		if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
+		{
+			newVelocity = newVelocity - glm::proj(newVelocity, surfaceNormal);
+		}
+
 		velocity = newVelocity;
 	}
 }
@@ -170,4 +180,10 @@ void Camera::UnbindCursor()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	// Makes sure the next time the camera looks around it doesn't jump
 	firstClick = true;
+}
+
+void Camera::ProcessCollision(glm::vec3 normal)
+{
+	surfaceNormal = normal;
+	
 }

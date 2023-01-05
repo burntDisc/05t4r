@@ -1,13 +1,9 @@
 #pragma once
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtx/vector_angle.hpp>
-#include "InputHandler.h"
+
 #include "Shader.h"
+
+#include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
 
 class Camera
 {
@@ -26,9 +22,10 @@ public:
 	// window dimensions
 	int windowWidth;
 	int windowHeight;
+	
 	GLFWwindow* window;
 
-	Camera(GLFWwindow* window, int width, int height, glm::vec3 position);
+	Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition);
 
 	// Exports the POV related unifroms
 	void SetCameraUniforms(Shader& shader);
@@ -47,13 +44,16 @@ public:
 	// mouse behavior callbacks
 	void BindCursor();
 	void UnbindCursor();
+
+	// Collison
+	void ProcessCollision(glm::vec3 direction);
 private:
+	glm::vec3 surfaceNormal;
 	// camera movement
 	const float mouseLookSensitivity = 100.0f;
 	const float joystickLookSensitivity = 0.5f;
-	const float friction = 0.01f;
-	const float acceleration = 0.1f;
-	const float maxSpeed = 0.5f;
+	const float friction = 0.005f;
+	const float acceleration = 0.05f;
+	const float maxSpeed = 0.25f;
 	const float threshold = 0.2f;
-	glm::vec3 GetJoystickAdjustment();
 };
