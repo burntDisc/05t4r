@@ -24,7 +24,7 @@ void CollisionMesh::SetMesh(Model  model, glm::vec3 translation, glm::quat rotat
 		{
 			Vertex& vertex = vertices[vertexIndex];
 			glm::vec3 vertexWorldPosition(meshPos * translationMatrix * rotationMatrix * scaleMatrix * glm::vec4(vertex.position, 1.0f));
-			glm::vec3 vertexWorldNormal(meshPos * translationMatrix * rotationMatrix * scaleMatrix * glm::vec4(vertex.position, 1.0f));
+			glm::vec3 vertexWorldNormal(rotationMatrix * glm::vec4(vertex.normal, 1.0f));
 			vertexPositions.push_back(vertexWorldPosition);
 			vertexNormals.push_back(normalize(vertexWorldNormal));
 		}
