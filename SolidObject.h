@@ -13,7 +13,6 @@ public:
 		glm::quat initRotation = glm::quat(0.0, 0.0, 0.0, 0.0),
 		glm::vec3 initScale = glm::vec3(0));
 	glm::vec3 CheckCollison(glm::vec3 position);
-private:
 	CollisionMesh collisionMesh;
 };
 

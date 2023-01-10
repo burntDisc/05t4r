@@ -17,8 +17,3 @@ SolidObject::SolidObject(
 {
 	collisionMesh.SetMesh(GameObject::model, initTranslation, initRotation, initScale);
 }
-
-glm::vec3 SolidObject::CheckCollison(glm::vec3 position)
-{
-	return collisionMesh.CheckCollison(position);
-}

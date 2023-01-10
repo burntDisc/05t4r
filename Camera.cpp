@@ -6,6 +6,7 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <glm/gtx/projection.hpp>
 
+#include "MotionHandler.h"
 Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition) :
 	window(window),
 	windowWidth(width),
@@ -58,11 +59,10 @@ void Camera::TranslateLeft()
 void Camera::TranslateUp()
 {
 	glm::vec3 newVelocity = acceleration * up + velocity;
-	if (glm::length(newVelocity) > maxSpeed)
-	{
-		newVelocity = normalize(newVelocity) * maxSpeed;
-	}
-	velocity = newVelocity;
+
+	velocity = glm::length(newVelocity) > maxSpeed ?
+		normalize(newVelocity) * length(velocity) :
+		newVelocity;
 }
 void Camera::TranslateRight()
 {
@@ -85,7 +85,15 @@ void Camera::Update()
 	{
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
-	position += velocity;
+
+	//velocity.y -= gravity;
+
+	glm::vec3 newPosition = MotionHandler::ApplyTranslation(position, position + velocity);
+	if (newPosition != position + velocity)
+	{
+		velocity = glm::vec3(0.0, 0.0, 0.0);
+	}
+	position = newPosition;
 }
 
 void Camera::AdjustVelocity(const float* axes)
@@ -97,17 +105,10 @@ void Camera::AdjustVelocity(const float* axes)
 			axes[1] * orientation);
 
 		glm::vec3 newVelocity = acceleration * stickDirection + velocity;
-		if (glm::length(newVelocity) > maxSpeed)
-		{
-			newVelocity = normalize(newVelocity) * maxSpeed;
-		}
 
-		if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
-		{
-			newVelocity = newVelocity - glm::proj(newVelocity, surfaceNormal);
-		}
-
-		velocity = newVelocity;
+		velocity = glm::length(newVelocity) > maxSpeed ?
+			normalize(newVelocity) * length(velocity) :
+			newVelocity;
 	}
 }
 
@@ -180,10 +181,4 @@ void Camera::UnbindCursor()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	// Makes sure the next time the camera looks around it doesn't jump
 	firstClick = true;
-}
-
-void Camera::ProcessCollision(glm::vec3 normal)
-{
-	surfaceNormal = normal;
-	
 }

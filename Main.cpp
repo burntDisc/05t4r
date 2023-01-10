@@ -3,6 +3,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/vector_angle.hpp>
 #include <string>
 // TODO update filesystem include here----------------------
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
@@ -17,6 +18,7 @@ namespace fs = std::experimental::filesystem;
 #include "SolidObject.h"
 #include "ExplodingObject.h"
 #include "InputHandler.h"
+#include "MotionHandler.h"
 
 int main()
 {
@@ -79,7 +81,6 @@ int main()
 		lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(explosionShader.ID, "lightPos"),
 		lightPos.x, lightPos.y, lightPos.z);
-
 	// Create Game objects ----------------------------------------------------------
 	std::vector<GameObject> objects;
 	// get current directory
@@ -92,21 +93,9 @@ int main()
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
 	Skybox skybox(skyboxFacesDirectory);
 
-	// Create ground object
-	std::string groundModelPath = parentDir + "/models/ground/scene.gltf";
-	glm::vec3 groundTranslation(0.0f, -1.2f, 0.0f);
-	glm::quat groundRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 groundScale(10.0f, 2.0f, 10.0f);
-	GameObject ground(
-		groundModelPath.c_str(),
-		groundTranslation,
-		groundRotation,
-		groundScale
-	);
-
 	// Create airplane object
 	std::string airplaneModelPath = parentDir + "/models/airplane/scene.gltf";
-	glm::vec3 airplaneTranslation(0.0f, -4.0f, -50.0f);
+	glm::vec3 airplaneTranslation(0.0f, -9.0f, -50.0f);
 	glm::quat airplaneRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 airplaneScale(5.0f, 5.0f, 5.0f);
 	GameObject airplane(
@@ -116,21 +105,9 @@ int main()
 		airplaneScale
 	);
 
-	// Create sword object
-	std::string testModelPath = parentDir + "/models/sword/scene.gltf";
-	glm::vec3 testTranslation(-50.0f, 40.0f, -20.0f);
-	glm::quat testRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 testScale(10.0f, 10.0f, 10.0f);
-	GameObject test(
-		testModelPath.c_str(),
-		testTranslation,
-		testRotation,
-		testScale
-	);
-
 	// Create statue objects
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statue0Translation(30.0f, 20.0f, -80.0f);
+	glm::vec3 statue0Translation(30.0f, 15.0f, -80.0f);
 	glm::quat statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue0Scale(40.0f, 40.0f, 40.0f);
 	SolidObject statueSolid(
@@ -140,7 +117,9 @@ int main()
 		statue0Scale
 	);
 
-	glm::vec3 statue1Translation(-20.0f, 20.0f, -80.0f);
+	MotionHandler::AddSolidObject(statueSolid);
+	
+	glm::vec3 statue1Translation(-20.0f, 15.0f, -80.0f);
 	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale(40.0f, 40.0f, 40.0f);
 	ExplodingObject statueExploding(
@@ -149,6 +128,20 @@ int main()
 		statue1Rotation,
 		statue1Scale
 	);
+
+	// Create floor object
+	std::string floorPath = parentDir + "/models/floor/scene.gltf";
+	glm::vec3 floorTranslation(700.0f, -10.0f, -700.0f);
+	glm::quat floorRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 floorScale(10.1f, 10.1f, 10.1f);
+	SolidObject floor(
+		floorPath.c_str(),
+		floorTranslation,
+		floorRotation,
+		floorScale
+	);
+
+	//MotionHandler::AddSolidObject(floor);
 
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
@@ -224,8 +217,6 @@ int main()
 	float deltaTime;
 	unsigned int counter = 0;
 
-	float triggerInterval = 0.1;
-	float triggerTime = triggerInterval;
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -234,16 +225,6 @@ int main()
 		deltaTime = time - lastTime;
 		counter++;
 
-		// ############Collison testing area###################################
-		if (time > triggerTime) {
-			triggerTime = time + triggerInterval;
-			glm::vec3 collision = statueSolid.CheckCollison(camera.position);
-			if (collision != glm::vec3(0))
-			{
-				std::cout << "!!!!!!!!!!!!!!Collision!!!!!!!!!!!!!!!!!" << std::endl;
-			}
-			camera.ProcessCollision(collision);
-		}
 		// ####################################################################
 		// 
 		// overwrite fps every loop 1/30 seconds
@@ -275,8 +256,7 @@ int main()
 		statueSolid.Draw(standardShader);
 		statueExploding.Draw(explosionShader);
 		airplane.Draw(standardShader);
-		test.Draw(standardShader);
-		ground.Draw(standardShader);
+		floor.Draw(standardShader);
 		skybox.Draw(skyboxShader);
 
 		// Swap back with front buffer
