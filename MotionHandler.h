@@ -11,7 +11,7 @@ class MotionHandler
 {
 public:
 	static void AddSolidObject(SolidObject object);
-	static glm::vec3 ApplyTranslation(glm::vec3 position, glm::vec3 translation);
+	static glm::vec3 ApplyTranslation(glm::vec3 start, glm::vec3 translation, glm::vec3& normal);
 private:
 	static std::vector<CollisionMesh> collisionMeshes;
 };

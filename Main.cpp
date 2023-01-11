@@ -98,18 +98,19 @@ int main()
 	glm::vec3 airplaneTranslation(0.0f, -9.0f, -50.0f);
 	glm::quat airplaneRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 airplaneScale(5.0f, 5.0f, 5.0f);
-	GameObject airplane(
+	SolidObject airplane(
 		airplaneModelPath.c_str(),
 		airplaneTranslation,
 		airplaneRotation,
 		airplaneScale
 	);
+	MotionHandler::AddSolidObject(airplane);
 
 	// Create statue objects
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
 	glm::vec3 statue0Translation(30.0f, 15.0f, -80.0f);
 	glm::quat statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
-	glm::vec3 statue0Scale(40.0f, 40.0f, 40.0f);
+	glm::vec3 statue0Scale(12.0f, 12.0f, 12.0f);
 	SolidObject statueSolid(
 		statueModelPath.c_str(),
 		statue0Translation,
@@ -141,7 +142,7 @@ int main()
 		floorScale
 	);
 
-	//MotionHandler::AddSolidObject(floor);
+	MotionHandler::AddSolidObject(floor);
 
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);

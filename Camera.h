@@ -52,8 +52,8 @@ private:
 	// camera movement
 	const float mouseLookSensitivity = 100.0f;
 	const float joystickLookSensitivity = 0.7f;
-	const float friction = 0.0015f;
-	const float acceleration = 0.3f;
+	const float friction = 0.003f;
+	const float acceleration = 0.01f;
 	const float maxSpeed = 1.5f;
 	const float threshold = 0.4f;
 	const float gravity = 0.06f;

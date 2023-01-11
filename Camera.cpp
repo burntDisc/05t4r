@@ -88,10 +88,13 @@ void Camera::Update()
 
 	//velocity.y -= gravity;
 
-	glm::vec3 newPosition = MotionHandler::ApplyTranslation(position, position + velocity);
-	if (newPosition != position + velocity)
+	glm::vec3 newPosition = MotionHandler::ApplyTranslation(position, position + velocity, surfaceNormal);
+	if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
 	{
-		velocity = glm::vec3(0.0, 0.0, 0.0);
+		if (glm::dot(velocity, surfaceNormal) < 0.0f)
+		{
+			velocity = velocity - glm::proj(velocity, surfaceNormal);
+		}
 	}
 	position = newPosition;
 }
