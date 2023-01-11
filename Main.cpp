@@ -142,7 +142,7 @@ int main()
 		floorScale
 	);
 
-	MotionHandler::AddSolidObject(floor);
+	//MotionHandler::AddSolidObject(floor);
 
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
