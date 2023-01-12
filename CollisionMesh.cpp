@@ -58,63 +58,100 @@ glm::vec3 CollisionMesh::GetAdjustedDestination(glm::vec3 start, glm::vec3 desti
 	glm::vec3 destinationSum(0.0f, 0.0f, 0.0f);
 	glm::vec3 normalSum(0.0f, 0.0f, 0.0f);
 	float numFound = 0.0f;
-	float buffer = 0.2;
-	for (int triangleIndex = 0; triangleIndex < vertexIndices.size(); triangleIndex += 3)
+	float buffer = 0.5;
+	float t = 0.0;
+	float numerator = 0.0;
+	float denominator = 0.0;
+	glm::vec3 returnVal = destination;
+	if (lengthOfTravel > 0.000001)
 	{
-		GLuint vertexIndiceA = vertexIndices[triangleIndex];
-		GLuint vertexIndiceB = vertexIndices[triangleIndex + 1];
-		GLuint vertexIndiceC = vertexIndices[triangleIndex + 2];
-
-		glm::vec3 vertexNormalA = vertexNormals[vertexIndiceA];
-		glm::vec3 vertexNormalB = vertexNormals[vertexIndiceB];
-		glm::vec3 vertexNormalC = vertexNormals[vertexIndiceC];
-
-		glm::vec3 triangleNormal = (vertexNormalA + vertexNormalB + vertexNormalC) / 3.0f;
-
-		glm::vec3 triangleCenter = (vertexPositions[vertexIndiceA] + vertexPositions[vertexIndiceB] + vertexPositions[vertexIndiceC]) / 3.0f + buffer*normalize(triangleNormal);
-
-		for (float layer = 0.0f; layer < depth; layer+=depth/numLayers) 
+		for (int triangleIndex = 0; triangleIndex < vertexIndices.size(); triangleIndex += 3)
 		{
-			glm::vec3 vertexPositionA = vertexPositions[vertexIndiceA] - layer * normalize(vertexNormalA);
-			glm::vec3 vertexPositionB = vertexPositions[vertexIndiceB] - layer * normalize(vertexNormalB);
-			glm::vec3 vertexPositionC = vertexPositions[vertexIndiceC] - layer * normalize(vertexNormalC);
+			GLuint vertexIndiceA = vertexIndices[triangleIndex];
+			GLuint vertexIndiceB = vertexIndices[triangleIndex + 1];
+			GLuint vertexIndiceC = vertexIndices[triangleIndex + 2];
+
+			glm::vec3 vertexNormalA = vertexNormals[vertexIndiceA];
+			glm::vec3 vertexNormalB = vertexNormals[vertexIndiceB];
+			glm::vec3 vertexNormalC = vertexNormals[vertexIndiceC];
+
+			glm::vec3 triangleNormal = normalize( (vertexNormalA + vertexNormalB + vertexNormalC) / 3.0f);
+
+			for (float layer = 0.0f; layer < depth; layer+=depth/numLayers) 
+			{
+				glm::vec3 vertexPositionA = vertexPositions[vertexIndiceA] - layer * normalize(vertexNormalA) + buffer * normalize(vertexNormalA);
+				glm::vec3 vertexPositionB = vertexPositions[vertexIndiceB] - layer * normalize(vertexNormalB) + buffer * normalize(vertexNormalB);
+				glm::vec3 vertexPositionC = vertexPositions[vertexIndiceC] - layer * normalize(vertexNormalC) + buffer * normalize(vertexNormalC);
 
 
-			//----------------------------------------
+				//----------------------------------------
 
-			//formula modified from: https://stackoverflow.com/questions/42740765/intersection-between-line-and-triangle-in-3d
+				//formula modified from: https://stackoverflow.com/questions/42740765/intersection-between-line-and-triangle-in-3d
 
 		
-			// check for plane traversal
-			float s1 = SignOfQuad(start, vertexPositionA, vertexPositionB, vertexPositionC);
-			float s2 = SignOfQuad(destination, vertexPositionA, vertexPositionB, vertexPositionC);
+				// check for plane traversal
+				float s1 = SignOfQuad(start, vertexPositionA, vertexPositionB, vertexPositionC);
+				float s2 = SignOfQuad(destination, vertexPositionA, vertexPositionB, vertexPositionC);
 
-			if (s1 != s2)
-			{
-				//check for triangle traversal
-				float s3 = SignOfQuad(start, destination, vertexPositionA, vertexPositionB);
-				float s4 = SignOfQuad(start, destination, vertexPositionB, vertexPositionC);
-				float s5 = SignOfQuad(start, destination, vertexPositionC, vertexPositionA);
-				if (s3 == s4 && s4 == s5)
+				if (s1 != s2)
 				{
-					std::cout << "COLLISION" << std::endl << std::endl;
-					float t = glm::dot(triangleCenter - start, triangleNormal) / glm::dot(travel, triangleNormal);
-					destinationSum += start + t * travel - 0.01f * normalize(travel);
-					normalSum += normalize(triangleNormal);
-					++numFound;
-				}
+					//check for triangle traversal
+					float s3 = SignOfQuad(start, destination, vertexPositionA, vertexPositionB);
+					float s4 = SignOfQuad(start, destination, vertexPositionB, vertexPositionC);
+					float s5 = SignOfQuad(start, destination, vertexPositionC, vertexPositionA);
+					if (s3 == s4 && s4 == s5)
+					{
+						numerator = glm::dot(vertexPositionA - start, triangleNormal);
+						denominator = glm::dot(travel, triangleNormal);
+						glm::vec3 adjustment;
+						if (denominator < 0.00001) {
+							adjustment = travel - glm::proj(travel, triangleNormal);
+						}
+						else
+						{
+							t = numerator / denominator; //float t = glm::dot(vertexPositionA - start, triangleNormal) / glm::dot(travel, triangleNormal);
+							adjustment = (t < 0.0001 || t > 9999999) ? glm::vec3(0.0, 0.0, 0.0) : t * travel;
+						}
+							destinationSum += start + adjustment;
+							normalSum += triangleNormal;
+							++numFound;
+					}
 
+				}
 			}
 		}
+		if (numFound > 0.0)
+		{
+			normal = normalize(normalSum / numFound);
+			returnVal = destinationSum / numFound;
+		}
+		else
+		{
+			normal = glm::vec3(0.0, 0.0, 0.0);
+			returnVal = destination;
+		}
+		if (glm::length(returnVal - start) > 10.0f)
+		{
+ 			std::cout << "JUMP!"  << std::endl;
+			std::cout << "newPosition: " << std::endl;
+			std::cout << returnVal.x << std::endl;
+			std::cout << returnVal.y << std::endl;
+			std::cout << returnVal.z << std::endl;
+			std::cout << "sum: " << std::endl;
+			std::cout << destinationSum.x << std::endl;
+			std::cout << destinationSum.y << std::endl;
+			std::cout << destinationSum.z << std::endl;
+			std::cout << "num: " << numFound << std::endl;
+			std::cout << "t: " << t << std::endl;
+			std::cout << "travel: " << std::endl;
+			std::cout << travel.x << std::endl;
+			std::cout << travel.y << std::endl;
+			std::cout << travel.z << std::endl;
+			std::cout << "numerator: " << numerator << std::endl;
+			std::cout << "denominator: " << denominator << std::endl;
+			glm::vec3  testValue = destinationSum / numFound;
+		}
+
 	}
-	if (numFound > 0.0)
-	{
-		normal = normalSum / numFound;
-		return destinationSum / numFound;
-	}
-	else
-	{
-		normal = glm::vec3(0.0, 0.0, 0.0);
-		return destination;
-	}
+	return returnVal;
 }
