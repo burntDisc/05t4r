@@ -20,8 +20,8 @@ Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPositio
 void Camera::SetCameraUniforms(Shader& shader)
 {
 	float feildOfView = 45.0f;
-	float nearPlane = 0.01;
-	float farPlane = 100000.0;
+	float nearPlane = 0.01f;
+	float farPlane = 100000.0f;
 	// Makes camera look in the right direction from the right position
 	view = glm::lookAt(position, position + orientation, up);
 	// Adds perspective to the scene

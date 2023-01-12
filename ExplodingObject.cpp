@@ -1,8 +1,8 @@
 #include "ExplodingObject.h"
 
-void ExplodingObject::Set(float new_phase)
+void ExplodingObject::Set(double new_phase)
 {
-	phase = new_phase;
+	phase = (float)new_phase;
 }
 
 void ExplodingObject::Draw(Shader& shader)

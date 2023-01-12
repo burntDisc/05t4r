@@ -6,11 +6,12 @@ VertexArrayObject::VertexArrayObject()
 	glGenVertexArrays(1, &ID);
 }
 
-// Links a VertexBufferObject Attribute such as a position or color to the VertexArrayObject
+// Links a VertexBufferObject Attribute such as a position or color to the VertexArrayObject 
 void VertexArrayObject::LinkAttrib(VertexBufferObject& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
 {
 	VBO.Bind();
-	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
+	// stride conversion is by design because of standard changes
+	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, (GLsizei)stride, offset);
 	glEnableVertexAttribArray(layout);
 	VBO.Unbind();
 }

@@ -57,7 +57,7 @@ private:
 	const float repulsionFac = 2.0f;
 
 	// TODO Move these to input Handler
-	const float joystickThreshold = 0.4;
+	const float joystickThreshold = 0.4f;
 	const float mouseLookSensitivity = 100.0f;
 	const float joystickLookSensitivity = 20.0f;
 };

@@ -23,7 +23,7 @@ void CollisionMesh::SetMesh(Model  model, glm::vec3 translation, glm::quat rotat
 		glm::vec3 vertexPositionSum(0.0f,0.0f,0.0f);
 		glm::mat4& meshPos = meshTransforms[meshIndex];
 		std::vector<Vertex>& vertices = meshes[meshIndex].vertices;
-		int startingVertexIndex = vertexPositions.size();
+		GLuint startingVertexIndex = (GLuint)vertexPositions.size();
 		for (int vertexIndex = 0; vertexIndex < vertices.size(); ++vertexIndex)
 		{
 			Vertex& vertex = vertices[vertexIndex];

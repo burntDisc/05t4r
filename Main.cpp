@@ -52,8 +52,8 @@ int main()
 	gladLoadGL();
 	glViewport(0, 0, width, height);
 	// Enables the Depth Testing
-	glEnable(GL_DEPTH_TEST);	\
-	// Uncomment to ignore internals of models for performance
+	glEnable(GL_DEPTH_TEST);
+	// Uncomment to ignore internals of models (breaks explosion internals)
 	//glEnable(GL_CULL_FACE);
 	// Keeps front faces
 	//glCullFace(GL_FRONT);
@@ -81,6 +81,7 @@ int main()
 		lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(explosionShader.ID, "lightPos"),
 		lightPos.x, lightPos.y, lightPos.z);
+
 	// Create Game objects ----------------------------------------------------------
 	std::vector<GameObject> objects;
 	// get current directory
@@ -94,17 +95,17 @@ int main()
 	Skybox skybox(skyboxFacesDirectory);
 
 	// Create airplane object
-	std::string airplaneModelPath = parentDir + "/models/airplane/scene.gltf";
-	glm::vec3 airplaneTranslation(0.0f, -9.0f, -50.0f);
-	glm::quat airplaneRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 airplaneScale(5.0f, 5.0f, 5.0f);
+	std::string airplaneModelPath = parentDir + "/models/test0/scene.gltf";
+	glm::vec3 airplaneTranslation(-1.0f, 0.0f, 0.0f);
+	glm::quat airplaneRotation = glm::vec3(0.0f, 0.0f, -3.14159 / 2.0);
+	glm::vec3 airplaneScale(50.0f, 50.0f, 50.0f);
 	SolidObject airplane(
 		airplaneModelPath.c_str(),
 		airplaneTranslation,
 		airplaneRotation,
 		airplaneScale
 	);
-	//MotionHandler::AddSolidObject(airplane);
+	MotionHandler::AddSolidObject(airplane);
 
 	// Create statue objects
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
@@ -213,9 +214,9 @@ int main()
 	// Main Render loop--------------------------------------------------------
 
 	// Variables to track FPS
-	float lastTime = 0.0;
-	float time = 0.0;
-	float deltaTime;
+	double lastTime = 0.0;
+	double time = 0.0;
+	double deltaTime;
 	unsigned int counter = 0;
 
 	while (!glfwWindowShouldClose(window))
