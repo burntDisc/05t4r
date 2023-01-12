@@ -169,7 +169,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CollisionBox.h" />
     <ClInclude Include="CollisionMesh.h" />
     <ClInclude Include="ElementBufferObject.h" />
     <ClInclude Include="ExplodingObject.h" />
@@ -188,7 +187,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CollisionBox.cpp" />
     <ClCompile Include="CollisionMesh.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />
     <ClCompile Include="ExplodingObject.cpp" />

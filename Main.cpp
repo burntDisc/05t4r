@@ -87,7 +87,7 @@ int main()
 
 	std::string parentDir = fs::current_path().string();
 	// Creates camera object
-	Camera camera(window, width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(window, width, height, glm::vec3(10.0f, 10.0f, 2.0f));
 
 	// Create SkyBox
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
@@ -104,7 +104,7 @@ int main()
 		airplaneRotation,
 		airplaneScale
 	);
-	MotionHandler::AddSolidObject(airplane);
+	//MotionHandler::AddSolidObject(airplane);
 
 	// Create statue objects
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
@@ -118,7 +118,7 @@ int main()
 		statue0Scale
 	);
 
-	MotionHandler::AddSolidObject(statueSolid);
+	//MotionHandler::AddSolidObject(statueSolid);
 	
 	glm::vec3 statue1Translation(-20.0f, 15.0f, -80.0f);
 	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
@@ -131,10 +131,10 @@ int main()
 	);
 
 	// Create floor object
-	std::string floorPath = parentDir + "/models/floor/scene.gltf";
-	glm::vec3 floorTranslation(700.0f, -10.0f, -700.0f);
+	std::string floorPath = parentDir + "/models/ground/scene.gltf";
+	glm::vec3 floorTranslation(0.0f, 0.0f, 0.0f);
 	glm::quat floorRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 floorScale(10.1f, 10.1f, 10.1f);
+	glm::vec3 floorScale(10.0f, 10.0f, 10.0f);
 	SolidObject floor(
 		floorPath.c_str(),
 		floorTranslation,
@@ -142,7 +142,7 @@ int main()
 		floorScale
 	);
 
-	//MotionHandler::AddSolidObject(floor);
+	MotionHandler::AddSolidObject(floor);
 
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
@@ -229,17 +229,22 @@ int main()
 		// ####################################################################
 		// 
 		// overwrite fps every loop 1/30 seconds
-		if (deltaTime >= 1.0 / 30.0)
+		if (deltaTime >= 1.0 / 20.0)
 		{
 			// Creates new title
 			std::string FPS = std::to_string((1.0 / deltaTime) * counter);
 			std::string ms = std::to_string((deltaTime / counter) * 1000);
-			std::string newTitle = "05t4r " + FPS + "FPS / " + ms + "ms";
+			std::string x = std::to_string(camera.position.x);
+			std::string y = std::to_string(camera.position.y);
+			std::string z = std::to_string(camera.position.z);
+			std::string newTitle = "05t4r " + FPS + "FPS / " + ms + "ms  x: " + x + " y: " + y + " z: " + z;
 			glfwSetWindowTitle(window, newTitle.c_str());
 
 			// Resets times and counter
 			lastTime = time;
 			counter = 0;
+			InputHandler::ProcessInput();
+			camera.Update();
 		}
 
 		// Specify the color of the background PINK For debug
@@ -267,9 +272,7 @@ int main()
 		glfwPollEvents();
 
 		// Handles Inputs and downstream effects
-		InputHandler::ProcessInput();
 		statueExploding.Set(time);
-		camera.Update();
 	}
 
 	// Delete and clean up

@@ -16,22 +16,10 @@ glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination
 	{
 		CollisionMesh& mesh = collisionMeshes[meshIndex];
 		glm::vec3 adjustedPosition = mesh.GetAdjustedDestination(start, destination, normal);
-		if (adjustedPosition != destination)
+		if (normal != glm::vec3(0.0,0.0,0.0))
 		{
-			adjustedPositionsSum += adjustedPosition;
-			++numAdjustedPositions;
-		}
-		else
-		{
-			normal = glm::vec3(0.0, 0.0, 0.0);
+			return adjustedPosition;
 		}
 	}
-	if (numAdjustedPositions > 0)
-	{
-		return adjustedPositionsSum / numAdjustedPositions;
-	}
-	else
-	{
-		return destination;
-	}
+	return destination;
 }

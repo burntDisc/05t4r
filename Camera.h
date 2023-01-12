@@ -50,11 +50,13 @@ public:
 private:
 	glm::vec3 surfaceNormal;
 	// camera movement
+	bool flatNav = false;
 	const float mouseLookSensitivity = 100.0f;
-	const float joystickLookSensitivity = 0.7f;
-	const float friction = 0.003f;
-	const float acceleration = 0.01f;
-	const float maxSpeed = 1.5f;
+	const float joystickLookSensitivity = 20.0f;
+	const float friction = 0.1f;
+	const float acceleration = 1.0f;
+	const float jumpAcceleration = 2.00f;
+	const float maxSpeed = 3.0f;
 	const float threshold = 0.4f;
-	const float gravity = 0.06f;
+	const float gravity = 0.5f;
 };

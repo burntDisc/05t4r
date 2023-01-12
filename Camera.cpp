@@ -58,11 +58,15 @@ void Camera::TranslateLeft()
 }
 void Camera::TranslateUp()
 {
-	glm::vec3 newVelocity = acceleration * up + velocity;
+	if (flatNav)
+	{
+		glm::vec3 newVelocity = jumpAcceleration * up + velocity;
 
-	velocity = glm::length(newVelocity) > maxSpeed ?
-		normalize(newVelocity) * length(velocity) :
-		newVelocity;
+		velocity = glm::length(newVelocity) > maxSpeed ?
+			normalize(newVelocity) * length(velocity) :
+			newVelocity;
+	}
+
 }
 void Camera::TranslateRight()
 {
@@ -86,15 +90,23 @@ void Camera::Update()
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
-	//velocity.y -= gravity;
-
 	glm::vec3 newPosition = MotionHandler::ApplyTranslation(position, position + velocity, surfaceNormal);
 	if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
 	{
-		if (glm::dot(velocity, surfaceNormal) < 0.0f)
-		{
-			velocity = velocity - glm::proj(velocity, surfaceNormal);
+		flatNav = true;
+		float dot = glm::dot(velocity, surfaceNormal);
+		// confirm velocity is towards surface
+		if (dot < 0.0f)
+		{	
+			// remove towards-surface component
+			glm::vec3 proj = glm::proj(velocity, surfaceNormal);
+			velocity = velocity - proj;
 		}
+	}
+	else
+	{
+		flatNav = false;
+		velocity.y -= gravity;
 	}
 	position = newPosition;
 }
@@ -103,10 +115,11 @@ void Camera::AdjustVelocity(const float* axes)
 {
 	if (abs(axes[0]) > threshold || abs(axes[1]) > threshold)
 	{
-		glm::vec3 stickDirection = glm::normalize(
-			axes[0] * glm::normalize(glm::cross(orientation, up)) -
-			axes[1] * orientation);
-
+		glm::vec3 normalizedSide = false? glm::normalize(glm::cross(orientation, surfaceNormal)): glm::normalize(glm::cross(orientation, up));
+		glm::vec3 normalizedFront = glm::normalize(glm::cross(surfaceNormal, normalizedSide));
+		glm::vec3 stickSideComponent = axes[0] * normalizedSide;
+		glm::vec3 stickFrontComponent = false ? -axes[1] * normalizedFront: -axes[1] * orientation;
+		glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
 		glm::vec3 newVelocity = acceleration * stickDirection + velocity;
 
 		velocity = glm::length(newVelocity) > maxSpeed ?
