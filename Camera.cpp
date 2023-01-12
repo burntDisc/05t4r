@@ -7,6 +7,9 @@
 #include <glm/gtx/projection.hpp>
 
 #include "MotionHandler.h"
+
+#include <iostream> // remove
+
 Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition) :
 	window(window),
 	windowWidth(width),
@@ -115,10 +118,16 @@ void Camera::AdjustVelocity(const float* axes)
 {
 	if (abs(axes[0]) > threshold || abs(axes[1]) > threshold)
 	{
-		glm::vec3 normalizedSide = false? glm::normalize(glm::cross(orientation, surfaceNormal)): glm::normalize(glm::cross(orientation, up));
-		glm::vec3 normalizedFront = glm::normalize(glm::cross(surfaceNormal, normalizedSide));
+		bool alt = true;
+		glm::vec3 relativeUp = surfaceNormal == glm::vec3(0.0, 0.0, 0.0) ? up : surfaceNormal;
+		glm::vec3 normalizedSide = alt ? 
+			glm::normalize(glm::cross(orientation, relativeUp)) : 
+			glm::normalize(glm::cross(orientation, up));
+		glm::vec3 normalizedFront = glm::normalize(glm::cross(relativeUp, normalizedSide));
 		glm::vec3 stickSideComponent = axes[0] * normalizedSide;
-		glm::vec3 stickFrontComponent = false ? -axes[1] * normalizedFront: -axes[1] * orientation;
+		glm::vec3 stickFrontComponent = alt ? 
+			- axes[1] * normalizedFront: 
+			- axes[1] * orientation;
 		glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
 		glm::vec3 newVelocity = acceleration * stickDirection + velocity;
 
