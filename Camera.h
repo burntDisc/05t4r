@@ -54,7 +54,7 @@ private:
 	const float maxSpeed = 3.0f;
 	const float friction = 0.1f;
 	const float gravity = 0.125f;
-	const float repulsionFac = 2.0f;
+	const float repulsionFac = 1.5f;
 
 	// TODO Move these to input Handler
 	const float joystickThreshold = 0.4f;

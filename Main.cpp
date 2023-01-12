@@ -94,18 +94,18 @@ int main()
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
 	Skybox skybox(skyboxFacesDirectory);
 
-	// Create airplane object
-	std::string airplaneModelPath = parentDir + "/models/test0/scene.gltf";
-	glm::vec3 airplaneTranslation(-1.0f, 0.0f, 0.0f);
-	glm::quat airplaneRotation = glm::vec3(0.0f, 0.0f, -3.14159 / 2.0);
-	glm::vec3 airplaneScale(50.0f, 50.0f, 50.0f);
-	SolidObject airplane(
-		airplaneModelPath.c_str(),
-		airplaneTranslation,
-		airplaneRotation,
-		airplaneScale
+	// Create wall object
+	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
+	glm::vec3 wallTranslation(-1.0f, 0.0f, 0.0f);
+	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, -3.14159 / 2.0);
+	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
+	SolidObject wall(
+		wallModelPath.c_str(),
+		wallTranslation,
+		wallRotation,
+		wallScale
 	);
-	MotionHandler::AddSolidObject(airplane);
+	MotionHandler::AddSolidObject(wall);
 
 	// Create statue objects
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
@@ -262,7 +262,7 @@ int main()
 		// Draw
 		statueSolid.Draw(standardShader);
 		statueExploding.Draw(explosionShader);
-		airplane.Draw(standardShader);
+		wall.Draw(standardShader);
 		floor.Draw(standardShader);
 		skybox.Draw(skyboxShader);
 
