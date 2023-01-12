@@ -110,7 +110,7 @@ int main()
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
 	glm::vec3 statue0Translation(30.0f, 15.0f, -80.0f);
 	glm::quat statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
-	glm::vec3 statue0Scale(12.0f, 12.0f, 12.0f);
+	glm::vec3 statue0Scale(40.0f, 40.0f, 40.0f);
 	SolidObject statueSolid(
 		statueModelPath.c_str(),
 		statue0Translation,
@@ -229,7 +229,7 @@ int main()
 		// ####################################################################
 		// 
 		// overwrite fps every loop 1/30 seconds
-		if (deltaTime >= 1.0 / 20.0)
+		if (deltaTime >= 1.0 / 35.0)
 		{
 			// Creates new title
 			std::string FPS = std::to_string((1.0 / deltaTime) * counter);

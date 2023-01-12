@@ -58,5 +58,5 @@ private:
 	const float jumpAcceleration = 2.00f;
 	const float maxSpeed = 3.0f;
 	const float threshold = 0.4f;
-	const float gravity = 0.5f;
+	const float gravity = 0.125f;
 };
