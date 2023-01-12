@@ -60,6 +60,7 @@ void InputHandler::ProcessInput()
 					eventSubscriptions[i].callback();
 				}
 			}
+			break;
 		default:
 			break;
 		}

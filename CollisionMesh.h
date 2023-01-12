@@ -14,5 +14,6 @@ private:
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec3> vertexNormals;
 	std::vector<GLuint> vertexIndices;
+	const float minTravelLength = 0.0000001f;
 };
 

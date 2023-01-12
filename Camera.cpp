@@ -116,7 +116,7 @@ void Camera::Update()
 
 void Camera::AdjustVelocity(const float* axes)
 {
-	if (abs(axes[0]) > threshold || abs(axes[1]) > threshold)
+	if (abs(axes[0]) > joystickThreshold || abs(axes[1]) > joystickThreshold)
 	{
 		bool alt = true;
 		glm::vec3 relativeUp = surfaceNormal == glm::vec3(0.0, 0.0, 0.0) ? up : surfaceNormal;
@@ -141,7 +141,7 @@ void Camera::AdjustOrientation(const float* axes)
 {
 	float rotX = 0;
 	float rotY = 0;
-	if (abs(axes[0]) > threshold || abs(axes[1]) > threshold)
+	if (abs(axes[0]) > joystickThreshold || abs(axes[1]) > joystickThreshold)
 	{
 		rotX = joystickLookSensitivity * axes[1];
 		rotY = joystickLookSensitivity * axes[0];

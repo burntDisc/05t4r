@@ -9,9 +9,6 @@ void MotionHandler::AddSolidObject(SolidObject object)
 
 glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination, glm::vec3&  normal)
 {
-	glm::vec3 adjustedPositionsSum(0.0, 0.0, 0.0);
-	float numAdjustedPositions = 0.0;
-	float traversalDistance = glm::length(destination - start);
 	for (int meshIndex = 0; meshIndex < collisionMeshes.size(); ++meshIndex)
 	{
 		CollisionMesh& mesh = collisionMeshes[meshIndex];

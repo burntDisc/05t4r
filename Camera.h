@@ -31,8 +31,9 @@ public:
 	void SetCameraUniforms(Shader& shader);
 	void SetSkyboxUniforms(Shader& skyboxShader);
 
-	// movement
 	void Update();
+
+	// input movement
 	void Forward();
 	void TranslateLeft();
 	void Back();
@@ -44,20 +45,19 @@ public:
 	// mouse behavior callbacks
 	void BindCursor();
 	void UnbindCursor();
-
-	// Collison
-	void ProcessCollision(glm::vec3 direction);
 private:
-	glm::vec3 surfaceNormal;
-	// camera movement
 	bool flatNav = false;
-	const float mouseLookSensitivity = 100.0f;
-	const float joystickLookSensitivity = 20.0f;
-	const float friction = 0.1f;
+	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
+
 	const float acceleration = 1.0f;
 	const float jumpAcceleration = 2.00f;
 	const float maxSpeed = 3.0f;
-	const float threshold = 0.4f;
+	const float friction = 0.1f;
 	const float gravity = 0.125f;
 	const float repulsionFac = 2.0f;
+
+	// TODO Move these to input Handler
+	const float joystickThreshold = 0.4;
+	const float mouseLookSensitivity = 100.0f;
+	const float joystickLookSensitivity = 20.0f;
 };
