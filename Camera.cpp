@@ -118,7 +118,9 @@ void Camera::AdjustVelocity(const float* axes)
 {
 	if (abs(axes[0]) > joystickThreshold || abs(axes[1]) > joystickThreshold)
 	{
+		// Allows for flat movement as opposed to flying
 		bool alt = true;
+
 		glm::vec3 relativeUp = surfaceNormal == glm::vec3(0.0, 0.0, 0.0) ? up : surfaceNormal;
 		glm::vec3 normalizedSide = alt ? 
 			glm::normalize(glm::cross(orientation, relativeUp)) : 
@@ -129,11 +131,24 @@ void Camera::AdjustVelocity(const float* axes)
 			- axes[1] * normalizedFront: 
 			- axes[1] * orientation;
 		glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
+
+		// apply change from input
 		glm::vec3 newVelocity = acceleration * stickDirection + velocity;
 
-		velocity = glm::length(newVelocity) > maxSpeed ?
-			normalize(newVelocity) * length(velocity) :
-			newVelocity;
+		//removing y component to ignore gravity
+		glm::vec3 newHorizontalVelocity = glm::vec3(newVelocity.x, 0.0, newVelocity.z);
+		glm::vec3 horizontalVelocity = glm::vec3(velocity.x, 0.0, velocity.z);
+
+		// change direction but do not increase speed if at max (excluding vertical)
+		glm::vec3 calibratedHorizontalVelocity = glm::length(newHorizontalVelocity) > maxSpeed ?
+			normalize(newHorizontalVelocity) * length(horizontalVelocity) :
+			newHorizontalVelocity;
+
+		velocity = glm::vec3(
+			calibratedHorizontalVelocity.x,
+			newVelocity.y,
+			calibratedHorizontalVelocity.z);
+
 	}
 }
 
