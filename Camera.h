@@ -59,4 +59,5 @@ private:
 	const float maxSpeed = 3.0f;
 	const float threshold = 0.4f;
 	const float gravity = 0.125f;
+	const float repulsionFac = 2.0f;
 };

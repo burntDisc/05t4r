@@ -15,6 +15,7 @@ glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination
 	for (int meshIndex = 0; meshIndex < collisionMeshes.size(); ++meshIndex)
 	{
 		CollisionMesh& mesh = collisionMeshes[meshIndex];
+		normal = glm::vec3(0.0, 0.0, 0.0);
 		glm::vec3 adjustedPosition = mesh.GetAdjustedDestination(start, destination, normal);
 		if (normal != glm::vec3(0.0,0.0,0.0))
 		{

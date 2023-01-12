@@ -55,14 +55,8 @@ glm::vec3 CollisionMesh::GetAdjustedDestination(glm::vec3 start, glm::vec3 desti
 
 	float depth = 1.50;
 	float numLayers = 6;
-	glm::vec3 destinationSum(0.0f, 0.0f, 0.0f);
-	glm::vec3 normalSum(0.0f, 0.0f, 0.0f);
-	float numFound = 0.0f;
 	float buffer = 0.5;
-	float t = 0.0;
-	float numerator = 0.0;
-	float denominator = 0.0;
-	glm::vec3 returnVal = destination;
+	glm::vec3 newDestination = destination;
 	if (lengthOfTravel > 0.000001)
 	{
 		for (int triangleIndex = 0; triangleIndex < vertexIndices.size(); triangleIndex += 3)
@@ -75,9 +69,11 @@ glm::vec3 CollisionMesh::GetAdjustedDestination(glm::vec3 start, glm::vec3 desti
 			glm::vec3 vertexNormalB = vertexNormals[vertexIndiceB];
 			glm::vec3 vertexNormalC = vertexNormals[vertexIndiceC];
 
-			glm::vec3 triangleNormal = normalize( (vertexNormalA + vertexNormalB + vertexNormalC) / 3.0f);
+			glm::vec3 triangleNormal = normalize((vertexNormalA + vertexNormalB + vertexNormalC) / 3.0f);
 
-			for (float layer = 0.0f; layer < depth; layer+=depth/numLayers) 
+			glm::vec3 trianglePosition = normalize((vertexPositions[vertexIndiceA] + vertexPositions[vertexIndiceB] + vertexPositions[vertexIndiceC])/3.0f + buffer * normalize(triangleNormal));
+
+			for (float layer = 0.0f; layer < depth; layer += depth / numLayers)
 			{
 				glm::vec3 vertexPositionA = vertexPositions[vertexIndiceA] - layer * normalize(vertexNormalA) + buffer * normalize(vertexNormalA);
 				glm::vec3 vertexPositionB = vertexPositions[vertexIndiceB] - layer * normalize(vertexNormalB) + buffer * normalize(vertexNormalB);
@@ -88,7 +84,7 @@ glm::vec3 CollisionMesh::GetAdjustedDestination(glm::vec3 start, glm::vec3 desti
 
 				//formula modified from: https://stackoverflow.com/questions/42740765/intersection-between-line-and-triangle-in-3d
 
-		
+
 				// check for plane traversal
 				float s1 = SignOfQuad(start, vertexPositionA, vertexPositionB, vertexPositionC);
 				float s2 = SignOfQuad(destination, vertexPositionA, vertexPositionB, vertexPositionC);
@@ -101,57 +97,30 @@ glm::vec3 CollisionMesh::GetAdjustedDestination(glm::vec3 start, glm::vec3 desti
 					float s5 = SignOfQuad(start, destination, vertexPositionC, vertexPositionA);
 					if (s3 == s4 && s4 == s5)
 					{
-						numerator = glm::dot(vertexPositionA - start, triangleNormal);
-						denominator = glm::dot(travel, triangleNormal);
+						float approachSkew = glm::dot(trianglePosition - start, triangleNormal);
+						float travelSkew = glm::dot(travel, triangleNormal);
 						glm::vec3 adjustment;
-						if (denominator < 0.00001) {
+						//idealizing close-to-plane collisions parrallel to plane paths
+						if (travelSkew < 0.00001) {
 							adjustment = travel - glm::proj(travel, triangleNormal);
 						}
 						else
 						{
-							t = numerator / denominator; //float t = glm::dot(vertexPositionA - start, triangleNormal) / glm::dot(travel, triangleNormal);
-							adjustment = (t < 0.0001 || t > 9999999) ? glm::vec3(0.0, 0.0, 0.0) : t * travel;
+							float t = approachSkew / travelSkew;
+							adjustment = t * travel;
 						}
-							destinationSum += start + adjustment;
-							normalSum += triangleNormal;
-							++numFound;
-					}
 
+						glm::vec3 possibleDestination = start + adjustment;
+
+						if (glm::length(start - newDestination) > glm::length(start - possibleDestination))
+						{
+							newDestination = possibleDestination;
+							normal = triangleNormal;
+						}
+					}
 				}
 			}
 		}
-		if (numFound > 0.0)
-		{
-			normal = normalize(normalSum / numFound);
-			returnVal = destinationSum / numFound;
-		}
-		else
-		{
-			normal = glm::vec3(0.0, 0.0, 0.0);
-			returnVal = destination;
-		}
-		if (glm::length(returnVal - start) > 10.0f)
-		{
- 			std::cout << "JUMP!"  << std::endl;
-			std::cout << "newPosition: " << std::endl;
-			std::cout << returnVal.x << std::endl;
-			std::cout << returnVal.y << std::endl;
-			std::cout << returnVal.z << std::endl;
-			std::cout << "sum: " << std::endl;
-			std::cout << destinationSum.x << std::endl;
-			std::cout << destinationSum.y << std::endl;
-			std::cout << destinationSum.z << std::endl;
-			std::cout << "num: " << numFound << std::endl;
-			std::cout << "t: " << t << std::endl;
-			std::cout << "travel: " << std::endl;
-			std::cout << travel.x << std::endl;
-			std::cout << travel.y << std::endl;
-			std::cout << travel.z << std::endl;
-			std::cout << "numerator: " << numerator << std::endl;
-			std::cout << "denominator: " << denominator << std::endl;
-			glm::vec3  testValue = destinationSum / numFound;
-		}
-
 	}
-	return returnVal;
+	return newDestination;
 }

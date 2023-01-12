@@ -103,7 +103,7 @@ void Camera::Update()
 		{	
 			// remove towards-surface component
 			glm::vec3 proj = glm::proj(velocity, surfaceNormal);
-			velocity = velocity - proj;
+			velocity = velocity - repulsionFac*proj;
 		}
 	}
 	else
