@@ -4,7 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "FileLoader.h"
 
-Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> instanceMatrices)
+Model::Model(const char* file)
 {
 	std::string text;
 	// Make a gtlfJSON object
@@ -24,9 +24,6 @@ Model::Model(const char* file, unsigned int instancing, std::vector<glm::mat4> i
 	// Get the binary data
 	Model::file = file;
 	bin = LoadBin();
-
-	Model::instancing = instancing;
-	Model::instanceMatrices = instanceMatrices;
 
 	// Traverse all nodes
 	TraverseNode(0);
@@ -78,7 +75,7 @@ void Model::LoadMesh(unsigned int indMesh)
 	std::vector<Texture> textures = TexturesFromBin();
 
 	// create Mesh
-	meshes.push_back(Mesh(vertices, indices, textures, instancing, instanceMatrices));
+	meshes.push_back(Mesh(vertices, indices, textures));
 }
 
 void Model::TraverseNode(unsigned int nextNode, glm::mat4 IntialTransformMatrix)

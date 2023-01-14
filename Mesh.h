@@ -20,17 +20,12 @@ public:
 	// Store VertexArrayObject in public so it can be used in the Draw function
 	VertexArrayObject VAO;
 
-	// number of instances 
-	unsigned int instancing;
-
 	// Initializes the mesh
 	Mesh
 	(
 		std::vector <Vertex>& vertices,
 		std::vector <GLuint>& indices,
-		std::vector <Texture>& textures,
-		unsigned int instancing = 1,
-		std::vector <glm::mat4> instanceMatrix = {}
+		std::vector <Texture>& textures
 	);
 
 	// Draws the mesh

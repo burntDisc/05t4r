@@ -15,7 +15,7 @@ class Model
 {
 public:
 	// Loads in a model from a file and stores file info
-	Model(const char* file, unsigned int instancing = 1, std::vector<glm::mat4> instanceMatrix = {});
+	Model(const char* file);
 
 	void Draw
 	(
@@ -40,7 +40,6 @@ private:
 
 	// meshes and transforms
 	std::vector<glm::mat4> meshTransforms;
-	std::vector<glm::mat4> instanceMatrices;
 
 	std::vector<std::string> loadedTexturePaths;
 	std::vector<Texture> loadedTextures;
