@@ -96,7 +96,7 @@ int main()
 
 	// Create wall object
 	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
-	glm::vec3 wallTranslation(-1.0f, 0.0f, 0.0f);
+	glm::vec3 wallTranslation(-1.0f, 0.0f, -90000.0f);
 	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, -3.14159 / 2.0);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
 	SolidObject wall(
@@ -107,21 +107,10 @@ int main()
 	);
 	MotionHandler::AddSolidObject(wall);
 
-	// Create statue objects
-	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statue0Translation(30.0f, 15.0f, -80.0f);
-	glm::quat statue0Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
-	glm::vec3 statue0Scale(40.0f, 40.0f, 40.0f);
-	SolidObject statueSolid(
-		statueModelPath.c_str(),
-		statue0Translation,
-		statue0Rotation,
-		statue0Scale
-	);
+	// Create statue object
 
-	//MotionHandler::AddSolidObject(statueSolid);
-	
-	glm::vec3 statue1Translation(-20.0f, 15.0f, -80.0f);
+	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
+	glm::vec3 statue1Translation(-20.0f, 15.0f, -9000080.0f);
 	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale(40.0f, 40.0f, 40.0f);
 	ExplodingObject statueExploding(
@@ -260,7 +249,6 @@ int main()
 		camera.SetSkyboxUniforms(skyboxShader);
 
 		// Draw
-		statueSolid.Draw(standardShader);
 		statueExploding.Draw(explosionShader);
 		wall.Draw(standardShader);
 		floor.Draw(standardShader);
