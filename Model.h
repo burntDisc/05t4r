@@ -24,10 +24,9 @@ public:
 		glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
-	std::vector<Mesh> meshes;
 
-	std::vector<glm::mat4>& GetMeshTransforms();
-	std::vector<Mesh>& GetMeshes();
+	std::vector<Mesh> meshes;
+	std::vector<glm::mat4> meshTransforms;
 
 private:
 	// gtlf file data
@@ -38,9 +37,7 @@ private:
 	// Holds number of instances (if 1 the mesh will be rendered normally)
 	unsigned int instancing;
 
-	// meshes and transforms
-	std::vector<glm::mat4> meshTransforms;
-
+	// textures
 	std::vector<std::string> loadedTexturePaths;
 	std::vector<Texture> loadedTextures;
 
@@ -66,7 +63,7 @@ private:
 		std::vector<glm::vec2> texUVs
 	);
 
-	// Helps with the assembly from above by grouping floats
+	// filters floats by type
 	std::vector<glm::vec2> GroupFloatsVec2(std::vector<float> floatVec);
 	std::vector<glm::vec3> GroupFloatsVec3(std::vector<float> floatVec);
 	std::vector<glm::vec4> GroupFloatsVec4(std::vector<float> floatVec);

@@ -15,7 +15,6 @@ namespace fs = std::experimental::filesystem;
 #include "GameObject.h"
 #include "Camera.h"
 #include "Skybox.h"
-#include "SolidObject.h"
 #include "ExplodingObject.h"
 #include "InputHandler.h"
 #include "MotionHandler.h"
@@ -99,13 +98,13 @@ int main()
 	glm::vec3 wallTranslation(-1.0f, 0.0f, -90000.0f);
 	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, -3.14159 / 2.0);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
-	SolidObject wall(
+	GameObject wall(
 		wallModelPath.c_str(),
 		wallTranslation,
 		wallRotation,
 		wallScale
 	);
-	MotionHandler::AddSolidObject(wall);
+	MotionHandler::AddSolidObject(&wall);
 
 	// Create statue object
 
@@ -125,14 +124,14 @@ int main()
 	glm::vec3 floorTranslation(0.0f, 0.0f, 0.0f);
 	glm::quat floorRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 floorScale(10.0f, 10.0f, 10.0f);
-	SolidObject floor(
+	GameObject floor(
 		floorPath.c_str(),
 		floorTranslation,
 		floorRotation,
 		floorScale
 	);
 
-	MotionHandler::AddSolidObject(floor);
+	MotionHandler::AddSolidObject(&floor);
 
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
@@ -261,7 +260,7 @@ int main()
 		glfwPollEvents();
 
 		// Handles Inputs and downstream effects
-		statueExploding.Set(time);
+		statueExploding.Update(time);
 	}
 
 	// Delete and clean up

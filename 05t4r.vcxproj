@@ -177,29 +177,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CollisionMesh.h" />
     <ClInclude Include="ElementBufferObject.h" />
     <ClInclude Include="ExplodingObject.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GeneratedGround.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="MotionHandler.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
-    <ClInclude Include="SolidObject.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexArrayObject.h" />
     <ClInclude Include="VertexBufferObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CollisionMesh.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />
     <ClCompile Include="ExplodingObject.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GeneratedGround.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="libraries\include\glad\glad.c" />
     <ClCompile Include="libraries\include\stb\stb_image.cpp" />
@@ -209,7 +208,6 @@
     <ClCompile Include="MotionHandler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="SolidObject.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexArrayObject.cpp" />
     <ClCompile Include="VertexBufferObject.cpp" />

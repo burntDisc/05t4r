@@ -1,6 +1,6 @@
 #include "ExplodingObject.h"
 
-void ExplodingObject::Set(double new_phase)
+void ExplodingObject::Update(double new_phase)
 {
 	phase = (float)new_phase;
 }

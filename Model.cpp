@@ -37,17 +37,6 @@ void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm:
 		meshes[i].Mesh::Draw(shader, meshTransforms[i], translation, rotation, scale);
 	}
 }
-  
-std::vector<glm::mat4>& Model::GetMeshTransforms()
-{
-	return meshTransforms;
-}
-
-
-std::vector<Mesh>& Model::GetMeshes()
-{
-	return meshes;
-}
 
 void Model::LoadMesh(unsigned int indMesh)
 {

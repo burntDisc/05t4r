@@ -8,7 +8,7 @@ class ExplodingObject :
 {
 public:
 	using GameObject::GameObject;
-	void Set(double phase);
+	void Update(double phase);
 	void Draw(Shader& shader);
 private:
 	float phase;

@@ -17,8 +17,22 @@ public:
 
 	void Draw(Shader& shader);
 
+	void UpdateWorldVertices();
+
+	std::vector<glm::vec3> GetVertexWorldNormals();
+	std::vector<glm::vec3> GetVertexWorldPositions();
+	std::vector<glm::vec3> GetTriangleWorldNormals();
+	std::vector<glm::vec3> GetTriangleWorldPositions();
+
 	Model model;
+protected:
 	glm::vec3 translation;
 	glm::quat rotation;
 	glm::vec3 scale;
+private:
+	std::vector<glm::vec3> vertexWorldNormals;
+	std::vector<glm::vec3> vertexWorldPositions;
+	std::vector<glm::vec3> triangleWorldNormals;
+	std::vector<glm::vec3> triangleWorldPositions;
+	bool validWorldPositions;
 };
