@@ -32,7 +32,7 @@ void GeneratedGround::Draw(Shader& shader)
 		float translationOffsetZ =
 			(panelIndex % sidePanels) * panelLength - panelLength * panelsToEdge;
 		float scaleOffsetX =
-			((panelIndex / sidePanels) % 2) * scale.x * 2;
+			((panelIndex / sidePanels + 1) % 2) * scale.x * 2;
 		float scaleOffsetZ =
 			((panelIndex % sidePanels + 1) % 2)* 2 * scale.z;
 		model.Draw(
