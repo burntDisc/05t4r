@@ -1,6 +1,8 @@
 #include "MotionHandler.h"
 #include <glm/gtx/projection.hpp>
 
+#include <iostream> // REMOVE 
+
 std::vector<GameObject*> MotionHandler::solidObjects;
 static const float minTravelLength = 0.0000001f;
 
@@ -41,7 +43,6 @@ glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination
 				glm::vec3 vertexNormalA = objectTriangleNormals[triangleIndex + 0];
 				glm::vec3 vertexNormalB = objectTriangleNormals[triangleIndex + 1];
 				glm::vec3 vertexNormalC = objectTriangleNormals[triangleIndex + 2];
-
 				glm::vec3 triangleNormal = normalize((vertexNormalA + vertexNormalB + vertexNormalC) / 3.0f);
 
 				// here I adjust the recognized triangle position outward to along normals avoid clipping
@@ -49,6 +50,7 @@ glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination
 				glm::vec3 modelVertexPositionB = objectTrianglePositions[triangleIndex + 1] + buffer * normalize(vertexNormalB);
 				glm::vec3 modelVertexPositionC = objectTrianglePositions[triangleIndex + 2] + buffer * normalize(vertexNormalC);
 
+				// not sure why normalizing here works.... but it does see below
 				glm::vec3 trianglePosition = normalize((modelVertexPositionA + modelVertexPositionB + modelVertexPositionC) / 3.0f);
 
 				// Checks for shell of triangles translated along normals to handle overshoot
@@ -71,6 +73,8 @@ glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination
 						float s5 = SignOfQuad(start, destination, vertexPositionC, vertexPositionA);
 						if (s3 == s4 && s4 == s5)
 						{
+							// triangle Position here is normalized, which works better
+							// TODO: make the math make sense
 							float approachSkew = glm::dot(trianglePosition - start, triangleNormal);
 							float travelSkew = glm::dot(travel, triangleNormal);
 							glm::vec3 adjustment;

@@ -21,8 +21,9 @@ public:
 
 	void Draw(Shader& shader);
 
-	void Update();
+	void UpdatePanels();
 
+	void IntializePanelDimensions();
 
 	void UpdateWorldVertices();
 private:

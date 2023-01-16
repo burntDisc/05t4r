@@ -1,6 +1,5 @@
 #include "GeneratedGround.h"
 
-#include <iostream> //REMOVE
 GeneratedGround::GeneratedGround(
 	Camera* camera,
 	const char* modelFile,
@@ -16,6 +15,7 @@ GeneratedGround::GeneratedGround(
 		initRotation,
 		initScale)
 {
+	IntializePanelDimensions();
 	UpdateWorldVertices();
 }
 
@@ -43,22 +43,13 @@ void GeneratedGround::Draw(Shader& shader)
 	}
 }
 
-void GeneratedGround::Update()
+void GeneratedGround::IntializePanelDimensions()
 {
-
-}
-
-void GeneratedGround::UpdateWorldVertices()
-{
-	std::vector< glm::vec3>& triangleWorldPositions = GameObject::triangleWorldPositions;
-	std::vector< glm::vec3>& vertexWorldPositions = GameObject::vertexWorldPositions;
-	std::vector< glm::vec3>& triangleWorldNormals = GameObject::triangleWorldNormals;
-	std::vector< glm::vec3>& vertexWorldNormals = GameObject::vertexWorldNormals;
-
 	// converting transformations to mat4 for combination
 	glm::mat4 translationMatrix = glm::mat4(1.0f);
 	glm::mat4 rotationMatrix = glm::mat4(1.0f);
 	glm::mat4 scaleMatrix = glm::mat4(1.0f);
+
 	translationMatrix = glm::translate(translationMatrix, translation);
 	rotationMatrix = glm::mat4_cast(rotation);
 	scaleMatrix = glm::scale(scaleMatrix, scale);
@@ -88,30 +79,91 @@ void GeneratedGround::UpdateWorldVertices()
 			// Apply transformation to get world position
 			// TODO: There might be a better way to do this (copied from shader)
 			glm::vec3 vertexWorldPosition(meshTransform * translationMatrix * rotationMatrix * scaleMatrix * glm::vec4(vertex.position, 1.0f));
-			glm::vec3 vertexWorldNormal(rotationMatrix * glm::vec4(vertex.normal, 1.0f));
-
-			vertexWorldPositions.push_back(vertexWorldPosition);
-			vertexWorldNormals.push_back(normalize(vertexWorldNormal));
 
 			xMax = vertexWorldPosition.x > xMax ? vertexWorldPosition.x : xMax;
 			xMin = vertexWorldPosition.x < xMin ? vertexWorldPosition.x : xMin;
 			zMax = vertexWorldPosition.z > zMax ? vertexWorldPosition.z : zMax;
 			zMin = vertexWorldPosition.z < zMin ? vertexWorldPosition.z : zMin;
 		}
+	}
+	panelWidth = xMax - xMin - buffer;
+	panelLength = zMax - zMin - buffer;
+}
 
-		panelWidth = xMax - xMin - buffer;
-		panelLength = zMax - zMin - buffer;
-		
-		// collecting vertices in triangle order
-		std::vector<GLuint>& indices = meshes[meshIndex].indices;
+void GeneratedGround::UpdatePanels()
+{
 
-		for (int i = 0; i < indices.size(); ++i)
+}
+
+void GeneratedGround::UpdateWorldVertices()
+{
+	std::vector< glm::vec3>& triangleWorldPositions = GameObject::triangleWorldPositions;
+	std::vector< glm::vec3>& vertexWorldPositions = GameObject::vertexWorldPositions;
+	std::vector< glm::vec3>& triangleWorldNormals = GameObject::triangleWorldNormals;
+	std::vector< glm::vec3>& vertexWorldNormals = GameObject::vertexWorldNormals;
+
+	std::vector<Mesh>& meshes = model.meshes;
+	std::vector<glm::mat4>& transforms = model.meshTransforms;
+
+	int sidePanels = (panelsToEdge * 2 + 1);
+
+	for (int panelIndex = 0; panelIndex < sidePanels * sidePanels; ++panelIndex)
+	{
+		float translationOffsetX =
+			(panelIndex / sidePanels) * panelWidth - panelWidth * panelsToEdge;
+		float translationOffsetZ =
+			(panelIndex % sidePanels) * panelLength - panelLength * panelsToEdge;
+		float scaleOffsetX =
+			((panelIndex / sidePanels + 1) % 2) * scale.x * 2;
+		float scaleOffsetZ =
+			((panelIndex % sidePanels + 1) % 2) * 2 * scale.z;
+
+		glm::vec3 panelTranslation = translation - glm::vec3(translationOffsetX, 0.0f, translationOffsetZ);
+		glm::vec3 panelScale = scale - glm::vec3(scaleOffsetX, 0.0f, scaleOffsetZ);
+
+		// converting transformations to mat4 for combination
+		glm::mat4 translationMatrix = glm::mat4(1.0f);
+		glm::mat4 rotationMatrix = glm::mat4(1.0f);
+		glm::mat4 scaleMatrix = glm::mat4(1.0f);
+
+		translationMatrix = glm::translate(translationMatrix, panelTranslation);
+		rotationMatrix = glm::mat4_cast(rotation);
+		scaleMatrix = glm::scale(scaleMatrix, panelScale);
+
+		for (int meshIndex = 0; meshIndex < meshes.size(); ++meshIndex)
 		{
-			GLuint& vertexIndice = indices[i];
-			glm::vec3& worldPosition = vertexWorldPositions[vertexIndice + indexOffset];
-			glm::vec3& worldNormal = vertexWorldNormals[vertexIndice + indexOffset];
-			triangleWorldPositions.push_back(worldPosition);
-			triangleWorldNormals.push_back(worldNormal);
+			Mesh& mesh = meshes[meshIndex];
+			glm::mat4& meshTransform = transforms[meshIndex];
+
+			// setting offest in case of multiple meshes
+			GLuint indexOffset = (GLuint)vertexWorldPositions.size();
+
+			std::vector<Vertex>& vertices = mesh.vertices;
+
+			for (int vertexIndex = 0; vertexIndex < vertices.size(); ++vertexIndex)
+			{
+				Vertex& vertex = vertices[vertexIndex];
+
+				// Apply transformation to get world position
+				// TODO: There might be a better way to do this (copied from shader)
+				glm::vec3 vertexWorldPosition(meshTransform * translationMatrix * rotationMatrix * scaleMatrix * glm::vec4(vertex.position, 1.0f));
+				glm::vec3 vertexWorldNormal(rotationMatrix * scaleMatrix * glm::vec4(vertex.normal, 1.0f));
+
+				vertexWorldPositions.push_back(vertexWorldPosition);
+				vertexWorldNormals.push_back(normalize(vertexWorldNormal));
+			}
+		
+			// collecting vertices in triangle order
+			std::vector<GLuint>& indices = meshes[meshIndex].indices;
+
+			for (int i = 0; i < indices.size(); ++i)
+			{
+				GLuint& vertexIndice = indices[i];
+				glm::vec3& worldPosition = vertexWorldPositions[vertexIndice + indexOffset];
+				glm::vec3& worldNormal = vertexWorldNormals[vertexIndice + indexOffset];
+				triangleWorldPositions.push_back(worldPosition);
+				triangleWorldNormals.push_back(worldNormal);
+			}
 		}
 	}
 	validWorldPositions = true;
