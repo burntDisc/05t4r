@@ -18,6 +18,7 @@ namespace fs = std::experimental::filesystem;
 #include "ExplodingObject.h"
 #include "InputHandler.h"
 #include "MotionHandler.h"
+#include "GeneratedGround.h"
 
 int main()
 {
@@ -104,12 +105,10 @@ int main()
 		wallRotation,
 		wallScale
 	);
-	MotionHandler::AddSolidObject(&wall);
 
 	// Create statue object
-
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statue1Translation(-20.0f, 15.0f, -9000080.0f);
+	glm::vec3 statue1Translation(-20.0f, 15.0f, -900080.0f);
 	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale(40.0f, 40.0f, 40.0f);
 	ExplodingObject statueExploding(
@@ -124,7 +123,8 @@ int main()
 	glm::vec3 floorTranslation(0.0f, 0.0f, 0.0f);
 	glm::quat floorRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 floorScale(10.0f, 10.0f, 10.0f);
-	GameObject floor(
+	GeneratedGround floor(
+		&camera,
 		floorPath.c_str(),
 		floorTranslation,
 		floorRotation,

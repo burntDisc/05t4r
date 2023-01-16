@@ -20,6 +20,16 @@ public:
 		glm::vec3 initScale = glm::vec3(0));
 
 	void Draw(Shader& shader);
+
+	void Update();
+
+
+	void UpdateWorldVertices();
 private:
 	Camera* camera;
+	const int panelsToEdge = 1;
+	const float buffer = 8.0f;
+	float panelWidth;
+	float panelLength;
+
 };

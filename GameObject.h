@@ -29,7 +29,6 @@ protected:
 	glm::vec3 translation;
 	glm::quat rotation;
 	glm::vec3 scale;
-private:
 	std::vector<glm::vec3> vertexWorldNormals;
 	std::vector<glm::vec3> vertexWorldPositions;
 	std::vector<glm::vec3> triangleWorldNormals;
