@@ -21,18 +21,22 @@ public:
 
 	void Draw(Shader& shader);
 
-	void UpdatePanels();
+	void Update();
 
 	void IntializePanelDimensions();
 
 	void UpdateWorldVertices();
 private:
-	glm::vec3 GetPanelScale(int panelIndex);
-	glm::vec3 GetPanelTranslation(int panelIndex);
+	glm::vec3 GetPanelScale(int panelIndex, int numToEdge);
+	glm::vec3 GetPanelTranslation(int panelIndex, int numToEdge);
 
 	Camera* camera;
-	const int panelsToEdge = 1;
+
 	const float buffer = 8.0f;
+	const float eagleHeight = 50.0f;
+	const int visiblePanelsToEdge = 13; // must be odd TODO: handle even
+	const int solidPanelsToEdge = 1;
+
 	float panelWidth;
 	float panelLength;
 	int flipOffsetX;

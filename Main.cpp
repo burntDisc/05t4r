@@ -96,7 +96,7 @@ int main()
 
 	// Create wall object
 	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
-	glm::vec3 wallTranslation(-1.0f, 0.0f, -90000.0f);
+	glm::vec3 wallTranslation(-1.0f, 0.0f, 0.0f);
 	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, -3.14159 / 2.0);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
 	GameObject wall(
@@ -106,6 +106,7 @@ int main()
 		wallScale
 	);
 
+	MotionHandler::AddSolidObject(&wall);
 	// Create statue object
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
 	glm::vec3 statue1Translation(-20.0f, 15.0f, -900080.0f);
@@ -207,6 +208,7 @@ int main()
 	double deltaTime;
 	unsigned int counter = 0;
 
+	double GameLoopInterval = 1.00/30.00;  // seconds
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -217,8 +219,8 @@ int main()
 
 		// ####################################################################
 		// 
-		// overwrite fps every loop 1/30 seconds
-		if (deltaTime >= 1.0 / 35.0)
+		// Creating Constant gamespeed at normal operating load
+		if (deltaTime >= GameLoopInterval)
 		{
 			// Creates new title
 			std::string FPS = std::to_string((1.0 / deltaTime) * counter);
@@ -233,7 +235,13 @@ int main()
 			lastTime = time;
 			counter = 0;
 			InputHandler::ProcessInput();
+			floor.Update();
 			camera.Update();
+			statueExploding.Update(time);
+			if (glfwGetTime() - time > GameLoopInterval)
+			{
+				std::cout << "-CPU OVERLOAD-" << std::endl;
+			}
 		}
 
 		// Specify the color of the background PINK For debug
@@ -260,8 +268,6 @@ int main()
 		glfwPollEvents();
 
 		// Handles Inputs and downstream effects
-		statueExploding.Update(time);
-		floor.UpdatePanels();
 	}
 
 	// Delete and clean up

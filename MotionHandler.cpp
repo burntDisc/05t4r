@@ -19,15 +19,17 @@ float MotionHandler::SignOfQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3
 //adjusts destination to avoid passing through triangles
 glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination, glm::vec3&  normal)
 {
+	float depth = 1.50;
+	float numLayers = 6;
+	float buffer = 0.7;
+
 	glm::vec3 newDestination = destination;
 	normal = glm::vec3(0.0f, 0.0f, 0.0f);
+
 	for (int objectIndex = 0; objectIndex < solidObjects.size(); ++objectIndex)
 	{
 		GameObject* object = solidObjects[objectIndex];
-		normal = glm::vec3(0.0, 0.0, 0.0);
-		float depth = 1.50;
-		float numLayers = 6;
-		float buffer = 0.5;
+
 		glm::vec3 travel = destination - start;
 		float lengthOfTravel = glm::length(travel);
 

@@ -9,8 +9,8 @@ GeneratedGround::GeneratedGround(
 	camera(camera),
 	panelLength(0.0f),
 	panelWidth(0.0f),
-	flipOffsetX(0),
-	flipOffsetZ(0),
+	flipOffsetX(1),
+	flipOffsetZ(1),
 	GameObject(
 		modelFile,
 		initTranslation,
@@ -21,7 +21,7 @@ GeneratedGround::GeneratedGround(
 	UpdateWorldVertices();
 }
 
-void GeneratedGround::UpdatePanels()
+void GeneratedGround::Update()
 {
 	float xDiff = camera->position.x - translation.x;
 	float zDiff = camera->position.z - translation.z;
@@ -45,9 +45,9 @@ void GeneratedGround::UpdatePanels()
 	}
 }
 
-glm::vec3 GeneratedGround::GetPanelScale(int panelIndex)
+glm::vec3 GeneratedGround::GetPanelScale(int panelIndex, int numToEdge)
 {
-	int sidePanels = (panelsToEdge * 2 + 1);
+	int sidePanels = (numToEdge * 2 + 1);
 	float scaleOffsetX =
 		((panelIndex / sidePanels + flipOffsetX) % 2) * scale.x * 2;
 	float scaleOffsetZ =
@@ -57,29 +57,29 @@ glm::vec3 GeneratedGround::GetPanelScale(int panelIndex)
 
 }
 
-glm::vec3 GeneratedGround::GetPanelTranslation(int panelIndex)
+glm::vec3 GeneratedGround::GetPanelTranslation(int panelIndex, int numToEdge)
 {
-	int sidePanels = (panelsToEdge * 2 + 1);
+	int sidePanels = (numToEdge * 2 + 1);
 	float translationOffsetX =
-		(panelIndex / sidePanels) * panelWidth - panelWidth * panelsToEdge;
+		(panelIndex / sidePanels) * panelWidth - panelWidth * numToEdge;
 	float translationOffsetZ =
-		(panelIndex % sidePanels) * panelLength - panelLength * panelsToEdge;
+		(panelIndex % sidePanels) * panelLength - panelLength * numToEdge;
 
 	return translation - glm::vec3(translationOffsetX, 0.0f, translationOffsetZ);
 
 }
 void GeneratedGround::Draw(Shader& shader)
 {
-	int sidePanels = (panelsToEdge * 2 + 1);
+	int sidePanels = (visiblePanelsToEdge * 2 + 1);
 	glDepthFunc(GL_LESS);
 
 	for (int panelIndex = 0; panelIndex < sidePanels * sidePanels; ++panelIndex)
 	{
 		model.Draw(
 			shader,
-			GetPanelTranslation(panelIndex),
+			GetPanelTranslation(panelIndex, visiblePanelsToEdge),
 			rotation,
-			GetPanelScale(panelIndex));
+			GetPanelScale(panelIndex, visiblePanelsToEdge));
 	}
 }
 
@@ -140,12 +140,12 @@ void GeneratedGround::UpdateWorldVertices()
 	std::vector<Mesh>& meshes = model.meshes;
 	std::vector<glm::mat4>& transforms = model.meshTransforms;
 
-	int sidePanels = (panelsToEdge * 2 + 1);
+	int sidePanels = (solidPanelsToEdge * 2 + 1);
 
 	for (int panelIndex = 0; panelIndex < sidePanels * sidePanels; ++panelIndex)
 	{
-		glm::vec3 panelTranslation = GetPanelTranslation(panelIndex);
-		glm::vec3 panelScale = GetPanelScale(panelIndex);
+		glm::vec3 panelTranslation = GetPanelTranslation(panelIndex, solidPanelsToEdge);
+		glm::vec3 panelScale = GetPanelScale(panelIndex, solidPanelsToEdge);
 
 		// converting transformations to mat4 for combination
 		glm::mat4 translationMatrix = glm::mat4(1.0f);

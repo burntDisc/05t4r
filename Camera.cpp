@@ -63,11 +63,7 @@ void Camera::TranslateUp()
 {
 	if (flatNav)
 	{
-		glm::vec3 newVelocity = jumpAcceleration * up + velocity;
-
-		velocity = glm::length(newVelocity) > maxSpeed ?
-			normalize(newVelocity) * length(velocity) :
-			newVelocity;
+		velocity = jumpAcceleration * up + velocity;
 	}
 
 }
