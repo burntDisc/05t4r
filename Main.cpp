@@ -261,6 +261,7 @@ int main()
 
 		// Handles Inputs and downstream effects
 		statueExploding.Update(time);
+		floor.UpdatePanels();
 	}
 
 	// Delete and clean up

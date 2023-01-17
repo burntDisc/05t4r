@@ -9,6 +9,8 @@ GeneratedGround::GeneratedGround(
 	camera(camera),
 	panelLength(0.0f),
 	panelWidth(0.0f),
+	flipOffsetX(0),
+	flipOffsetZ(0),
 	GameObject(
 		modelFile,
 		initTranslation,
@@ -19,6 +21,53 @@ GeneratedGround::GeneratedGround(
 	UpdateWorldVertices();
 }
 
+void GeneratedGround::UpdatePanels()
+{
+	float xDiff = camera->position.x - translation.x;
+	float zDiff = camera->position.z - translation.z;
+
+	if (abs(xDiff) > panelWidth / 2)
+	{
+		translation.x += std::copysign(panelWidth, xDiff);
+		flipOffsetX = (int)!flipOffsetX;
+		validWorldPositions = false;
+	}
+
+	if (abs(zDiff) > panelLength / 2)
+	{
+		translation.z += std::copysign(panelLength, zDiff);
+		flipOffsetZ = (int)!flipOffsetZ;
+		validWorldPositions = false;
+	}
+	if (!validWorldPositions)
+	{
+		UpdateWorldVertices();
+	}
+}
+
+glm::vec3 GeneratedGround::GetPanelScale(int panelIndex)
+{
+	int sidePanels = (panelsToEdge * 2 + 1);
+	float scaleOffsetX =
+		((panelIndex / sidePanels + flipOffsetX) % 2) * scale.x * 2;
+	float scaleOffsetZ =
+		((panelIndex % sidePanels + flipOffsetZ) % 2) * 2 * scale.z;
+
+	return scale - glm::vec3(scaleOffsetX, 0.0f, scaleOffsetZ);
+
+}
+
+glm::vec3 GeneratedGround::GetPanelTranslation(int panelIndex)
+{
+	int sidePanels = (panelsToEdge * 2 + 1);
+	float translationOffsetX =
+		(panelIndex / sidePanels) * panelWidth - panelWidth * panelsToEdge;
+	float translationOffsetZ =
+		(panelIndex % sidePanels) * panelLength - panelLength * panelsToEdge;
+
+	return translation - glm::vec3(translationOffsetX, 0.0f, translationOffsetZ);
+
+}
 void GeneratedGround::Draw(Shader& shader)
 {
 	int sidePanels = (panelsToEdge * 2 + 1);
@@ -26,20 +75,11 @@ void GeneratedGround::Draw(Shader& shader)
 
 	for (int panelIndex = 0; panelIndex < sidePanels * sidePanels; ++panelIndex)
 	{
-		float translationOffsetX =
-			(panelIndex / sidePanels) * panelWidth - panelWidth * panelsToEdge;
-
-		float translationOffsetZ =
-			(panelIndex % sidePanels) * panelLength - panelLength * panelsToEdge;
-		float scaleOffsetX =
-			((panelIndex / sidePanels + 1) % 2) * scale.x * 2;
-		float scaleOffsetZ =
-			((panelIndex % sidePanels + 1) % 2)* 2 * scale.z;
 		model.Draw(
 			shader,
-			translation - glm::vec3(translationOffsetX, 0.0f, translationOffsetZ),
+			GetPanelTranslation(panelIndex),
 			rotation,
-			scale - glm::vec3(scaleOffsetX, 0.0f, scaleOffsetZ));
+			GetPanelScale(panelIndex));
 	}
 }
 
@@ -90,17 +130,12 @@ void GeneratedGround::IntializePanelDimensions()
 	panelLength = zMax - zMin - buffer;
 }
 
-void GeneratedGround::UpdatePanels()
-{
-
-}
-
 void GeneratedGround::UpdateWorldVertices()
 {
-	std::vector< glm::vec3>& triangleWorldPositions = GameObject::triangleWorldPositions;
-	std::vector< glm::vec3>& vertexWorldPositions = GameObject::vertexWorldPositions;
-	std::vector< glm::vec3>& triangleWorldNormals = GameObject::triangleWorldNormals;
-	std::vector< glm::vec3>& vertexWorldNormals = GameObject::vertexWorldNormals;
+	triangleWorldPositions.clear();
+	vertexWorldPositions.clear();
+	triangleWorldNormals.clear();
+	vertexWorldNormals.clear();
 
 	std::vector<Mesh>& meshes = model.meshes;
 	std::vector<glm::mat4>& transforms = model.meshTransforms;
@@ -109,23 +144,13 @@ void GeneratedGround::UpdateWorldVertices()
 
 	for (int panelIndex = 0; panelIndex < sidePanels * sidePanels; ++panelIndex)
 	{
-		float translationOffsetX =
-			(panelIndex / sidePanels) * panelWidth - panelWidth * panelsToEdge;
-		float translationOffsetZ =
-			(panelIndex % sidePanels) * panelLength - panelLength * panelsToEdge;
-		float scaleOffsetX =
-			((panelIndex / sidePanels + 1) % 2) * scale.x * 2;
-		float scaleOffsetZ =
-			((panelIndex % sidePanels + 1) % 2) * 2 * scale.z;
-
-		glm::vec3 panelTranslation = translation - glm::vec3(translationOffsetX, 0.0f, translationOffsetZ);
-		glm::vec3 panelScale = scale - glm::vec3(scaleOffsetX, 0.0f, scaleOffsetZ);
+		glm::vec3 panelTranslation = GetPanelTranslation(panelIndex);
+		glm::vec3 panelScale = GetPanelScale(panelIndex);
 
 		// converting transformations to mat4 for combination
 		glm::mat4 translationMatrix = glm::mat4(1.0f);
 		glm::mat4 rotationMatrix = glm::mat4(1.0f);
 		glm::mat4 scaleMatrix = glm::mat4(1.0f);
-
 		translationMatrix = glm::translate(translationMatrix, panelTranslation);
 		rotationMatrix = glm::mat4_cast(rotation);
 		scaleMatrix = glm::scale(scaleMatrix, panelScale);
@@ -146,8 +171,8 @@ void GeneratedGround::UpdateWorldVertices()
 
 				// Apply transformation to get world position
 				// TODO: There might be a better way to do this (copied from shader)
-				glm::vec3 vertexWorldPosition(meshTransform * translationMatrix * rotationMatrix * scaleMatrix * glm::vec4(vertex.position, 1.0f));
-				glm::vec3 vertexWorldNormal(rotationMatrix * scaleMatrix * glm::vec4(vertex.normal, 1.0f));
+				glm::vec3 vertexWorldPosition(translationMatrix * rotationMatrix * scaleMatrix * glm::vec4(vertex.position, 1.0f));
+				glm::vec3 vertexWorldNormal(normalize(rotationMatrix * scaleMatrix * glm::vec4(vertex.normal, 1.0f)));
 
 				vertexWorldPositions.push_back(vertexWorldPosition);
 				vertexWorldNormals.push_back(normalize(vertexWorldNormal));

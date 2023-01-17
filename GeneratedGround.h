@@ -27,10 +27,15 @@ public:
 
 	void UpdateWorldVertices();
 private:
+	glm::vec3 GetPanelScale(int panelIndex);
+	glm::vec3 GetPanelTranslation(int panelIndex);
+
 	Camera* camera;
 	const int panelsToEdge = 1;
 	const float buffer = 8.0f;
 	float panelWidth;
 	float panelLength;
+	int flipOffsetX;
+	int flipOffsetZ;
 
 };

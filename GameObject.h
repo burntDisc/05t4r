@@ -17,8 +17,6 @@ public:
 
 	void Draw(Shader& shader);
 
-	void UpdateWorldVertices();
-
 	std::vector<glm::vec3> GetVertexWorldNormals();
 	std::vector<glm::vec3> GetVertexWorldPositions();
 	std::vector<glm::vec3> GetTriangleWorldNormals();
@@ -26,6 +24,8 @@ public:
 
 	Model model;
 protected:
+
+	void UpdateWorldVertices();
 	glm::vec3 translation;
 	glm::quat rotation;
 	glm::vec3 scale;
