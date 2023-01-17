@@ -234,6 +234,7 @@ int main()
 			// Resets times and counter
 			lastTime = time;
 			counter = 0;
+			// Handles Inputs and downstream effects
 			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update();
@@ -266,8 +267,6 @@ int main()
 
 		// Process glfw events
 		glfwPollEvents();
-
-		// Handles Inputs and downstream effects
 	}
 
 	// Delete and clean up
