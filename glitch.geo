@@ -16,10 +16,8 @@ out vec2 texCoordF;
 // Imports the camera matrix
 uniform mat4 projection;
 
-uniform float phase;
-uniform float amplitude;
-uniform float speed;
-uniform bool explode;
+uniform float factor;
+uniform float level;
 
 void main() {
 
@@ -36,9 +34,9 @@ void main() {
         colorF = color[i];
         texCoordF = texCoord[i];
 
-        vec3 direction = NormalF * ((sin(phase*speed))) * amplitude;
+        vec3 direction = NormalF * factor;
 
-        gl_Position = explode ?
+        gl_Position = (worldPositionFragment.y < level + 0.5 && worldPositionFragment.y > level - 0.5) ?
             projection * (gl_in[i].gl_Position + vec4(direction, 0.0)) :
             projection * gl_in[i].gl_Position;
         EmitVertex();

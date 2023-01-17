@@ -8,11 +8,11 @@ class ExplodingObject :
 {
 public:
 	using GameObject::GameObject;
-	void Update(double phase);
+	void Update(double time);
 	void Draw(Shader& shader);
 private:
 	float phase;
-	float amplitude = 1;
-	float speed = 1;
+	float amplitude = 1.0f;
+	float speed = 1.0f;
 };
 

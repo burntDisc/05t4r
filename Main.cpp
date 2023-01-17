@@ -19,6 +19,7 @@ namespace fs = std::experimental::filesystem;
 #include "InputHandler.h"
 #include "MotionHandler.h"
 #include "GeneratedGround.h"
+#include "GlitchingObject.h"
 
 int main()
 {
@@ -63,24 +64,32 @@ int main()
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Generate Shader objects-------------------------------------------------
+	std::vector<Shader> shaders;
 	Shader standardShader("standard.vert", "standard.frag");
 	Shader explosionShader("explosion.vert", "explosion.geo", "explosion.frag");
+	Shader glitchShader("glitch.vert", "glitch.geo", "glitch.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
+	shaders.push_back(standardShader);
+	shaders.push_back(explosionShader);
+	shaders.push_back(glitchShader);
+	shaders.push_back(skyboxShader);
 
 	// Set Lighting------------------------------------------------------------
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec4 lightColor = glm::vec4(1.2f, 1.2f, 1.2f, 1.2f);
 	glm::vec3 lightPos = glm::vec3(20.0f, 20.0f, 20.0f);
 
-	standardShader.Activate();
-	glUniform4f(glGetUniformLocation(standardShader.ID, "lightColor"),
-		lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(standardShader.ID, "lightPos"),
-		lightPos.x, lightPos.y, lightPos.z);
-	explosionShader.Activate();
-	glUniform4f(glGetUniformLocation(explosionShader.ID, "lightColor"),
-		lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(explosionShader.ID, "lightPos"),
-		lightPos.x, lightPos.y, lightPos.z);
+	for (int i = 0; i < shaders.size(); ++i)
+	{
+		Shader& shader = shaders[i];
+		if (shader.ID != skyboxShader.ID)
+		{
+			shader.Activate();
+			glUniform4f(glGetUniformLocation(shader.ID, "lightColor"),
+				lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+			glUniform3f(glGetUniformLocation(shader.ID, "lightPos"),
+				lightPos.x, lightPos.y, lightPos.z);
+		}
+	}
 
 	// Create Game objects ----------------------------------------------------------
 	std::vector<GameObject> objects;
@@ -109,10 +118,10 @@ int main()
 	MotionHandler::AddSolidObject(&wall);
 	// Create statue object
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statue1Translation(-20.0f, 15.0f, -900080.0f);
+	glm::vec3 statue1Translation(-20.0f, 15.0f, -80.0f);
 	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale(40.0f, 40.0f, 40.0f);
-	ExplodingObject statueExploding(
+	GlitchingObject statueExploding(
 		statueModelPath.c_str(),
 		statue1Translation,
 		statue1Rotation,
@@ -245,19 +254,28 @@ int main()
 			}
 		}
 
-		// Specify the color of the background PINK For debug
+		// Specify the color of the background GREEN For debug
 		// (Skybox Draws over)
-		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Updates camera matrices
-		camera.SetCameraUniforms(standardShader);
-		camera.SetCameraUniforms(explosionShader);
-		camera.SetSkyboxUniforms(skyboxShader);
+		// Updates shader camera matrices
+		for (int i = 0; i < shaders.size(); ++i)
+		{
+			Shader& shader = shaders[i];
+			if (shader.ID == skyboxShader.ID)
+			{
+				camera.SetSkyboxUniforms(shader);
+			}
+			else
+			{
+				camera.SetCameraUniforms(shader);
+			}
+		}
 
 		// Draw
-		statueExploding.Draw(explosionShader);
+		statueExploding.Draw(glitchShader);
 		wall.Draw(standardShader);
 		floor.Draw(standardShader);
 		skybox.Draw(skyboxShader);
@@ -270,9 +288,11 @@ int main()
 	}
 
 	// Delete and clean up
-	standardShader.Delete();
-	explosionShader.Delete();
-	skyboxShader.Delete();
+	for (int i = 0; i < shaders.size(); ++i) 
+	{
+		shaders[i].Delete();
+
+	}
 
 	glfwDestroyWindow(window);
 

@@ -1,8 +1,8 @@
 #include "ExplodingObject.h"
 
-void ExplodingObject::Update(double new_phase)
+void ExplodingObject::Update(double time)
 {
-	phase = (float)new_phase;
+	phase = (float)time;
 }
 
 void ExplodingObject::Draw(Shader& shader)
