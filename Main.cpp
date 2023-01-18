@@ -19,6 +19,7 @@ namespace fs = std::experimental::filesystem;
 #include "InputHandler.h"
 #include "MotionHandler.h"
 #include "GeneratedGround.h"
+#include "GeneratedWalls.h"
 #include "GlitchingObject.h"
 
 int main()
@@ -105,10 +106,11 @@ int main()
 
 	// Create wall object
 	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
-	glm::vec3 wallTranslation(-1.0f, 0.0f, 0.0f);
-	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, -3.14159 / 2.0);
+	glm::vec3 wallTranslation(-12.0f, 0.0f, -12.0f);
+	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
-	GameObject wall(
+	GeneratedWalls wall(
+		&camera,
 		wallModelPath.c_str(),
 		wallTranslation,
 		wallRotation,
@@ -118,7 +120,7 @@ int main()
 	MotionHandler::AddSolidObject(&wall);
 	// Create statue object
 	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statue1Translation(-20.0f, 15.0f, -80.0f);
+	glm::vec3 statue1Translation(400.0f, 20.0f, -70.0f);
 	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
 	glm::vec3 statue1Scale(40.0f, 40.0f, 40.0f);
 	GlitchingObject statueExploding(
@@ -216,6 +218,7 @@ int main()
 	double time = 0.0;
 	double deltaTime;
 	unsigned int counter = 0;
+	unsigned int lastCycle = 0;
 
 	double GameLoopInterval = 1.00/30.00;  // seconds
 	while (!glfwWindowShouldClose(window))
@@ -248,10 +251,11 @@ int main()
 			floor.Update();
 			camera.Update();
 			statueExploding.Update(time);
-			if (glfwGetTime() - time > GameLoopInterval)
+			if (lastCycle == counter)
 			{
 				std::cout << "-CPU OVERLOAD-" << std::endl;
 			}
+			lastCycle = counter + 1;
 		}
 
 		// Specify the color of the background GREEN For debug

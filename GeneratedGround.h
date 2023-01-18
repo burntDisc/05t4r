@@ -32,8 +32,9 @@ private:
 
 	Camera* camera;
 
+	// pushes non-rectangular models together by buffer 
 	const float buffer = 8.0f;
-	const float eagleHeight = 50.0f;
+
 	const int visiblePanelsToEdge = 13; // must be odd TODO: handle even
 	const int solidPanelsToEdge = 1;
 

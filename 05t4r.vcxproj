@@ -182,6 +182,8 @@
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GeneratedGround.h" />
+    <ClInclude Include="GeneratedWalls.h" />
+    <ClInclude Include="GlitchingObject.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
@@ -199,6 +201,8 @@
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GeneratedGround.cpp" />
+    <ClCompile Include="GeneratedWalls.cpp" />
+    <ClCompile Include="GlitchingObject.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="libraries\include\glad\glad.c" />
     <ClCompile Include="libraries\include\stb\stb_image.cpp" />
@@ -213,6 +217,9 @@
     <ClCompile Include="VertexBufferObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="glitch.frag" />
+    <None Include="glitch.geo" />
+    <None Include="glitch.vert" />
     <None Include="packages.config" />
     <None Include="standard.frag" />
     <None Include="standard.vert" />

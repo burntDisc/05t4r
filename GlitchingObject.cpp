@@ -9,10 +9,8 @@ void GlitchingObject::Update(double time)
 	factor = ((sin(time * speed - cycleTime/2))) * amplitude;
 	if (time > prevCycle + cycleTime)
 	{
-		std::cout << "newLevel: ";
 		prevCycle = time;
 		level = (float)(rand() % 20 - 5);
-		std::cout << level << std::endl;
 	}
 }
 
