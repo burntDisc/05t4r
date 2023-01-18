@@ -24,9 +24,9 @@ public:
 private:
 	const glm::vec3 clusterDimensions = glm::vec3(10.0f, 10.0f, 10.0f);
 
-	const int solidClustersToEdge = 2;
-	const int visibleClustersToEdge = 2;
-	const int wallsPerCluster = 5;
+	const int solidClustersToEdge = 1;
+	const int visibleClustersToEdge = 1;
+	const int wallsPerCluster = 8;
 
 
 	void SetWallDimensions();

@@ -106,7 +106,7 @@ int main()
 
 	// Create wall object
 	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
-	glm::vec3 wallTranslation(-12.0f, 0.0f, -12.0f);
+	glm::vec3 wallTranslation(0.0f, 0.0f, 0.0f);
 	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
 	GeneratedWalls wall(
@@ -220,7 +220,7 @@ int main()
 	unsigned int counter = 0;
 	unsigned int lastCycle = 0;
 
-	double GameLoopInterval = 1.00/30.00;  // seconds
+	double GameLoopInterval = 1.00/25.00;  // seconds
 	while (!glfwWindowShouldClose(window))
 	{
 

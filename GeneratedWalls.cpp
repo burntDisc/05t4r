@@ -51,6 +51,8 @@ void GeneratedWalls::Draw(Shader& shader)
 
 void GeneratedWalls::Update()
 {
+	// TODO:	ADD 3d cluster extension for solid and visible walls here
+	//			can be copied from GeneratedGround
 }
 
 void GeneratedWalls::SetWallDimensions()
@@ -108,15 +110,16 @@ void GeneratedWalls::SetWallDimensions()
 
 glm::vec3 GeneratedWalls::GetClusterTranslation(int clusterIndex, int numToEdge)
 {
+	glm::vec3 translationOffsets;
 	int sideClusters = (numToEdge * 2 + 1);
-	float translationOffsetX =
-		(clusterIndex % sideClusters) * clusterDimensions.x - clusterDimensions.x * numToEdge;
-	float translationOffsetY =
-		(clusterIndex / sideClusters) * clusterDimensions.y - clusterDimensions.y * numToEdge;
-	float translationOffsetZ =
-		(clusterIndex / (sideClusters * sideClusters)) * clusterDimensions.z - clusterDimensions.z * numToEdge;
+	for (int axis = 0; axis < 3; ++axis)
+	{
+		float startingBound = -clusterDimensions[axis] * numToEdge;
+		int sideIndex = clusterIndex / (int)(pow(sideClusters, axis)) % sideClusters;
+		translationOffsets[axis] = startingBound + sideIndex * clusterDimensions[axis];
+	}
 
-	return translation - glm::vec3(translationOffsetX, translationOffsetY, translationOffsetZ);
+	return translation - translationOffsets;
 
 }
 

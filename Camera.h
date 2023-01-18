@@ -49,12 +49,12 @@ private:
 	bool flatNav = false;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
-	const float acceleration = 1.0f;
+	const float acceleration = 0.2f;
 	const float jumpAcceleration = 2.00f;
-	const float maxSpeed = 3.0f;
+	const float maxSpeed = 6.0f;
 	const float friction = 0.1f;
 	const float gravity = 0.125f;
-	const float repulsionFac = 1.5f;
+	const float repulsionFac = 1.2f;
 
 	// TODO Move these to input Handler
 	const float joystickThreshold = 0.4f;
