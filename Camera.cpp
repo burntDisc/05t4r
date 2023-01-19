@@ -112,13 +112,13 @@ void Camera::Update(float time)
 			glm::vec3 proj = glm::proj(velocity, surfaceNormal);
 			velocity = velocity - repulsionFac*proj;
 		}
-		friction = lowFriction;
+		friction = collisionFriction;
 	}
 	else
 	{
 		flatNav = false;
 		velocity.y -= gravity;
-		friction = highFriction;
+		friction = baseFriction;
 	}
 	position = newPosition;
 }
@@ -140,7 +140,10 @@ void Camera::AdjustVelocity(float* axes)
 	glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
 
 	// apply change from input
-	glm::vec3 newVelocity = acceleration * stickDirection + velocity;
+	glm::vec3 newVelocity =
+		flatNav ?
+		collisionAcceleration * stickDirection + velocity :
+		baseAcceleration * stickDirection + velocity;
 
 	//removing y component to ignore gravity
 	glm::vec3 newHorizontalVelocity = glm::vec3(newVelocity.x, 0.0, newVelocity.z);
