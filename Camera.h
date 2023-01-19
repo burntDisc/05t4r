@@ -31,33 +31,40 @@ public:
 	void SetCameraUniforms(Shader& shader);
 	void SetSkyboxUniforms(Shader& skyboxShader);
 
-	void Update();
+	void Update(float time);
 
 	// input movement
 	void Forward();
 	void TranslateLeft();
 	void Back();
 	void TranslateRight();
-	void TranslateUp();
-	void AdjustVelocity(const float* axes);
-	void AdjustOrientation(const float* axes);
+	void Jump();
+	void Boost();
+	void AdjustVelocity(float* axes);
+	void AdjustOrientation(float* axes);
 
 	// mouse behavior callbacks
 	void BindCursor();
 	void UnbindCursor();
 private:
+	float worldTime;
+	float prevBoostTime;
+	float friction = 0.1f;
+	
 	bool flatNav = false;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
-	const float acceleration = 0.2f;
+	const float acceleration = 0.4f;
 	const float jumpAcceleration = 2.00f;
+	const float boostAcceleration = 10.00f;
+	const float boostCooldown = 1.0f;
 	const float maxSpeed = 6.0f;
-	const float friction = 0.1f;
+	const float lowFriction = 0.1f;
+	const float highFriction = 0.2f;
 	const float gravity = 0.125f;
 	const float repulsionFac = 1.2f;
 
 	// TODO Move these to input Handler
-	const float joystickThreshold = 0.4f;
 	const float mouseLookSensitivity = 100.0f;
 	const float joystickLookSensitivity = 20.0f;
 };

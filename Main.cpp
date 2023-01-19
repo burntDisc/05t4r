@@ -106,7 +106,7 @@ int main()
 
 	// Create wall object
 	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
-	glm::vec3 wallTranslation(0.0f, 0.0f, 0.0f);
+	glm::vec3 wallTranslation(0.0f, 0.0f, 0.1f);
 	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
 	GeneratedWalls wall(
@@ -150,16 +150,30 @@ int main()
 	InputHandler::Subscribe(
 		InputHandler::joystick,
 		GLFW_JOYSTICK_1,
-		[&camera](const float* axes) -> void {
-			camera.AdjustVelocity(axes);
-			camera.AdjustOrientation(axes + 2);
+		0,
+		[&camera](float* input) -> void {
+			camera.AdjustVelocity(input);
+		});
+	InputHandler::Subscribe(
+		InputHandler::joystick,
+		GLFW_JOYSTICK_1,
+		1,
+		[&camera](float* input) -> void {
+			camera.AdjustOrientation(input);
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_A,
 		[&camera]() -> void {
-			camera.TranslateUp();
+			camera.Jump();
+		});
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_B,
+		[&camera]() -> void {
+			camera.Boost();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
@@ -167,6 +181,13 @@ int main()
 		GLFW_PRESS,
 		[&camera]() -> void {
 			camera.Forward();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_LEFT_SHIFT,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			camera.Boost();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
@@ -194,7 +215,7 @@ int main()
 		GLFW_KEY_SPACE,
 		GLFW_PRESS,
 		[&camera]() -> void {
-			camera.TranslateUp();
+			camera.Jump();
 		});
 	InputHandler::Subscribe(
 		InputHandler::mouse,
@@ -249,7 +270,7 @@ int main()
 			// Handles Inputs and downstream effects
 			InputHandler::ProcessInput();
 			floor.Update();
-			camera.Update();
+			camera.Update(time);
 			statueExploding.Update(time);
 			if (lastCycle == counter)
 			{

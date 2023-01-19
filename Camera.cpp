@@ -51,15 +51,17 @@ void Camera::SetSkyboxUniforms(Shader& skyboxShader)
 
 void Camera::Forward()
 {
-	const float axes[2] = { 0.0, -1.0 };
+	float axes[2] = { 0.0, -1.0 };
 	AdjustVelocity(axes);
 }
+
 void Camera::TranslateLeft()
 {
-	const float axes[2] = { -1.0, 0.0 };
+	float axes[2] = { -1.0, 0.0 };
 	AdjustVelocity(axes);
 }
-void Camera::TranslateUp()
+
+void Camera::Jump()
 {
 	if (flatNav)
 	{
@@ -67,19 +69,28 @@ void Camera::TranslateUp()
 	}
 
 }
+void Camera::Boost()
+{
+	if(worldTime - prevBoostTime > boostCooldown)
+	{
+		velocity = boostAcceleration * orientation + velocity;
+		prevBoostTime = worldTime;
+	}
+}
 void Camera::TranslateRight()
 {
-	const float axes[2] = { 1.0, 0.0 };
+	float axes[2] = { 1.0, 0.0 };
 	AdjustVelocity(axes);
 }
 void Camera::Back()
 {
-	const float axes[2] = { 0.0, 1.0 };
+	float axes[2] = { 0.0, 1.0 };
 	AdjustVelocity(axes);
 }
 
-void Camera::Update()
+void Camera::Update(float time)
 {
+	worldTime = time;
 	if (glm::length(velocity) > friction)
 	{
 		velocity = velocity - friction * glm::normalize(velocity);
@@ -101,62 +112,55 @@ void Camera::Update()
 			glm::vec3 proj = glm::proj(velocity, surfaceNormal);
 			velocity = velocity - repulsionFac*proj;
 		}
+		friction = lowFriction;
 	}
 	else
 	{
 		flatNav = false;
 		velocity.y -= gravity;
+		friction = highFriction;
 	}
 	position = newPosition;
 }
 
-void Camera::AdjustVelocity(const float* axes)
+void Camera::AdjustVelocity(float* axes)
 {
-	if (abs(axes[0]) > joystickThreshold || abs(axes[1]) > joystickThreshold)
-	{
-		// Allows for flat movement as opposed to flying
-		bool alt = true;
+	// Allows for flat movement as opposed to flying
+	bool alt = true;
 
-		glm::vec3 relativeUp = surfaceNormal == glm::vec3(0.0, 0.0, 0.0) ? up : surfaceNormal;
-		glm::vec3 normalizedSide = alt ? 
-			glm::normalize(glm::cross(orientation, relativeUp)) : 
-			glm::normalize(glm::cross(orientation, up));
-		glm::vec3 normalizedFront = glm::normalize(glm::cross(relativeUp, normalizedSide));
-		glm::vec3 stickSideComponent = axes[0] * normalizedSide;
-		glm::vec3 stickFrontComponent = alt ? 
-			- axes[1] * normalizedFront: 
-			- axes[1] * orientation;
-		glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
+	glm::vec3 relativeUp = surfaceNormal == glm::vec3(0.0, 0.0, 0.0) ? up : surfaceNormal;
+	glm::vec3 normalizedSide = alt ? 
+		glm::normalize(glm::cross(orientation, relativeUp)) : 
+		glm::normalize(glm::cross(orientation, up));
+	glm::vec3 normalizedFront = glm::normalize(glm::cross(relativeUp, normalizedSide));
+	glm::vec3 stickSideComponent = axes[0] * normalizedSide;
+	glm::vec3 stickFrontComponent = alt ? 
+		- axes[1] * normalizedFront: 
+		- axes[1] * orientation;
+	glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
 
-		// apply change from input
-		glm::vec3 newVelocity = acceleration * stickDirection + velocity;
+	// apply change from input
+	glm::vec3 newVelocity = acceleration * stickDirection + velocity;
 
-		//removing y component to ignore gravity
-		glm::vec3 newHorizontalVelocity = glm::vec3(newVelocity.x, 0.0, newVelocity.z);
-		glm::vec3 horizontalVelocity = glm::vec3(velocity.x, 0.0, velocity.z);
+	//removing y component to ignore gravity
+	glm::vec3 newHorizontalVelocity = glm::vec3(newVelocity.x, 0.0, newVelocity.z);
+	glm::vec3 horizontalVelocity = glm::vec3(velocity.x, 0.0, velocity.z);
 
-		// change direction but do not increase speed if at max (excluding vertical)
-		glm::vec3 calibratedHorizontalVelocity = glm::length(newHorizontalVelocity) > maxSpeed ?
-			normalize(newHorizontalVelocity) * length(horizontalVelocity) :
-			newHorizontalVelocity;
+	// change direction but do not increase speed if at max (excluding vertical)
+	glm::vec3 calibratedHorizontalVelocity = glm::length(newHorizontalVelocity) > maxSpeed ?
+		normalize(newHorizontalVelocity) * length(horizontalVelocity) :
+		newHorizontalVelocity;
 
-		velocity = glm::vec3(
-			calibratedHorizontalVelocity.x,
-			newVelocity.y,
-			calibratedHorizontalVelocity.z);
-
-	}
+	velocity = glm::vec3(
+		calibratedHorizontalVelocity.x,
+		newVelocity.y,
+		calibratedHorizontalVelocity.z);
 }
 
-void Camera::AdjustOrientation(const float* axes)
+void Camera::AdjustOrientation(float* axes)
 {
-	float rotX = 0;
-	float rotY = 0;
-	if (abs(axes[0]) > joystickThreshold || abs(axes[1]) > joystickThreshold)
-	{
-		rotX = joystickLookSensitivity * axes[1];
-		rotY = joystickLookSensitivity * axes[0];
-	}
+	float rotX = joystickLookSensitivity * axes[1];
+	float rotY = joystickLookSensitivity * axes[0];
 
 	// Calculates upcoming vertical change in the orientation
 	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));

@@ -21,11 +21,12 @@ void InputHandler::Subscribe(InputType type, int inputSpecifier, int event, std:
 	eventSubscriptions.push_back(newSubscription);
 }
 
-void InputHandler::Subscribe(InputType type, int inputSpecifier, std::function<void(const float*)> callback)
+void InputHandler::Subscribe(InputType type, int inputSpecifier, int index, std::function<void(float*)> callback)
 {
 	InputSubscription newSubscription = {
 		type,
 		inputSpecifier,
+		index,
 		callback
 	};
 
@@ -34,6 +35,7 @@ void InputHandler::Subscribe(InputType type, int inputSpecifier, std::function<v
 
 void InputHandler::ProcessInput()
 {
+	// button logic
 	for (int i = 0; i < eventSubscriptions.size(); ++i)
 	{
 		int code = eventSubscriptions[i].input;
@@ -65,17 +67,29 @@ void InputHandler::ProcessInput()
 			break;
 		}
 	}
+
+	// joystick logic
+	const float joystickThreshold = 0.4f;
 	for (int i = 0; i < inputSubscriptions.size(); ++i)
 	{
 		int code = inputSubscriptions[i].input;
 		switch (inputSubscriptions[i].type) {
 		case joystick:
 		{
-			int count = 4;
-			const float* axes = glfwGetJoystickAxes(code, &count);
-			if (axes)
+			int outputIndex = inputSubscriptions[i].index * 2;
+			int count;
+			const float* output = glfwGetJoystickAxes(code, &count);
+
+			if (output && count > outputIndex + 1)
 			{
-				inputSubscriptions[i].callback(axes);
+				if (abs(output[outputIndex]) > joystickThreshold || abs(output[outputIndex + 1]) > joystickThreshold)
+				{
+					float adjustedValues[2];
+					//TODO scale input
+					adjustedValues[0] = output[outputIndex];
+					adjustedValues[1] = output[outputIndex + 1];
+					inputSubscriptions[i].callback(adjustedValues);
+				}
 			}
 		}
 		break;

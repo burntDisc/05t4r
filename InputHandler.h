@@ -19,13 +19,14 @@ public:
 	struct InputSubscription {
 		InputType type;
 		int input;
-		std::function<void(const float*)> callback;
+		int index;
+		std::function<void(float*)> callback;
 
 	};
 
 	static void SetWindow(GLFWwindow* window);
 	static void Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> callback);
-	static void Subscribe(InputType type, int inputSpecifier, std::function<void(const float*)> callback);
+	static void Subscribe(InputType type, int inputSpecifier, int index, std::function<void(float*)> callback);
 	static void ProcessInput();
 private:
 	static std::vector<EventSubscription> eventSubscriptions;
