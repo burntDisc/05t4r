@@ -15,12 +15,11 @@ namespace fs = std::experimental::filesystem;
 #include "GameObject.h"
 #include "Camera.h"
 #include "Skybox.h"
-#include "ExplodingObject.h"
 #include "InputHandler.h"
 #include "MotionHandler.h"
 #include "GeneratedGround.h"
 #include "GeneratedWalls.h"
-#include "GlitchingObject.h"
+#include "Projectile.h"
 
 int main()
 {
@@ -67,12 +66,8 @@ int main()
 	// Generate Shader objects-------------------------------------------------
 	std::vector<Shader> shaders;
 	Shader standardShader("standard.vert", "standard.frag");
-	Shader explosionShader("explosion.vert", "explosion.geo", "explosion.frag");
-	Shader glitchShader("glitch.vert", "glitch.geo", "glitch.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
 	shaders.push_back(standardShader);
-	shaders.push_back(explosionShader);
-	shaders.push_back(glitchShader);
 	shaders.push_back(skyboxShader);
 
 	// Set Lighting------------------------------------------------------------
@@ -113,21 +108,20 @@ int main()
 		&camera,
 		wallModelPath.c_str(),
 		wallTranslation,
-		wallRotation,
-		wallScale
+		wallScale,
+		wallRotation
 	);
 
 	MotionHandler::AddSolidObject(&wall);
-	// Create statue object
-	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statue1Translation(400.0f, 20.0f, -70.0f);
-	glm::quat statue1Rotation = glm::vec3(0.0f, 4.0f, 0.0f);
-	glm::vec3 statue1Scale(40.0f, 40.0f, 40.0f);
-	GlitchingObject statueExploding(
-		statueModelPath.c_str(),
-		statue1Translation,
-		statue1Rotation,
-		statue1Scale
+
+	// Create projectile object
+	std::string projectilePath = parentDir + "/models/sword/scene.gltf";
+	glm::vec3 projectileScale(1.0f, 1.0f, 1.0f);
+	Projectile projectile(
+		camera.orientation,
+		projectilePath.c_str(),
+		camera.position + glm::vec3(-80.0f, 0.0f, -40.0f),
+		projectileScale
 	);
 
 	// Create floor object
@@ -139,14 +133,21 @@ int main()
 		&camera,
 		floorPath.c_str(),
 		floorTranslation,
-		floorRotation,
-		floorScale
+		floorScale,
+		floorRotation
 	);
 
 	MotionHandler::AddSolidObject(&floor);
 
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_X,
+		[&camera]() -> void {
+			camera.Jump();
+		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
 		GLFW_JOYSTICK_1,
@@ -271,7 +272,8 @@ int main()
 			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update(time);
-			statueExploding.Update(time);
+			projectile.Update();
+			//projectile.Update();
 			if (lastCycle == counter)
 			{
 				std::cout << "-CPU OVERLOAD-" << std::endl;
@@ -300,10 +302,11 @@ int main()
 		}
 
 		// Draw
-		statueExploding.Draw(glitchShader);
 		wall.Draw(standardShader);
 		floor.Draw(standardShader);
 		skybox.Draw(skyboxShader);
+		projectile.Draw(standardShader);
+
 
 		// Swap back with front buffer
 		glfwSwapBuffers(window);

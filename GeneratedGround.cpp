@@ -4,8 +4,8 @@ GeneratedGround::GeneratedGround(
 	Camera* camera,
 	const char* modelFile,
 	glm::vec3 initTranslation,
-	glm::quat initRotation,
-	glm::vec3 initScale) :
+	glm::vec3 initScale,
+	glm::quat initRotation) :
 	camera(camera),
 	panelLength(0.0f),
 	panelWidth(0.0f),
@@ -14,8 +14,8 @@ GeneratedGround::GeneratedGround(
 	GameObject(
 		modelFile,
 		initTranslation,
-		initRotation,
-		initScale)
+		initScale,
+		initRotation)
 {
 	IntializePanelDimensions();
 	UpdateWorldVertices();

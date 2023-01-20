@@ -11,9 +11,9 @@ class GameObject
 public:
 	GameObject(
 		const char* modelFile, 
-		glm::vec3 initTranslation,
-		glm::quat initRotation,
-		glm::vec3 initScale);
+		glm::vec3 initTranslation = glm::vec3(0.0f,0.0f,0.0f),
+		glm::vec3 initScale = glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	void Draw(Shader& shader);
 

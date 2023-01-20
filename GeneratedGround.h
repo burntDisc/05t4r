@@ -16,8 +16,8 @@ public:
 		Camera* camera,
 		const char* modelFile,
 		glm::vec3 initTranslation = glm::vec3(0),
-		glm::quat initRotation = glm::quat(0.0, 0.0, 0.0, 0.0),
-		glm::vec3 initScale = glm::vec3(0));
+		glm::vec3 initScale = glm::vec3(0),
+		glm::quat initRotation = glm::quat(0.0, 0.0, 0.0, 0.0));
 
 	void Draw(Shader& shader);
 

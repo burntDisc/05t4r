@@ -6,14 +6,14 @@ GeneratedWalls::GeneratedWalls(
 	Camera* camera,
 	const char* modelFile,
 	glm::vec3 initTranslation,
-	glm::quat initRotation,
-	glm::vec3 initScale) :
+	glm::vec3 initScale,
+	glm::quat initRotation) :
 	camera(camera),
 	GameObject(
 		modelFile,
 		initTranslation,
-		initRotation,
-		initScale)
+		initScale,
+		initRotation)
 {
 	SetWallDimensions();
 	UpdateWorldVertices();

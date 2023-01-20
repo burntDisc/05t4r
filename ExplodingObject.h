@@ -7,7 +7,6 @@ class ExplodingObject :
 	public GameObject
 {
 public:
-	using GameObject::GameObject;
 	void Update(double time);
 	void Draw(Shader& shader);
 private:

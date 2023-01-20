@@ -71,10 +71,13 @@ void Camera::Jump()
 }
 void Camera::Boost()
 {
-	if(worldTime - prevBoostTime > boostCooldown)
+	if(BoostCharged && worldTime - prevBoostTime > boostCooldown)
 	{
-		velocity = boostAcceleration * orientation + velocity;
-		prevBoostTime = worldTime;
+		glm::vec3 adjustment = breaking ?
+			- velocity :
+			boostAcceleration * orientation;
+		velocity = adjustment + velocity;
+		--BoostCharged;
 	}
 }
 void Camera::TranslateRight()
@@ -113,6 +116,7 @@ void Camera::Update(float time)
 			velocity = velocity - repulsionFac*proj;
 		}
 		friction = collisionFriction;
+		BoostCharged = 3;
 	}
 	else
 	{
@@ -138,6 +142,8 @@ void Camera::AdjustVelocity(float* axes)
 		- axes[1] * normalizedFront: 
 		- axes[1] * orientation;
 	glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
+
+	breaking = glm::dot(stickDirection, orientation) < 0;
 
 	// apply change from input
 	glm::vec3 newVelocity =
