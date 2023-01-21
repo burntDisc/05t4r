@@ -135,7 +135,7 @@ glm::vec3 GeneratedWalls::GetWallTranslation(int wallIndex, int clusterIndex)
 		x = ((x >> 16) ^ x) * 0x45d9f3b;
 		x = ((x >> 16) ^ x) * 0x45d9f3b;
 		x = (x >> 16) ^ x;
-		wallTranslation[axes] = x % (int)clusterDimensions[axes];
+		wallTranslation[axes] = (float)(x % (int)clusterDimensions[axes]);
 	}
 		
 	return wallTranslation;

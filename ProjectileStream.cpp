@@ -27,8 +27,15 @@ glm::quat ProjectileStream::GetRotation(glm::vec3 newOrientation)
 	}
 	else
 	{
+		// TODO: make math clearer
+		//https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another
 		glm::quat rotation = glm::cross(modelOrientation, newOrientation);
-		rotation.w = sqrt(pow(glm::length(modelOrientation), 2) * pow(glm::length(newOrientation), 2)) + glm::dot(modelOrientation, newOrientation);
+		rotation.w = 
+			(float)sqrt(
+				pow(glm::length(modelOrientation), 2) * 
+				pow(glm::length(newOrientation), 2)
+			) + 
+			glm::dot(modelOrientation, newOrientation);
 		return rotation;
 	}
 }

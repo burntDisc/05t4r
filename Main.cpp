@@ -300,7 +300,7 @@ int main()
 			// Handles Inputs and downstream effects
 			InputHandler::ProcessInput();
 			floor.Update();
-			camera.Update(time);
+			camera.Update((float)time);
 			projectile.Update();
 			//projectile.Update();
 			if (lastCycle == counter)

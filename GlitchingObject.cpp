@@ -1,12 +1,11 @@
 #include "GlitchingObject.h"
-#include <numbers>
 #include <iostream>
 
-void GlitchingObject::Update(double time)
+void GlitchingObject::Update(float time)
 {
 	//2 * acos(0.0) is pi
-	float cycleTime = 2 * acos(0.0)/speed;
-	factor = ((sin(time * speed - cycleTime/2))) * amplitude;
+	float cycleTime = 2 * (float)acos(0.0) / speed;
+	factor = (float)sin(time * speed - cycleTime/2) * amplitude;
 	if (time > prevCycle + cycleTime)
 	{
 		prevCycle = time;

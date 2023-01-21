@@ -7,7 +7,7 @@ class GlitchingObject :
 {
 public:
 	using GameObject::GameObject;
-	void Update(double phase);
+	void Update(float phase);
 	void Draw(Shader& shader);
 private:
 	float level = -1.0f;
