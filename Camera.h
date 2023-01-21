@@ -70,5 +70,5 @@ private:
 
 	// TODO Move these to input Handler
 	const float mouseLookSensitivity = 100.0f;
-	const float joystickLookSensitivity = 10.0f;
+	const float joystickLookSensitivity = 60.0f;
 };

@@ -188,7 +188,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="MotionHandler.h" />
-    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="ProjectileStream.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
@@ -211,7 +211,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MotionHandler.cpp" />
-    <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="ProjectileStream.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Texture.cpp" />

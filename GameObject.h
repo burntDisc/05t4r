@@ -24,7 +24,6 @@ public:
 
 	Model model;
 protected:
-
 	void UpdateWorldVertices();
 	glm::vec3 translation;
 	glm::quat rotation;

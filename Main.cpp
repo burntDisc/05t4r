@@ -19,7 +19,7 @@ namespace fs = std::experimental::filesystem;
 #include "MotionHandler.h"
 #include "GeneratedGround.h"
 #include "GeneratedWalls.h"
-#include "Projectile.h"
+#include "ProjectileStream.h"
 
 int main()
 {
@@ -145,12 +145,10 @@ int main()
 
 	// Create projectile object
 	std::string projectilePath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 projectileScale(5.0f, 5.0f, 5.0f);
-	glm::vec3 projectileTranslationAdjustment(2.0f, 2.0f, 0.0f);
-	Projectile* projectile = new Projectile(
-		camera.orientation,
+	glm::vec3 projectileScale(2.0f, 2.0f, 2.0f);
+	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
+	ProjectileStream projectile(
 		projectilePath.c_str(),
-		camera.position + projectileTranslationAdjustment,
 		projectileScale
 	);
 
@@ -160,28 +158,21 @@ int main()
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_X,
-		[&projectile, &camera, &projectilePath, &projectileScale, &projectileTranslationAdjustment]() -> void {
+		[&projectile, &camera]() -> void {
 			std::cout << "fired" << std::endl;
-			delete projectile;
-			projectile = new Projectile(
-				camera.orientation,
-				projectilePath.c_str(),
-				camera.position + projectileTranslationAdjustment,
-				projectileScale );
-			
+			projectile.Fire(
+				camera.position,
+				camera.orientation);
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_Q,
 		GLFW_PRESS,
-		[&projectile, &camera, &projectilePath, &projectileScale, &projectileTranslationAdjustment]() -> void {
+		[&projectile, &camera]() -> void {
 			std::cout << "fired" << std::endl;
-			delete projectile;
-			projectile = new Projectile(
-				camera.orientation,
-				projectilePath.c_str(),
-				camera.position + projectileTranslationAdjustment,
-				projectileScale);
+			projectile.Fire(
+				camera.position,
+				camera.orientation);
 		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
@@ -310,7 +301,7 @@ int main()
 			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update(time);
-			projectile->Update();
+			projectile.Update();
 			//projectile.Update();
 			if (lastCycle == counter)
 			{
@@ -343,7 +334,7 @@ int main()
 		wall.Draw(standardShader);
 		floor.Draw(standardShader);
 		skybox.Draw(skyboxShader);
-		projectile->Draw(standardShader);
+		projectile.Draw(standardShader);
 		//statue.Draw(standardShader);
 
 
@@ -360,7 +351,6 @@ int main()
 		shaders[i].Delete();
 
 	}
-	delete projectile;
 	glfwDestroyWindow(window);
 
 	glfwTerminate();
