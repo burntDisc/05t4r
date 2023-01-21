@@ -16,7 +16,7 @@ Projectile::Projectile(
 {
 	if (orientation == modelOrientation)
 	{
-
+		rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 	else if(orientation == -modelOrientation)
 	{

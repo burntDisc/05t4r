@@ -66,7 +66,7 @@ private:
 	const float collisionFriction = 2.0f;
 	const float baseFriction = 0.1f;
 	const float gravity = 0.125f;
-	const float repulsionFac = 1.1f;
+	const float repulsionFac = 1.2f;
 
 	// TODO Move these to input Handler
 	const float mouseLookSensitivity = 100.0f;

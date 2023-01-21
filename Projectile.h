@@ -16,7 +16,7 @@ public:
 private:
 	glm::vec3 modelOrientation;
 	glm::vec3 orientation;
-	const float speed = 1.0;
+	const float speed = 40.0;
 
 
 };

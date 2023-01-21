@@ -99,6 +99,20 @@ int main()
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
 	Skybox skybox(skyboxFacesDirectory);
 
+	/*
+	// Create statue object
+	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
+	glm::vec3 statueTranslation(40.0f, 40.0f, 120.0f);
+	glm::quat statueRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 statueScale(10.0f, 10.0f, 10.0f);
+	GameObject statue(
+		statueModelPath.c_str(),
+		statueTranslation,
+		statueScale,
+		statueRotation
+	);
+	*/
+
 	// Create wall object
 	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
 	glm::vec3 wallTranslation(0.0f, 0.0f, 0.1f);
@@ -113,16 +127,6 @@ int main()
 	);
 
 	MotionHandler::AddSolidObject(&wall);
-
-	// Create projectile object
-	std::string projectilePath = parentDir + "/models/sword/scene.gltf";
-	glm::vec3 projectileScale(1.0f, 1.0f, 1.0f);
-	Projectile projectile(
-		camera.orientation,
-		projectilePath.c_str(),
-		camera.position + glm::vec3(-80.0f, 0.0f, -40.0f),
-		projectileScale
-	);
 
 	// Create floor object
 	std::string floorPath = parentDir + "/models/ground/scene.gltf";
@@ -139,14 +143,45 @@ int main()
 
 	MotionHandler::AddSolidObject(&floor);
 
+	// Create projectile object
+	std::string projectilePath = parentDir + "/models/statue/scene.gltf";
+	glm::vec3 projectileScale(5.0f, 5.0f, 5.0f);
+	glm::vec3 projectileTranslationAdjustment(2.0f, 2.0f, 0.0f);
+	Projectile* projectile = new Projectile(
+		camera.orientation,
+		projectilePath.c_str(),
+		camera.position + projectileTranslationAdjustment,
+		projectileScale
+	);
+
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_X,
-		[&camera]() -> void {
-			camera.Jump();
+		[&projectile, &camera, &projectilePath, &projectileScale, &projectileTranslationAdjustment]() -> void {
+			std::cout << "fired" << std::endl;
+			delete projectile;
+			projectile = new Projectile(
+				camera.orientation,
+				projectilePath.c_str(),
+				camera.position + projectileTranslationAdjustment,
+				projectileScale );
+			
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_Q,
+		GLFW_PRESS,
+		[&projectile, &camera, &projectilePath, &projectileScale, &projectileTranslationAdjustment]() -> void {
+			std::cout << "fired" << std::endl;
+			delete projectile;
+			projectile = new Projectile(
+				camera.orientation,
+				projectilePath.c_str(),
+				camera.position + projectileTranslationAdjustment,
+				projectileScale);
 		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
@@ -259,10 +294,13 @@ int main()
 			// Creates new title
 			std::string FPS = std::to_string((1.0 / deltaTime) * counter);
 			std::string ms = std::to_string((deltaTime / counter) * 1000);
-			std::string x = std::to_string(camera.position.x);
-			std::string y = std::to_string(camera.position.y);
-			std::string z = std::to_string(camera.position.z);
-			std::string newTitle = "05t4r " + FPS + "FPS / " + ms + "ms  x: " + x + " y: " + y + " z: " + z;
+			std::string xO = std::to_string(camera.orientation.x);
+			std::string yO = std::to_string(camera.orientation.y);
+			std::string zO = std::to_string(camera.orientation.z);
+			std::string xP = std::to_string(camera.position.x);
+			std::string yP = std::to_string(camera.position.y);
+			std::string zP = std::to_string(camera.position.z);
+			std::string newTitle = "05t4r " + FPS + "FPS / " + ms + "ms Orientation: x: " + xO + " y: " + yO + " z: " + zO + "  Position: x: " + xP + " y: " + yP + " z: " + zP;
 			glfwSetWindowTitle(window, newTitle.c_str());
 
 			// Resets times and counter
@@ -272,7 +310,7 @@ int main()
 			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update(time);
-			projectile.Update();
+			projectile->Update();
 			//projectile.Update();
 			if (lastCycle == counter)
 			{
@@ -305,7 +343,8 @@ int main()
 		wall.Draw(standardShader);
 		floor.Draw(standardShader);
 		skybox.Draw(skyboxShader);
-		projectile.Draw(standardShader);
+		projectile->Draw(standardShader);
+		//statue.Draw(standardShader);
 
 
 		// Swap back with front buffer
@@ -321,7 +360,7 @@ int main()
 		shaders[i].Delete();
 
 	}
-
+	delete projectile;
 	glfwDestroyWindow(window);
 
 	glfwTerminate();
