@@ -331,10 +331,10 @@ int main()
 		}
 
 		// Draw
-		wall.Draw(standardShader);
-		floor.Draw(standardShader);
-		skybox.Draw(skyboxShader);
 		projectile.Draw(standardShader);
+		floor.Draw(standardShader);
+		wall.Draw(standardShader);
+		skybox.Draw(skyboxShader);
 		//statue.Draw(standardShader);
 
 

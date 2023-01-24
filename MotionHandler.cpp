@@ -19,8 +19,8 @@ float MotionHandler::SignOfQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3
 //adjusts destination to avoid passing through triangles
 glm::vec3 MotionHandler::ApplyTranslation(glm::vec3 start, glm::vec3 destination, glm::vec3&  normal)
 {
-	float depth = 0.5f;
-	float numLayers = 2.0f;
+	float depth = 0.9f;
+	float numLayers = 3.0f;
 	float buffer = 0.8f;
 
 	glm::vec3 newDestination = destination;
