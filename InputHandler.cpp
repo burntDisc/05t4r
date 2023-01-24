@@ -69,7 +69,7 @@ void InputHandler::ProcessInput()
 	}
 
 	// joystick logic
-	const float joystickThreshold = 0.4f;
+	const float joystickThreshold = 0.3f;
 	for (int i = 0; i < inputSubscriptions.size(); ++i)
 	{
 		int code = inputSubscriptions[i].input;

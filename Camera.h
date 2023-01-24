@@ -59,16 +59,16 @@ private:
 
 	const float collisionAcceleration = 2.5f;
 	const float baseAcceleration = 0.4f;
-	const float jumpAcceleration = 2.00f;
+	const float jumpAcceleration = 4.00f;
 	const float boostAcceleration = 10.00f;
 	const float boostCooldown = 1.0f;
 	const float maxSpeed = 6.0f;
 	const float collisionFriction = 2.0f;
 	const float baseFriction = 0.1f;
-	const float gravity = 0.125f;
-	const float repulsionFac = 1.2f;
+	const float gravity = 0.2f;
+	const float repulsionFac = 1.3f;
 
 	// TODO Move these to input Handler
 	const float mouseLookSensitivity = 100.0f;
-	const float joystickLookSensitivity = 60.0f;
+	const float joystickLookSensitivity = 15.0f;
 };

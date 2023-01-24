@@ -42,14 +42,18 @@ glm::quat ProjectileStream::GetRotation(glm::vec3 newOrientation)
 
 void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation)
 {
-	Projectile newProjectile;
-	newProjectile.translation = newTranslation;
-	newProjectile.orientation = newOrientation;
-	newProjectile.rotation = GetRotation(newOrientation);
+	if (currentTime - prevFireTime > fireInterval)
+	{
+		prevFireTime = currentTime;
+		Projectile newProjectile;
+		newProjectile.translation = newTranslation;
+		newProjectile.orientation = newOrientation;
+		newProjectile.rotation = GetRotation(newOrientation);
 
-	projectiles.push_back(newProjectile);
-	if (projectiles.size() > maxProjectiles) {
-		projectiles.pop_front();
+		projectiles.push_back(newProjectile);
+		if (projectiles.size() > maxProjectiles) {
+			projectiles.pop_front();
+		}
 	}
 }
 
@@ -61,8 +65,9 @@ void ProjectileStream::Draw(Shader shader)
 	}
 }
 
-void ProjectileStream::Update()
+void ProjectileStream::Update(float time)
 {
+	currentTime = time;
 	for (int i = 0; i < projectiles.size(); ++i)
 	{
 		projectiles[i].translation += projectiles[i].orientation * speed;

@@ -144,7 +144,7 @@ int main()
 	MotionHandler::AddSolidObject(&floor);
 
 	// Create projectile object
-	std::string projectilePath = parentDir + "/models/statue/scene.gltf";
+	std::string projectilePath = parentDir + "/models/projectile/scene.gltf";
 	glm::vec3 projectileScale(2.0f, 2.0f, 2.0f);
 	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
 	ProjectileStream projectile(
@@ -268,7 +268,7 @@ int main()
 	unsigned int counter = 0;
 	unsigned int lastCycle = 0;
 
-	double GameLoopInterval = 1.00/25.00;  // seconds
+	double GameLoopInterval = 1.00/30.00;  // seconds
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -301,7 +301,7 @@ int main()
 			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update((float)time);
-			projectile.Update();
+			projectile.Update((float)time);
 			//projectile.Update();
 			if (lastCycle == counter)
 			{

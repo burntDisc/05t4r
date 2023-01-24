@@ -12,12 +12,15 @@ public:
 		glm::vec3 initScale,
 		glm::vec3 initModelOrientation = glm::vec3(0.0f,0.0f,0.0f));
 	
-	void Update();
+	void Update(float time);
 	void Draw(Shader shader);
 
 	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation);
 
 private:
+	float currentTime = 0;
+	const float fireInterval = 0.1f;
+	float prevFireTime = 0;
 
 	struct Projectile
 	{
@@ -30,7 +33,7 @@ private:
 	glm::quat GetRotation(glm::vec3 newOrientation);
 	glm::vec3 modelOrientation;
 	const float speed = 20.0f;
-	const int maxProjectiles = 255;
+	const int maxProjectiles = 10;
 
 
 };
