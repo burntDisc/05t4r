@@ -1,7 +1,7 @@
 
 This is an aimless exploration into opengl.... so far it supports mouse and keyboard and gamepads(tested xbox one) on windows (tested Windows 11)
 
-Code Referenced and models used:
+References:
 
 Formula for line segment triangle intersection:
 https://stackoverflow.com/questions/42740765/intersection-between-line-and-triangle-in-3dThe 
