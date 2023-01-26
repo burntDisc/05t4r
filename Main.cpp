@@ -20,6 +20,8 @@ namespace fs = std::experimental::filesystem;
 #include "GeneratedGround.h"
 #include "GeneratedWalls.h"
 #include "ProjectileStream.h"
+#include "NetworkHandler.h"
+#include "Opponent.h"
 
 int main()
 {
@@ -152,6 +154,18 @@ int main()
 		projectileScale
 	);
 
+	// Create Opponent object
+	std::string oppmPath = parentDir + "/models/statue/scene.gltf";
+	glm::vec3 oppTranslation(0.0f, 0.0f, 0.0f);
+	glm::quat oppRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 oppScale(10.0f, 10.0f, 10.0f);
+	Opponent opp(
+		oppmPath.c_str(),
+		oppTranslation,
+		oppScale,
+		oppRotation
+	);
+
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
 	InputHandler::Subscribe(
@@ -260,7 +274,9 @@ int main()
 		});
 
 	// Main Render loop--------------------------------------------------------
-
+	// 
+	//Connect to network
+	NetworkHandler NH(0);
 	// Variables to track FPS
 	double lastTime = 0.0;
 	double time = 0.0;
@@ -302,6 +318,7 @@ int main()
 			floor.Update();
 			camera.Update((float)time);
 			projectile.Update((float)time);
+			opp.Update();
 			//projectile.Update();
 			if (lastCycle == counter)
 			{
@@ -335,6 +352,7 @@ int main()
 		floor.Draw(standardShader);
 		wall.Draw(standardShader);
 		skybox.Draw(skyboxShader);
+		opp.Draw(standardShader);
 		//statue.Draw(standardShader);
 
 
