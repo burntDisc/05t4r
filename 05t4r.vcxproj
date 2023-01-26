@@ -199,7 +199,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="chat_client.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />
     <ClCompile Include="ExplodingObject.cpp" />
     <ClCompile Include="FileLoader.cpp" />
