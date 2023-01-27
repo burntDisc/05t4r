@@ -77,17 +77,20 @@ void NetworkHandler::Client()
             running_mutex.unlock();
             udp::endpoint sender_endpoint;
             size_t reply_length = s.receive_from(boost::asio::buffer(remoteGamestate, max_length), sender_endpoint);
-            std::cout << "Gamestate recieved: ";
-            std::cout << " x: " << remoteGamestate->position.x;
-            std::cout << " y: " << remoteGamestate->position.y;
-            std::cout << " z: " << remoteGamestate->position.z;
+            /*
+            std::cout << "remote gamestate: " << std::endl;
+            std::cout <<remoteGamestate->position.x << std::endl;
+            std::cout <<remoteGamestate->position.y << std::endl;
+            std::cout <<remoteGamestate->position.z << std::endl;
+            */
             gamestate_mutex.lock();
+            gamestate.valid = reply_length > 0;
             if (remoteGamestate->position != gamestate.position)
             {
                 gamestate = *remoteGamestate;
             }
             gamestate_mutex.unlock();
-            std::cout << "\n";
+
             running_mutex.lock();
         }
         running_mutex.unlock();

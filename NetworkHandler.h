@@ -10,6 +10,7 @@ public:
 	// Structure to standardize the vertices used in the meshes
 	struct Gamestate
 	{
+		bool valid;
 		glm::vec3 position;
 	};
 	// TODO: without tmp constructor is optomized out O.O
