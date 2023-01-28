@@ -15,7 +15,6 @@ std::mutex NetworkHandler::running_mutex;
 
 NetworkHandler::NetworkHandler(int tmp)
 {
-    std::cout << "running" << std::endl;
     client = new std::thread(Client);
 }
 
@@ -45,7 +44,7 @@ void NetworkHandler::SetGamestate(Gamestate newGamestate)
 
 void NetworkHandler::Client()
 {
-    std::cout << "running";
+    std::cout << "Starting Web Client...";
     try
     {
         std::string host = "192.168.42.108";
