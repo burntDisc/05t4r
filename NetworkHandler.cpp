@@ -73,10 +73,10 @@ void NetworkHandler::Client()
 
         // TODO FUTURE: there is where to do hole punching
         char initData[] = "start";
-
+        
         size_t request_length = sizeof(initData);
         sock.send_to(boost::asio::buffer(&initData, request_length), *endpoints.begin());
-        
+       
         runningMutex.lock();
         while (!running)
         {
@@ -124,12 +124,11 @@ void NetworkHandler::Server()
         {
             runningMutex.unlock();
 
-            Gamestate in_state;
-            sock.send_to(boost::asio::buffer(&in_state, sizeof(in_state)), sender_endpoint);
-
             remoteMutex.lock();
-            remoteState = in_state;
+            Gamestate out_state = remoteState;
             remoteMutex.unlock();
+
+            sock.send_to(boost::asio::buffer(&out_state, sizeof(out_state)), sender_endpoint);
 
             runningMutex.lock();
         }
