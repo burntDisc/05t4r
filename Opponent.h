@@ -13,8 +13,5 @@ public:
 		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	void Update();
-private:
-	glm::vec3 velocity;
-	glm::vec3 destination;
 };
 

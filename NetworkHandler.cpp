@@ -91,6 +91,12 @@ void NetworkHandler::Client()
             remoteState = in_state;
             remoteMutex.unlock();
 
+
+            std::cout << "recieved:" << std::endl;
+            std::cout << in_state.position.x << std::endl;
+            std::cout << in_state.position.y << std::endl;
+            std::cout << in_state.position.z << std::endl;
+
             runningMutex.lock();
         }
         runningMutex.unlock();

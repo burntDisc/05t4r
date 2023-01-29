@@ -23,7 +23,7 @@ void Opponent::Update()
 
 	if (state.valid)
 	{
-		destination = state.position;
+		translation = state.position;
 	}
 }
 
