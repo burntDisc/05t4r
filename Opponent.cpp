@@ -24,6 +24,7 @@ void Opponent::Update()
 	if (state.valid)
 	{
 		translation = state.position;
+		rotation = state.orientation;
 	}
 }
 

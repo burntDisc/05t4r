@@ -13,6 +13,7 @@ public:
 	{
 		bool valid;
 		glm::vec3 position;
+		glm::vec3 orientation;
 	};
 	// TODO: without tmp constructor is optomized out O.O
 	NetworkHandler(int tmp);

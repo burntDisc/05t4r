@@ -65,8 +65,9 @@ private:
 	const float maxSpeed = 6.0f;
 	const float collisionFriction = 2.0f;
 	const float baseFriction = 0.1f;
-	const float gravity = 0.2f;
+	const float gravity = 0.18f;
 	const float repulsionFac = 1.3f;
+	const glm::vec3 modelAdjustment = glm::vec3(0.0f, 5.0f, 0.0f);
 
 	// TODO Move these to input Handler
 	const float mouseLookSensitivity = 100.0f;

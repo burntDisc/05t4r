@@ -127,7 +127,8 @@ void Camera::Update(float time)
 	}
 	position = newPosition;
 	auto state = NetworkHandler::GetGamestate();
-	state.position = newPosition;
+	state.position = newPosition; 
+	state.position += modelAdjustment;
 	NetworkHandler::SetGamestate(state);
 }
 
@@ -225,6 +226,11 @@ void Camera::BindCursor()
 
 	// Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
 	glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
+
+	//update remote state
+	auto state = NetworkHandler::GetGamestate();
+	state.orientation = orientation;
+	NetworkHandler::SetGamestate(state);
 
 }
 

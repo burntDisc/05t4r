@@ -3,6 +3,10 @@
 
 #include <iostream> // REMOVE 
 
+//***************************************************************
+//TODO: http://www.peroxide.dk/papers/collision/collision.pdf
+// **************************************************************
+
 std::vector<GameObject*> MotionHandler::solidObjects;
 static const float minTravelLength = 0.0000001f;
 
