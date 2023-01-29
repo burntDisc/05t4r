@@ -24,7 +24,12 @@ void Opponent::Update()
 	if (state.valid)
 	{
 		translation = state.position;
-		rotation = state.orientation;
+
+		rotation = glm::lookAt(
+			(glm::vec3)0,				// position
+			state.orientation,			// target
+			glm::vec3(0.0f, 1.0f, 0.0f) // up
+		);
 	}
 }
 
