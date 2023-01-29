@@ -19,29 +19,11 @@ Opponent::Opponent
 
 void Opponent::Update()
 {
-	const float speed = 0.3f;
 	NetworkHandler::Gamestate state = NetworkHandler::GetGamestate();
 
 	if (state.valid)
 	{
 		destination = state.position;
-	}
-
-	glm::vec3 direction = destination - translation;
-	
-	if (length(direction))
-	{
-		velocity = normalize(direction) * speed;
-
-		if (glm::length(direction) < glm::length(velocity))
-		{
-			translation = destination;
-		}
-		else
-		{
-			translation += velocity;
-		}
-
 	}
 }
 
