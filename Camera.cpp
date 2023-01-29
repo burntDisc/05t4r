@@ -229,8 +229,7 @@ void Camera::BindCursor()
 
 	//update remote state
 	auto state = NetworkHandler::GetGamestate();
-	glm::vec3 const up(0.f, 0.f, 1.f);
-	state.rotation = glm::lookAt((glm::vec3)0, orientation, up);
+	state.orientation = orientation;
 	NetworkHandler::SetGamestate(state);
 
 }
