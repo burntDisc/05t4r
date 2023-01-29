@@ -1,50 +1,56 @@
 #include "NetworkHandler.h"
 
 #include <iostream>
-#include <boost/asio.hpp>
-
+//****************************************
+// TODO should be lock_guard not mutex
+//***************************************
 using boost::asio::ip::udp;
-
 enum { max_length = 1024 };
 
-NetworkHandler::Gamestate NetworkHandler::gamestate;
-std::mutex NetworkHandler::gamestate_mutex;
+NetworkHandler::Gamestate NetworkHandler::localState;
+NetworkHandler::Gamestate NetworkHandler::remoteState;
+std::mutex NetworkHandler::remoteMutex;
+std::mutex NetworkHandler::localMutex;
 
 bool NetworkHandler::running;
-std::mutex NetworkHandler::running_mutex;
+std::mutex NetworkHandler::runningMutex;
 
 NetworkHandler::NetworkHandler(int tmp)
 {
+    std::cout << "Starting network threads..." << std::endl;
+    server = new std::thread(Server);
     client = new std::thread(Client);
 }
 
 NetworkHandler::~NetworkHandler()
 {
-    running_mutex.lock();
+    runningMutex.lock();
     running = false;
-    running_mutex.unlock();
+    runningMutex.unlock();
     client->join();
+    server->join();
     delete client;
+    delete server;
 }
 
 NetworkHandler::Gamestate NetworkHandler::GetGamestate()
 {
-    gamestate_mutex.lock();
-    Gamestate current_gamestate = gamestate;
-    gamestate_mutex.unlock();
+    remoteMutex.lock();
+    Gamestate current_gamestate = remoteState;
+    remoteMutex.unlock();
     return current_gamestate;
 }
 
 void NetworkHandler::SetGamestate(Gamestate newGamestate)
 {
-    gamestate_mutex.lock();
-    gamestate = newGamestate;
-    gamestate_mutex.unlock();
+    localMutex.lock();
+    localState = newGamestate;
+    localMutex.unlock();
 }
 
 void NetworkHandler::Client()
 {
-    std::cout << "Starting Web Client...";
+    std::cout << "Starting Web Client..." << std::endl;
     try
     {
         std::string host = "192.168.42.108";
@@ -52,52 +58,80 @@ void NetworkHandler::Client()
 
         boost::asio::io_context io_context;
 
-        udp::socket s(io_context, udp::endpoint(udp::v4(), 0));
+        udp::socket sock(io_context, udp::endpoint(udp::v4(), 0));
 
         udp::resolver resolver(io_context);
-        udp::resolver::results_type endpoints =
-            resolver.resolve(udp::v4(), host, port);
+        udp::resolver::results_type endpoints = resolver.resolve(udp::v4(), host, port);
 
+        // TODO FUTURE: there is where to do hole punching
+        char initData[] = "start";
 
-        gamestate_mutex.lock();
-        size_t request_length = sizeof(gamestate);
-        s.send_to(boost::asio::buffer(&gamestate, request_length), *endpoints.begin());
-        gamestate_mutex.unlock();
-
-
-        Gamestate defaultState;
-        Gamestate* remoteGamestate = &defaultState;
-
-        // TODO should be lock_guard
-        running_mutex.lock();
-
+        size_t request_length = sizeof(initData);
+        sock.send_to(boost::asio::buffer(&initData, request_length), *endpoints.begin());
+        
+        runningMutex.lock();
         while (!running)
         {
-            running_mutex.unlock();
+            runningMutex.unlock();
+            Gamestate in_state;
             udp::endpoint sender_endpoint;
-            size_t reply_length = s.receive_from(boost::asio::buffer(remoteGamestate, max_length), sender_endpoint);
-            /*
-            std::cout << "remote gamestate: " << std::endl;
-            std::cout <<remoteGamestate->position.x << std::endl;
-            std::cout <<remoteGamestate->position.y << std::endl;
-            std::cout <<remoteGamestate->position.z << std::endl;
-            */
-            gamestate_mutex.lock();
-            gamestate.valid = reply_length > 0;
-            if (remoteGamestate->position != gamestate.position)
-            {
-                gamestate = *remoteGamestate;
-            }
-            gamestate_mutex.unlock();
+            size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, sizeof(in_state)), sender_endpoint);
 
-            running_mutex.lock();
+            in_state.valid = reply_length > 0;
+
+            remoteMutex.lock();
+            remoteState = in_state;
+            remoteMutex.unlock();
+
+            runningMutex.lock();
         }
-        running_mutex.unlock();
+        runningMutex.unlock();
     }
     catch (std::exception& e)
     {
+        runningMutex.unlock();
+        localMutex.unlock();
         std::cerr << "Exception in Client: " << e.what() << "\n";
-        running_mutex.unlock();
-        gamestate_mutex.unlock();
     }
+}
+
+void NetworkHandler::Server()
+{
+    std::cout << "Starting Web Server..." << std::endl;
+    try
+    {
+        unsigned short port = 4000;
+
+        boost::asio::io_context io_context;
+
+        udp::socket sock(io_context, udp::endpoint(udp::v4(), port));
+
+        // init packet to get client
+        char initData[256];
+        udp::endpoint sender_endpoint;
+        size_t length = sock.receive_from(boost::asio::buffer(initData, 256), sender_endpoint);
+
+        runningMutex.lock();
+        while (!running)
+        {
+            runningMutex.unlock();
+
+            Gamestate in_state;
+            sock.send_to(boost::asio::buffer(&in_state, sizeof(in_state)), sender_endpoint);
+
+            remoteMutex.lock();
+            remoteState = in_state;
+            remoteMutex.unlock();
+
+            runningMutex.lock();
+        }
+        runningMutex.unlock();
+    }
+    catch (std::exception& e)
+    {
+        runningMutex.unlock();
+        remoteMutex.unlock();
+        std::cerr << "Exception: " << e.what() << "\n";
+    }
+
 }

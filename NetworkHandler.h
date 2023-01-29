@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <thread>
 #include <mutex>
+#include <boost/asio.hpp>
 
 class NetworkHandler
 {
@@ -22,13 +23,19 @@ public:
 	static Gamestate GetGamestate();
 
 	static void Client();
-	static Gamestate gamestate;
-	static std::mutex gamestate_mutex;
+    static void Server();
+
+	static Gamestate remoteState;
+	static Gamestate localState;
+
+	static std::mutex remoteMutex;
+	static std::mutex localMutex;
 
 	static bool running;
-	static std::mutex running_mutex;
+	static std::mutex runningMutex;
 
 private:
 	std::thread* client = nullptr;
+    std::thread* server = nullptr;
 };
 
