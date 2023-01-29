@@ -7,6 +7,7 @@
 #include <glm/gtx/projection.hpp>
 
 #include "MotionHandler.h"
+#include "NetworkHandler.h"
 
 #include <iostream> // remove
 
@@ -125,6 +126,9 @@ void Camera::Update(float time)
 		friction = baseFriction;
 	}
 	position = newPosition;
+	auto state = NetworkHandler::GetGamestate();
+	state.position = newPosition;
+	NetworkHandler::SetGamestate(state);
 }
 
 void Camera::AdjustVelocity(float* axes)
