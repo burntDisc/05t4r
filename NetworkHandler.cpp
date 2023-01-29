@@ -1,6 +1,9 @@
 #include "NetworkHandler.h"
 
 #include <iostream>
+
+
+#include <windows.h> // TODO this is for Sleep() (needs to be cross platform)
 //****************************************
 // TODO should be lock_guard not mutex
 //***************************************
@@ -19,6 +22,11 @@ NetworkHandler::NetworkHandler(int tmp)
 {
     std::cout << "Starting network threads..." << std::endl;
     server = new std::thread(Server);
+    for (int i = 0; i < 10; ++i) 
+    {
+        std::cout << "Starting Client in...." << 10 - i << std::endl;
+        Sleep(1000);
+    }
     client = new std::thread(Client);
 }
 
