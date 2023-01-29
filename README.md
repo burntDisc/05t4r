@@ -1,6 +1,8 @@
 
 This is an aimless exploration into opengl.... so far it supports mouse and keyboard and gamepads(tested xbox one) on windows (tested Windows 11)
 
+(Possible WinRT nuget dependency issues when building in Visual studio versions older than Visual Studio 2022 where it is included by default)
+
 References:
 
 Formula for line segment triangle intersection:
