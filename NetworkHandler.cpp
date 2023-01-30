@@ -22,9 +22,9 @@ NetworkHandler::NetworkHandler(int tmp)
 {
     std::cout << "Starting network threads..." << std::endl;
     server = new std::thread(Server);
-    for (int i = 0; i < 10; ++i) 
+    for (int i = 0; i < 8; ++i) 
     {
-        std::cout << "Starting Client in...." << 10 - i << std::endl;
+        std::cout << "Starting Client in...." << 8 - i << std::endl;
         Sleep(1000);
     }
     client = new std::thread(Client);

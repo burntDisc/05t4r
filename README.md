@@ -14,3 +14,6 @@ https://github.com/VictorGordan/opengl-tutorials
 
 netoworking:
 https://www.boost.org/doc/libs/1_78_0/doc/html/boost_asio/examples/cpp11_examples.html
+
+orientation to quaterion conversion:
+https://gamedev.net/forums/topic/669405-creating-a-quaternion-from-a-direction/5236168/

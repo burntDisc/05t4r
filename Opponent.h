@@ -13,5 +13,8 @@ public:
 		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	void Update();
+private:
+	glm::quat LookRotation(glm::vec3 orientation);
+	glm::quat modelRotation;
 };
 
