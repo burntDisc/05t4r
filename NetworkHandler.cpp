@@ -97,8 +97,6 @@ void NetworkHandler::Client()
     }
     catch (std::exception& e)
     {
-        runningMutex.unlock();
-        localMutex.unlock();
         std::cerr << "Exception in Client: " << e.what() << "\n";
     }
 }
@@ -136,8 +134,6 @@ void NetworkHandler::Server()
     }
     catch (std::exception& e)
     {
-        runningMutex.unlock();
-        remoteMutex.unlock();
         std::cerr << "Exception: " << e.what() << "\n";
     }
 
