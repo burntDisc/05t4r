@@ -5,12 +5,12 @@ This is an aimless exploration into opengl.... so far it supports mouse and keyb
 
 References:
 
-Formula for line segment triangle intersection:
-https://stackoverflow.com/questions/42740765/intersection-between-line-and-triangle-in-3dThe 
+Collision Detection and resolution:
+http://www.peroxide.dk/papers/collision/collision.pdf
 
 gtlf loading and opengl pipeline found in the first commit of this project is based on the YouTube tutorial playlist which can be found here: 
 https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-.
 https://github.com/VictorGordan/opengl-tutorials
 
-netoworking
+netoworking:
 https://www.boost.org/doc/libs/1_78_0/doc/html/boost_asio/examples/cpp11_examples.html

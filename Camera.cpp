@@ -104,7 +104,7 @@ void Camera::Update(float time)
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
-	glm::vec3 newPosition = MotionHandler::ApplyTranslation(position, position + velocity, surfaceNormal);
+	glm::vec3 newPosition = MotionHandler::CollideAndSlide(position, velocity, surfaceNormal);
 	if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
 	{
 		flatNav = true;

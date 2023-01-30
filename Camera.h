@@ -60,13 +60,13 @@ private:
 	const float collisionAcceleration = 2.5f;
 	const float baseAcceleration = 0.4f;
 	const float jumpAcceleration = 4.00f;
-	const float boostAcceleration = 10.00f;
+	const float boostAcceleration = 8.00f;
 	const float boostCooldown = 1.0f;
-	const float maxSpeed = 6.0f;
+	const float maxSpeed = 5.0f;
 	const float collisionFriction = 2.0f;
 	const float baseFriction = 0.1f;
-	const float gravity = 0.18f;
-	const float repulsionFac = 1.3f;
+	const float gravity = 0.09f;
+	const float repulsionFac = 1.5f;
 	const glm::vec3 modelAdjustment = glm::vec3(0.0f, 5.0f, 0.0f);
 
 	// TODO Move these to input Handler

@@ -273,10 +273,11 @@ int main()
 			camera.UnbindCursor();
 		});
 
-	// Main Render loop--------------------------------------------------------
-	// 
 	//Connect to network
 	NetworkHandler NH(0);
+
+	// Main Render loop--------------------------------------------------------
+	// 
 	// Variables to track FPS
 	double lastTime = 0.0;
 	double time = 0.0;
