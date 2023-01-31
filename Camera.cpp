@@ -95,16 +95,21 @@ void Camera::Back()
 void Camera::Update(float time)
 {
 	worldTime = time;
+	glm::vec3 newPosition = position;
 	if (glm::length(velocity) > friction)
 	{
 		velocity = velocity - friction * glm::normalize(velocity);
+		newPosition = MotionHandler::CollideAndSlide(position, velocity, surfaceNormal);
 	}
 	else
 	{
+		if (surfaceNormal == glm::vec3(0.0, 0.0, 0.0))
+		{
+			newPosition = MotionHandler::CollideAndSlide(position, velocity, surfaceNormal);
+		}
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
-	glm::vec3 newPosition = MotionHandler::CollideAndSlide(position, velocity, surfaceNormal);
 	if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
 	{
 		flatNav = true;
@@ -122,7 +127,6 @@ void Camera::Update(float time)
 	else
 	{
 		flatNav = false;
-		velocity.y -= gravity;
 		friction = baseFriction;
 	}
 	position = newPosition;

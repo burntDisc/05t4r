@@ -58,7 +58,7 @@ private:
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	const float collisionAcceleration = 2.5f;
-	const float baseAcceleration = 0.4f;
+	const float baseAcceleration = 0.8f;
 	const float jumpAcceleration = 4.00f;
 	const float boostAcceleration = 8.00f;
 	const float boostCooldown = 1.0f;

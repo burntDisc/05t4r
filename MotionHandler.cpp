@@ -9,7 +9,6 @@
 
 std::vector<GameObject*> MotionHandler::solidObjects;
 MotionHandler::CollisionPacket MotionHandler::packet = {};
-static const float minTravelLength = 0.0000001f;
 
 void MotionHandler::AddSolidObject(GameObject* object)
 {
@@ -369,7 +368,7 @@ glm::vec3 MotionHandler::CollideWithWorld(const glm::vec3& pos, const glm::vec3&
 	float unitScale = unitsPerMeter / 100.0f;
 	float veryCloseDistance = 0.005f * unitScale;
 	// do we need to worry?
-	if (collisionRecursionDepth > 4) // ----------------------------------------------------TODO: should be constant
+	if (collisionRecursionDepth > 2) // ----------------------------------------------------TODO: should be constant
 		return pos;
 	// Ok, we need to worry:
 	collisionPackage->velocity = vel;
@@ -425,9 +424,9 @@ glm::vec3 MotionHandler::CollideWithWorld(const glm::vec3& pos, const glm::vec3&
 
 glm::vec3 MotionHandler::CollideAndSlide(const glm::vec3& position, const glm::vec3& vel, glm::vec3& normal)
 {
+	glm::vec3 gravity(0.0f, -5.0f, 0.0f);
+
 	normal = glm::vec3(0.0f, 0.0f, 0.0f);
-	// gravity TODO LINK TO VAR
-	glm::vec3 gravity = glm::vec3(0.0, -2.0, 0.0); 
 	CollisionPacket* collisionPackage = &packet;
 	// Do collision detection:
 	collisionPackage->R3Position = position;
@@ -442,22 +441,20 @@ glm::vec3 MotionHandler::CollideAndSlide(const glm::vec3& position, const glm::v
 	// Iterate until we have our final position.
 	glm::vec3 finalPosition = CollideWithWorld(eSpacePosition,
 		eSpaceVelocity, normal);
+
 	// Add gravity pull:
 
-	/*
-
-
-// To remove gravity uncomment from here .....
-// Set the new R3 position (convert back from eSpace to R3
-	collisionPackage->R3Position =
-		finalPosition * collisionPackage->eRadius;
-	collisionPackage->R3Velocity = gravity;
-	eSpaceVelocity = gravity / collisionPackage->eRadius;
-	finalPosition = CollideWithWorld(finalPosition,
-		eSpaceVelocity);
+	// To remove gravity comment from here .....
+	if (normal == glm::vec3(0.0f, 0.0f, 0.0f))
+	{
+		collisionPackage->R3Position =
+			finalPosition * collisionPackage->eRadius;
+		collisionPackage->R3Velocity = gravity;
+		eSpaceVelocity = gravity / collisionPackage->eRadius;
+		finalPosition = CollideWithWorld(finalPosition,
+			eSpaceVelocity, normal);
+	}
 	// ... to here
-	*/
-
 
 	// Convert final result back to R3:
 	finalPosition = finalPosition * collisionPackage->eRadius;
