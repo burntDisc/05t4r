@@ -72,9 +72,14 @@ void NetworkHandler::Client()
         char initData[] = "start";
         
         size_t request_length = sizeof(initData);
-        do {
+        bool recieving = false;
+        while(!recieving)
+        {
             sock.send_to(boost::asio::buffer(&initData, request_length), *endpoints.begin());
-        } while (!running);
+            runningMutex.lock();
+            recieving = running;
+            runningMutex.unlock();
+        }
 
         runningMutex.lock();
         while (running)
