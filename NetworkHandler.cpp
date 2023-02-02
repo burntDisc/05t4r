@@ -21,8 +21,9 @@ std::mutex NetworkHandler::runningMutex;
 NetworkHandler::NetworkHandler(int tmp)
 {
     std::cout << "Starting network threads..." << std::endl;
-    server = new std::thread(Server);
+    running = false;
     client = new std::thread(Client);
+    server = new std::thread(Server);
 }
 
 NetworkHandler::~NetworkHandler()
@@ -71,10 +72,12 @@ void NetworkHandler::Client()
         char initData[] = "start";
         
         size_t request_length = sizeof(initData);
-        while(!sock.send_to(boost::asio::buffer(&initData, request_length), *endpoints.begin()));
-       
+        do {
+            sock.send_to(boost::asio::buffer(&initData, request_length), *endpoints.begin());
+        } while (!running);
+
         runningMutex.lock();
-        while (!running)
+        while (running)
         {
             runningMutex.unlock();
             Gamestate in_state;
@@ -114,7 +117,8 @@ void NetworkHandler::Server()
         size_t length = sock.receive_from(boost::asio::buffer(initData, 256), sender_endpoint);
 
         runningMutex.lock();
-        while (!running)
+        running = true;
+        while (running)
         {
             runningMutex.unlock();
 
