@@ -22,11 +22,6 @@ NetworkHandler::NetworkHandler(int tmp)
 {
     std::cout << "Starting network threads..." << std::endl;
     server = new std::thread(Server);
-    for (int i = 0; i < 8; ++i) 
-    {
-        std::cout << "Starting Client in...." << 8 - i << std::endl;
-        Sleep(1000);
-    }
     client = new std::thread(Client);
 }
 
@@ -76,7 +71,7 @@ void NetworkHandler::Client()
         char initData[] = "start";
         
         size_t request_length = sizeof(initData);
-        sock.send_to(boost::asio::buffer(&initData, request_length), *endpoints.begin());
+        while(!sock.send_to(boost::asio::buffer(&initData, request_length), *endpoints.begin()));
        
         runningMutex.lock();
         while (!running)
