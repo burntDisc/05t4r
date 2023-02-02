@@ -86,6 +86,8 @@ void Opponent::Update(float time)
 	NetworkHandler::Gamestate state = NetworkHandler::GetGamestate(true);
 	if (state.valid)
 	{
+        rotation = LookRotation(state.orientation) * modelRotation;
+
         prevTranslation = nextTranslation;
         nextTranslation = state.position;
 
