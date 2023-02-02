@@ -319,7 +319,7 @@ int main()
 			floor.Update();
 			camera.Update((float)time);
 			projectile.Update((float)time);
-			opp.Update();
+			opp.Update((float)time);
 			//projectile.Update();
 			if (lastCycle == counter)
 			{

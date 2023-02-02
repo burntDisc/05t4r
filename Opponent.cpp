@@ -2,6 +2,7 @@
 #include "NetworkHandler.h"
 
 #include <iostream>
+#include <cmath>
 
 Opponent::Opponent
 (
@@ -78,15 +79,23 @@ glm::quat Opponent::LookRotation(glm::vec3 orientation)
     return quaternion;
 }
 
-void Opponent::Update()
+void Opponent::Update(float time)
 {
-	NetworkHandler::Gamestate state = NetworkHandler::GetGamestate();
+    glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
 
-	glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
+	NetworkHandler::Gamestate state = NetworkHandler::GetGamestate(true);
 	if (state.valid)
 	{
-		translation = state.position;
-        rotation = LookRotation(state.orientation) * modelRotation;
+        prevTranslation = nextTranslation;
+        nextTranslation = state.position;
+
+        latency = time - prevStateTime;
+        prevStateTime = time;
 	}
+
+    float progress = (time - prevStateTime) / latency;
+    translation.x = std::lerp(prevTranslation.x, nextTranslation.x, progress);
+    translation.y = std::lerp(prevTranslation.y, nextTranslation.y, progress);
+    translation.z = std::lerp(prevTranslation.z, nextTranslation.z, progress);
 }
 

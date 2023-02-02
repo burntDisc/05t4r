@@ -21,7 +21,7 @@ public:
 
 	static void SetGamestate(Gamestate newGamestate);
 
-	static Gamestate GetGamestate();
+	static Gamestate GetGamestate(bool consume = false);
 
 	static void Client();
     static void Server();

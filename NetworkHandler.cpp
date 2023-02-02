@@ -41,10 +41,11 @@ NetworkHandler::~NetworkHandler()
     delete server;
 }
 
-NetworkHandler::Gamestate NetworkHandler::GetGamestate()
+NetworkHandler::Gamestate NetworkHandler::GetGamestate(bool consume)
 {
     remoteMutex.lock();
     Gamestate current_gamestate = remoteState;
+    remoteState.valid = !consume;
     remoteMutex.unlock();
     return current_gamestate;
 }
