@@ -71,31 +71,90 @@ void Camera::Jump()
 
 }
 
+void Camera::ReadyDashForward()
+{
+	DashForwardReady = true;
+}
+
 void Camera::DashForward()
 {
-		velocity += boostAcceleration * orientation;
+	glm::vec3 direction = orientation;
+	if (DashForwardReady)
+	{
+		DashForwardReady = false;
+		velocity = dashInitVelocity * direction;
+	}
+	else
+	{
+		velocity += dashAcceleration * direction;
+	}
+}
+
+void Camera::ReadyDashBack()
+{
+	DashBackReady = true;
 }
 
 void Camera::DashBack()
 {
-	velocity -= boostAcceleration * orientation;
+	glm::vec3 direction = -orientation;
+	if (DashBackReady)
+	{
+		DashBackReady = false;
+		velocity = dashInitVelocity * direction;
+	}
+	else
+	{
+		velocity += dashAcceleration * direction;
+	}
+}
+
+void Camera::ReadyDashLeft()
+{
+	DashLeftReady = true;
 }
 
 void Camera::DashLeft()
 {
-	velocity -= boostAcceleration * glm::normalize(glm::cross(orientation, up));
+	glm::vec3 direction = - glm::normalize(glm::cross(orientation, up));
+	if (DashLeftReady)
+	{
+		DashLeftReady = false;
+		velocity = dashInitVelocity * direction;
+	}
+	else
+	{
+		velocity += dashAcceleration * direction;
+	}
+}
+
+
+void Camera::ReadyDashRight()
+{
+	std::cout << "right reset!!!!" << std::endl;
+	DashRightReady = true;
 }
 
 void Camera::DashRight()
 {
-	velocity += boostAcceleration * glm::normalize(glm::cross(orientation, up));
+	std::cout << "right called" << std::endl;
+	glm::vec3 direction = glm::normalize(glm::cross(orientation, up));
+	if (DashRightReady)
+	{
+		DashRightReady = false;
+		velocity = dashInitVelocity * direction;
+	}
+	else
+	{
+		velocity += dashAcceleration * direction;
+	}
 }
-
 
 void Camera::Break()
 {
 	velocity -= velocity / 2.0f;
 }
+
 void Camera::TranslateRight()
 {
 	float axes[2] = { 1.0, 0.0 };
@@ -141,7 +200,7 @@ void Camera::Update(float time)
 	{
 		velocity.y -= gravity;
 		flatNav = false;
-		friction = baseFriction;
+		friction = airFriction;
 	}
 	position = newPosition;
 	auto state = NetworkHandler::GetGamestate();

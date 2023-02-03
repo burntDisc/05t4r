@@ -46,13 +46,17 @@ void InputHandler::ProcessInput()
 			if (glfwGetKey(window, code) == event)
 			{
 				eventSubscriptions[i].pressCallback();
+				break;
 			}
+			eventSubscriptions[i].releaseCallback();
 			break;
 		case mouse:
 			if (glfwGetMouseButton(window, code) == event)
 			{
 				eventSubscriptions[i].pressCallback();
+				break;
 			}
+			eventSubscriptions[i].releaseCallback();
 			break;
 		case button:
 			GLFWgamepadstate state;
@@ -61,11 +65,12 @@ void InputHandler::ProcessInput()
 				if (state.buttons[event])
 				{
 					eventSubscriptions[i].pressCallback();
+					break;
 				}
 			}
+			eventSubscriptions[i].releaseCallback();
 			break;
 		default:
-			eventSubscriptions[i].releaseCallback();
 			break;
 		}
 	}

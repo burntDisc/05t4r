@@ -43,6 +43,10 @@ public:
 	void DashBack();
 	void DashLeft();
 	void DashRight();
+	void ReadyDashForward();
+	void ReadyDashBack();
+	void ReadyDashLeft();
+	void ReadyDashRight();
 	void Break();
 	void AdjustVelocity(float* axes);
 	void AdjustOrientation(float* axes);
@@ -51,20 +55,26 @@ public:
 	void BindCursor();
 	void UnbindCursor();
 private:
-	float friction = 0.1f;
 
+	float friction;
 	bool flatNav = false;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
+	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady = true;
+
 	const float collisionAcceleration = 4.0f;
-	const float airAcceleration = 0.8f;
-	const float jumpAcceleration = 7.00f;
-	const float boostAcceleration = 5.00f;
-	const float maxSpeed = 5.0f;
 	const float collisionFriction = 2.0f;
-	const float baseFriction = 0.1f;
+
+	const float airAcceleration = 0.8f;
+	const float airFriction = 0.1f;
+
+	const float jumpAcceleration = 7.00f;
+	const float dashAcceleration = 2.00f;
+	const float dashInitVelocity = 10.0f;
+	const float maxSpeed = 5.0;
 	const float gravity = 0.25f;
 	const float repulsionFac = 1.5f;
+
 	const glm::vec3 modelAdjustment = glm::vec3(0.0f, 5.0f, 0.0f);
 
 	// TODO Move these to input Handler

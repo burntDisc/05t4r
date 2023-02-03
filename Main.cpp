@@ -219,16 +219,12 @@ int main()
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_Y,
-		[&camera]() -> void {
-			camera.DashForward();
-		});
-	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_LEFT_BUMPER,
 		[&camera]() -> void {
 			camera.DashLeft();
+		},
+		[&camera]() -> void {
+			camera.ReadyDashLeft();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
@@ -236,6 +232,9 @@ int main()
 		GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER,
 		[&camera]() -> void {
 			camera.DashRight();
+		},
+		[&camera]() -> void {
+			camera.ReadyDashRight();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
@@ -243,6 +242,9 @@ int main()
 		GLFW_GAMEPAD_BUTTON_Y,
 		[&camera]() -> void {
 			camera.DashForward();
+		},
+		[&camera]() -> void {
+			camera.ReadyDashForward();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
@@ -250,6 +252,9 @@ int main()
 		GLFW_GAMEPAD_BUTTON_X,
 		[&camera]() -> void {
 			camera.DashBack();
+		},
+		[&camera]() -> void {
+			camera.ReadyDashBack();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
