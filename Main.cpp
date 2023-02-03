@@ -90,12 +90,22 @@ int main()
 	}
 
 	// Create Game objects ----------------------------------------------------------
-	std::vector<GameObject> objects;
 	// get current directory
-
 	std::string parentDir = fs::current_path().string();
+
+	// Create Opponent object
+	std::string oppmPath = parentDir + "/models/statue/scene.gltf";
+	glm::vec3 oppTranslation(0.0f, 50.0f, 50.0f);
+	glm::quat oppRotation = glm::vec3(0.0f, -acos(0), 0.0f);
+	glm::vec3 oppScale(10.0f, 10.0f, 10.0f);
+	Opponent opp(
+		oppmPath.c_str(),
+		oppTranslation,
+		oppScale,
+		oppRotation
+	);
 	// Creates camera object
-	Camera camera(window, width, height, glm::vec3(10.0f, 10.0f, 2.0f));
+	Camera camera(window, width, height, glm::vec3(10.0f, 10.0f, 2.0f), &opp);
 
 	// Create SkyBox
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
@@ -154,21 +164,16 @@ int main()
 		projectileScale
 	);
 
-	// Create Opponent object
-	std::string oppmPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 oppTranslation(0.0f, 50.0f, 50.0f);
-	glm::quat oppRotation = glm::vec3(0.0f, -acos(0), 0.0f);
-	glm::vec3 oppScale(10.0f, 10.0f, 10.0f);
-	Opponent opp(
-		oppmPath.c_str(),
-		oppTranslation,
-		oppScale,
-		oppRotation
-	);
-
 	//Setup input handler------------------------------------------------------
 	//TODO: use key modifier for dash on keyboard instead of seperate set
 	InputHandler::SetWindow(window);
+	InputHandler::Subscribe(
+		InputHandler::trigger,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_AXIS_LEFT_TRIGGER,
+		[&camera](float* input) -> void {
+			camera.ZoomAndLock(input);
+		});
 	InputHandler::Subscribe(
 		InputHandler::trigger,
 		GLFW_JOYSTICK_1,

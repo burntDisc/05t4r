@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shader.h"
+#include "Opponent.h"
 
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
@@ -25,7 +26,7 @@ public:
 	
 	GLFWwindow* window;
 
-	Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition);
+	Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent);
 
 	// Exports the POV related unifroms
 	void SetCameraUniforms(Shader& shader);
@@ -56,9 +57,11 @@ public:
 	void BindCursor();
 	void UnbindCursor();
 private:
-
+	Opponent* opponent;
+	bool targetLocked = false;
 	float friction;
 	bool flatNav = false;
+	float feildOfView = 45.0f;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady = true;

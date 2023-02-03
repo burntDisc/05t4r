@@ -13,6 +13,7 @@ public:
 		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	void Update(float time);
+	glm::vec3 GetPosition();
 private:
 	float prevStateTime;
 	float latency;

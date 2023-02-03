@@ -11,7 +11,8 @@
 
 #include <iostream> // remove
 
-Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition) :
+Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent) :
+	opponent(opponent),
 	window(window),
 	windowWidth(width),
 	windowHeight(height),
@@ -20,9 +21,8 @@ Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPositio
 
 void Camera::SetCameraUniforms(Shader& shader)
 {
-	float feildOfView = 45.0f;
 	float nearPlane = 0.01f;
-	float farPlane = 100000.0f;
+	float farPlane = 7000.0f;
 	// Makes camera look in the right direction from the right position
 	view = glm::lookAt(position, position + orientation, up);
 	// Adds perspective to the scene
@@ -131,13 +131,11 @@ void Camera::DashLeft()
 
 void Camera::ReadyDashRight()
 {
-	std::cout << "right reset!!!!" << std::endl;
 	DashRightReady = true;
 }
 
 void Camera::DashRight()
 {
-	std::cout << "right called" << std::endl;
 	glm::vec3 direction = glm::normalize(glm::cross(orientation, up));
 	if (DashRightReady)
 	{
@@ -162,13 +160,23 @@ void Camera::TranslateRight()
 }
 void Camera::ZoomAndLock(float* triggerValue)
 {
-	/*
-	TODO:
-	When left trigger is fully pressed toggle between following opponent if oppenent is in view
-	Trigger press value determines zoom
-	*/
-	
+	feildOfView = ((2.0f - *triggerValue) / 2.0f) * 35.0f + 10.0f;
+	if (*triggerValue == 1.0f)
+	{
+		glm::vec3 target = opponent->GetPosition();
+		glm::vec3 targetDirection = normalize(target - position);
+		if (glm::angle(targetDirection, orientation) < acos(0)/10) // 9deg
+		{
+			targetLocked = true;
+			orientation = targetDirection;
+		}
+	}
+	else
+	{
+		targetLocked = false;
+	}
 }
+
 void Camera::Back()
 {
 	float axes[2] = { 0.0, 1.0 };
@@ -212,6 +220,11 @@ void Camera::Update(float time)
 		friction = airFriction;
 	}
 	position = newPosition;
+	if (targetLocked)
+	{
+		glm::vec3 target = opponent->GetPosition();
+		glm::vec3 orientation = normalize(target - position);
+	}
 	auto state = NetworkHandler::GetGamestate();
 	state.position = newPosition;
 	state.orientation = orientation;
@@ -258,20 +271,23 @@ void Camera::AdjustVelocity(float* axes)
 
 void Camera::AdjustOrientation(float* axes)
 {
-	float rotX = joystickLookSensitivity * axes[1];
-	float rotY = joystickLookSensitivity * axes[0];
-
-	// Calculates upcoming vertical change in the orientation
-	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
-
-	// Decides whether or not the next vertical orientation is legal or not
-	if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+	if (!targetLocked)
 	{
-		orientation = newOrientation;
-	}
+		float rotX = joystickLookSensitivity * axes[1];
+		float rotY = joystickLookSensitivity * axes[0];
 
-	// Rotates the orientation left and right
-	orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+		// Calculates upcoming vertical change in the orientation
+		glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+
+		// Decides whether or not the next vertical orientation is legal or not
+		if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+		{
+			orientation = newOrientation;
+		}
+
+		// Rotates the orientation left and right
+		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+	}
 }
 
 void Camera::BindCursor()

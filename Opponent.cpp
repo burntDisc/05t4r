@@ -101,3 +101,8 @@ void Opponent::Update(float time)
     translation.z = std::lerp(prevTranslation.z, nextTranslation.z, progress);
 }
 
+glm::vec3 Opponent::GetPosition()
+{
+    return translation;
+}
+

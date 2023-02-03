@@ -93,8 +93,12 @@ void InputHandler::ProcessInput()
 				{
 					float adjustedValues[2];
 					//TODO scale input
-					adjustedValues[0] = (output[outputIndex] - joystickThreshold)/(1.0f - joystickThreshold);
-					adjustedValues[1] = (output[outputIndex + 1] - joystickThreshold) / (1.0f - joystickThreshold);
+					adjustedValues[0] = 
+						(output[outputIndex] - joystickThreshold) / (1.0f - joystickThreshold) *
+						abs((output[outputIndex] - joystickThreshold) / (1.0f - joystickThreshold));
+					adjustedValues[1] = 
+						(output[outputIndex + 1] - joystickThreshold) / (1.0f - joystickThreshold) *
+						abs((output[outputIndex + 1] - joystickThreshold) / (1.0f - joystickThreshold));
 					inputSubscriptions[i].callback(adjustedValues);
 				}
 			}
