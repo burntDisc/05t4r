@@ -13,7 +13,8 @@ public:
 		InputType type;
 		int input;
 		int event;
-		std::function<void(void)> callback;
+		std::function<void()> pressCallback;
+		std::function<void()> releaseCallback;
 
 	};
 	struct InputSubscription {
@@ -25,8 +26,19 @@ public:
 	};
 
 	static void SetWindow(GLFWwindow* window);
-	static void Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> callback);
-	static void Subscribe(InputType type, int inputSpecifier, int index, std::function<void(float*)> callback);
+	static void Subscribe(
+		InputType type, 
+		int inputSpecifier, 
+		int event,
+		std::function<void()> pressCallback,
+		std::function<void()> releaseCallback = []()->void {});
+
+	static void Subscribe(
+		InputType type, 
+		int inputSpecifier, 
+		int index, 
+		std::function<void(float*)> callback);
+
 	static void ProcessInput();
 private:
 	static std::vector<EventSubscription> eventSubscriptions;

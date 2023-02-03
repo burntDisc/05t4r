@@ -9,13 +9,14 @@ void InputHandler::SetWindow(GLFWwindow* newWindow)
 	window = newWindow;
 }
 
-void InputHandler::Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> callback)
+void InputHandler::Subscribe(InputType type, int inputSpecifier, int event, std::function<void(void)> pressCallback, std::function<void(void)> releaseCallback)
 {
 	EventSubscription newSubscription = {
 		type,
 		inputSpecifier,
 		event,
-		callback
+		pressCallback,
+		releaseCallback,
 	};
 
 	eventSubscriptions.push_back(newSubscription);
@@ -44,13 +45,13 @@ void InputHandler::ProcessInput()
 		case keyboard:
 			if (glfwGetKey(window, code) == event)
 			{
-				eventSubscriptions[i].callback();
+				eventSubscriptions[i].pressCallback();
 			}
 			break;
 		case mouse:
 			if (glfwGetMouseButton(window, code) == event)
 			{
-				eventSubscriptions[i].callback();
+				eventSubscriptions[i].pressCallback();
 			}
 			break;
 		case button:
@@ -59,11 +60,12 @@ void InputHandler::ProcessInput()
 			{
 				if (state.buttons[event])
 				{
-					eventSubscriptions[i].callback();
+					eventSubscriptions[i].pressCallback();
 				}
 			}
 			break;
 		default:
+			eventSubscriptions[i].releaseCallback();
 			break;
 		}
 	}
