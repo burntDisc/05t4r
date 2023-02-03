@@ -1,5 +1,5 @@
 #include "ProjectileStream.h"
-
+#include "NetworkHandler.h"
 #include <iostream>
 
 ProjectileStream::ProjectileStream(
@@ -59,6 +59,7 @@ void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, 
 		if (projectiles.size() > maxProjectiles) {
 			projectiles.pop_front();
 		}
+		NetworkHandler::SendProjectile(newProjectile);
 	}
 }
 
@@ -68,6 +69,13 @@ void ProjectileStream::Draw(Shader shader)
 	{
 		model.Draw(shader, projectiles[i].translation, projectiles[i].rotation, scale);
 	}
+	Projectile projectiles[maxProjectiles];
+	NetworkHandler::GetProjectiles(projectiles);
+	for (int i = 0; i < maxProjectiles; ++i)
+	{
+		model.Draw(shader, projectiles[i].translation, projectiles[i].rotation, scale);
+	}
+
 }
 
 void ProjectileStream::Update(float time)

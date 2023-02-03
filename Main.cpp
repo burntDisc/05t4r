@@ -347,7 +347,7 @@ int main()
 		});
 
 	//Connect to network
-	//NetworkHandler NH(0);
+	NetworkHandler NH(0);
 
 	// Main Render loop--------------------------------------------------------
 	// 
