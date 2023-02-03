@@ -169,21 +169,20 @@ int main()
 	//Setup input handler------------------------------------------------------
 	InputHandler::SetWindow(window);
 	InputHandler::Subscribe(
-		InputHandler::button,
+		InputHandler::trigger,
 		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_X,
-		[&projectile, &camera]() -> void {
-			std::cout << "fired" << std::endl;
+		GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER,
+		[&projectile, &camera](float* input) -> void {
 			projectile.Fire(
 				camera.position,
-				camera.orientation);
+				camera.orientation,
+				input);
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_Q,
 		GLFW_PRESS,
 		[&projectile, &camera]() -> void {
-			std::cout << "fired" << std::endl;
 			projectile.Fire(
 				camera.position,
 				camera.orientation);
@@ -210,13 +209,6 @@ int main()
 			camera.Jump();
 		});
 	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_B,
-		[&camera]() -> void {
-			camera.Boost();
-		});
-	InputHandler::Subscribe(
 		InputHandler::keyboard,
 		GLFW_KEY_W,
 		GLFW_PRESS,
@@ -224,11 +216,81 @@ int main()
 			camera.Forward();
 		});
 	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_Y,
+		[&camera]() -> void {
+			camera.DashForward();
+		});
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_LEFT_BUMPER,
+		[&camera]() -> void {
+			camera.DashLeft();
+		});
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER,
+		[&camera]() -> void {
+			camera.DashRight();
+		});
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_Y,
+		[&camera]() -> void {
+			camera.DashForward();
+		});
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_X,
+		[&camera]() -> void {
+			camera.DashBack();
+		});
+	InputHandler::Subscribe(
+		InputHandler::button,
+		GLFW_JOYSTICK_1,
+		GLFW_GAMEPAD_BUTTON_B,
+		[&camera]() -> void {
+			camera.Break();
+		});
+	InputHandler::Subscribe(
 		InputHandler::keyboard,
-		GLFW_KEY_LEFT_SHIFT,
+		GLFW_KEY_I,
 		GLFW_PRESS,
 		[&camera]() -> void {
-			camera.Boost();
+			camera.DashForward();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_J,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			camera.DashLeft();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_K,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			camera.DashBack();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_L,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			camera.DashRight();
+		});
+	InputHandler::Subscribe(
+		InputHandler::keyboard,
+		GLFW_KEY_M,
+		GLFW_PRESS,
+		[&camera]() -> void {
+			camera.Break();
 		});
 	InputHandler::Subscribe(
 		InputHandler::keyboard,
@@ -274,7 +336,7 @@ int main()
 		});
 
 	//Connect to network
-	NetworkHandler NH(0);
+	// NetworkHandler NH(0);
 
 	// Main Render loop--------------------------------------------------------
 	// 

@@ -443,7 +443,7 @@ glm::vec3 MotionHandler::CollideAndSlide(const glm::vec3& position, const glm::v
 		eSpaceVelocity, normal);
 
 	// Add gravity pull:
-
+	/*
 	// To remove gravity comment from here .....
 	if (normal == glm::vec3(0.0f, 0.0f, 0.0f))
 	{
@@ -455,7 +455,7 @@ glm::vec3 MotionHandler::CollideAndSlide(const glm::vec3& position, const glm::v
 			eSpaceVelocity, normal);
 	}
 	// ... to here
-
+	*/
 	// Convert final result back to R3:
 	finalPosition = finalPosition * collisionPackage->eRadius;
 	// Move the entity (application specific function)

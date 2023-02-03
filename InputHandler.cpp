@@ -3,7 +3,7 @@
 std::vector<InputHandler::EventSubscription> InputHandler::eventSubscriptions;
 std::vector<InputHandler::InputSubscription> InputHandler::inputSubscriptions;
 GLFWwindow* InputHandler::window;
-
+int cyclesPassed = 0;
 void InputHandler::SetWindow(GLFWwindow* newWindow)
 {
 	window = newWindow;
@@ -90,6 +90,17 @@ void InputHandler::ProcessInput()
 					adjustedValues[1] = output[outputIndex + 1];
 					inputSubscriptions[i].callback(adjustedValues);
 				}
+			}
+		}
+		break;
+		case trigger:
+		{
+			int outputIndex = inputSubscriptions[i].index;
+			int count;
+			const float* output = glfwGetJoystickAxes(code, &count);
+			if (output && count > outputIndex)
+			{
+				inputSubscriptions[i].callback((float*)(output + outputIndex));
 			}
 		}
 		break;

@@ -70,16 +70,31 @@ void Camera::Jump()
 	}
 
 }
-void Camera::Boost()
+
+void Camera::DashForward()
 {
-	if(BoostCharged && worldTime - prevBoostTime > boostCooldown)
-	{
-		glm::vec3 adjustment = breaking ?
-			- velocity :
-			boostAcceleration * orientation;
-		velocity = adjustment + velocity;
-		--BoostCharged;
-	}
+		velocity += boostAcceleration * orientation;
+}
+
+void Camera::DashBack()
+{
+	velocity -= boostAcceleration * orientation;
+}
+
+void Camera::DashLeft()
+{
+	velocity -= boostAcceleration * glm::normalize(glm::cross(orientation, up));
+}
+
+void Camera::DashRight()
+{
+	velocity += boostAcceleration * glm::normalize(glm::cross(orientation, up));
+}
+
+
+void Camera::Break()
+{
+	velocity -= velocity / 2.0f;
 }
 void Camera::TranslateRight()
 {
@@ -94,7 +109,6 @@ void Camera::Back()
 
 void Camera::Update(float time)
 {
-	worldTime = time;
 	glm::vec3 newPosition = position;
 	if (glm::length(velocity) > friction)
 	{
@@ -122,10 +136,10 @@ void Camera::Update(float time)
 			velocity = velocity - repulsionFac*proj;
 		}
 		friction = collisionFriction;
-		BoostCharged = 3;
 	}
 	else
 	{
+		velocity.y -= gravity;
 		flatNav = false;
 		friction = baseFriction;
 	}
@@ -153,13 +167,11 @@ void Camera::AdjustVelocity(float* axes)
 		- axes[1] * orientation;
 	glm::vec3 stickDirection = normalize(stickSideComponent + stickFrontComponent);
 
-	breaking = glm::dot(stickDirection, orientation) < 0;
-
 	// apply change from input
 	glm::vec3 newVelocity =
 		flatNav ?
 		collisionAcceleration * stickDirection + velocity :
-		baseAcceleration * stickDirection + velocity;
+		airAcceleration * stickDirection + velocity;
 
 	//removing y component to ignore gravity
 	glm::vec3 newHorizontalVelocity = glm::vec3(newVelocity.x, 0.0, newVelocity.z);

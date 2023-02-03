@@ -39,7 +39,11 @@ public:
 	void Back();
 	void TranslateRight();
 	void Jump();
-	void Boost();
+	void DashForward();
+	void DashBack();
+	void DashLeft();
+	void DashRight();
+	void Break();
 	void AdjustVelocity(float* axes);
 	void AdjustOrientation(float* axes);
 
@@ -47,25 +51,19 @@ public:
 	void BindCursor();
 	void UnbindCursor();
 private:
-	int BoostCharged = 2;
 	float friction = 0.1f;
-	float worldTime = 0.0f;
-	float prevBoostTime = 0.0f;
-	
-	bool breaking = false;
 
 	bool flatNav = false;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	const float collisionAcceleration = 2.5f;
-	const float baseAcceleration = 0.8f;
-	const float jumpAcceleration = 4.00f;
-	const float boostAcceleration = 8.00f;
-	const float boostCooldown = 1.0f;
+	const float airAcceleration = 0.8f;
+	const float jumpAcceleration = 5.00f;
+	const float boostAcceleration = 5.00f;
 	const float maxSpeed = 5.0f;
 	const float collisionFriction = 2.0f;
 	const float baseFriction = 0.1f;
-	const float gravity = 0.12f;
+	const float gravity = 0.25f;
 	const float repulsionFac = 1.5f;
 	const glm::vec3 modelAdjustment = glm::vec3(0.0f, 5.0f, 0.0f);
 

@@ -40,9 +40,14 @@ glm::quat ProjectileStream::GetRotation(glm::vec3 newOrientation)
 	}
 }
 
-void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation)
+void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity)
 {
-	if (currentTime - prevFireTime > fireInterval)
+	float default_intensity = 1.0f;
+	if (intensity == nullptr)
+	{
+		intensity = &default_intensity;
+	}
+	if (currentTime - prevFireTime > fireInterval && *intensity > -0.5f)
 	{
 		prevFireTime = currentTime;
 		Projectile newProjectile;
