@@ -160,6 +160,15 @@ void Camera::TranslateRight()
 	float axes[2] = { 1.0, 0.0 };
 	AdjustVelocity(axes);
 }
+void Camera::ZoomAndLock(float* triggerValue)
+{
+	/*
+	TODO:
+	When left trigger is fully pressed toggle between following opponent if oppenent is in view
+	Trigger press value determines zoom
+	*/
+	
+}
 void Camera::Back()
 {
 	float axes[2] = { 0.0, 1.0 };

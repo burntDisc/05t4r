@@ -34,6 +34,7 @@ public:
 	void Update(float time);
 
 	// input movement
+	void ZoomAndLock(float* triggerValue);
 	void Forward();
 	void TranslateLeft();
 	void Back();
