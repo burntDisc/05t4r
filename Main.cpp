@@ -167,6 +167,7 @@ int main()
 	);
 
 	//Setup input handler------------------------------------------------------
+	//TODO: use key modifier for dash on keyboard instead of seperate set
 	InputHandler::SetWindow(window);
 	InputHandler::Subscribe(
 		InputHandler::trigger,
