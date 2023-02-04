@@ -5,8 +5,6 @@
 #include <mutex>
 #include <boost/asio.hpp>
 
-#include "ProjectileStream.h"
-
 class NetworkHandler
 {
 public:
@@ -16,15 +14,11 @@ public:
 		bool valid;
 		glm::vec3 position;
 		glm::vec3 orientation;
-		ProjectileStream::Projectile projectiles[ProjectileStream::maxProjectiles];
 	};
 	// TODO: without tmp constructor is optomized out O.O
 	NetworkHandler(int tmp);
 	~NetworkHandler();
 
-	static int projectileIndex;
-	static void SendProjectile(ProjectileStream::Projectile projectile);
-	static void GetProjectiles(ProjectileStream::Projectile projectiles[]);
 	static void SetGamestate(Gamestate newGamestate);
 
 	static Gamestate GetGamestate(bool consume = false);

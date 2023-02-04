@@ -16,22 +16,10 @@ std::mutex NetworkHandler::remoteMutex;
 std::mutex NetworkHandler::localMutex;
 
 bool NetworkHandler::running;
-int NetworkHandler::projectileIndex;
 std::mutex NetworkHandler::runningMutex;
 
 NetworkHandler::NetworkHandler(int tmp)
 {
-    ProjectileStream::Projectile dummyProjectile
-    {
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(-99999999.0f, -99999999.0f, -99999999.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f)
-    };
-    for (int i = 0; i < ProjectileStream::maxProjectiles; ++i)
-    {
-        remoteState.projectiles[i] = dummyProjectile;
-        localState.projectiles[i] = dummyProjectile;
-    }
     std::cout << "Starting network threads..." << std::endl;
     running = false;
     client = new std::thread(Client);
@@ -47,30 +35,6 @@ NetworkHandler::~NetworkHandler()
     server->join();
     delete client;
     delete server;
-}
-
-void NetworkHandler::SendProjectile(ProjectileStream::Projectile projectile)
-{
-    localMutex.lock();
-    localState.projectiles[projectileIndex] = projectile;
-    localMutex.unlock();
-
-    ++projectileIndex;
-    if (projectileIndex == ProjectileStream::maxProjectiles)
-    {
-        projectileIndex = 0;
-    }
-}
-
-void NetworkHandler::GetProjectiles(ProjectileStream::Projectile projectiles[])
-{
-
-    localMutex.lock();
-    for (int i = 0; i < ProjectileStream::maxProjectiles; ++i)
-    {
-        projectiles[i] = remoteState.projectiles[i];
-    }
-    localMutex.unlock();
 }
 
 NetworkHandler::Gamestate NetworkHandler::GetGamestate(bool consume)
@@ -94,7 +58,7 @@ void NetworkHandler::Client()
     std::cout << "Starting Web Client..." << std::endl;
     try
     {
-        std::string host = "192.168.42.999";
+        std::string host = "192.168.42.108";
         std::string port = "4000";
 
         boost::asio::io_context io_context;
