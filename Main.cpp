@@ -93,6 +93,15 @@ int main()
 	// get current directory
 	std::string parentDir = fs::current_path().string();
 
+	// Create projectile object
+	std::string projectilePath = parentDir + "/models/projectile/scene.gltf";
+	glm::vec3 projectileScale(2.0f, 2.0f, 2.0f);
+	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
+	ProjectileStream projectileStream(
+		projectilePath.c_str(),
+		projectileScale
+	);
+
 	// Create Opponent object
 	std::string oppmPath = parentDir + "/models/statue/scene.gltf";
 	glm::vec3 oppTranslation(0.0f, 50.0f, 50.0f);
@@ -100,6 +109,7 @@ int main()
 	glm::vec3 oppScale(10.0f, 10.0f, 10.0f);
 	Opponent opp(
 		oppmPath.c_str(),
+		projectileStream,
 		oppTranslation,
 		oppScale,
 		oppRotation
@@ -125,6 +135,8 @@ int main()
 	);
 	*/
 
+	// TODO pass by reference in GameObject contructors
+	
 	// Create wall object
 	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
 	glm::vec3 wallTranslation(0.0f, 0.0f, 0.1f);
@@ -155,15 +167,6 @@ int main()
 
 	MotionHandler::AddSolidObject(&floor);
 
-	// Create projectile object
-	std::string projectilePath = parentDir + "/models/projectile/scene.gltf";
-	glm::vec3 projectileScale(2.0f, 2.0f, 2.0f);
-	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
-	ProjectileStream projectile(
-		projectilePath.c_str(),
-		projectileScale
-	);
-
 	//Setup input handler------------------------------------------------------
 	//TODO: use key modifier for dash on keyboard instead of seperate set
 	InputHandler::SetWindow(window);
@@ -178,8 +181,8 @@ int main()
 		InputHandler::trigger,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER,
-		[&projectile, &camera](float* input) -> void {
-			projectile.Fire(
+		[&projectileStream, &camera](float* input) -> void {
+			projectileStream.Fire(
 				camera.position,
 				camera.orientation,
 				input);
@@ -188,8 +191,8 @@ int main()
 		InputHandler::keyboard,
 		GLFW_KEY_Q,
 		GLFW_PRESS,
-		[&projectile, &camera]() -> void {
-			projectile.Fire(
+		[&projectileStream, &camera]() -> void {
+			projectileStream.Fire(
 				camera.position,
 				camera.orientation);
 		});
@@ -391,7 +394,7 @@ int main()
 			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update((float)time);
-			projectile.Update((float)time);
+			projectileStream.Update((float)time);
 			opp.Update((float)time);
 			//projectile.Update();
 			if (lastCycle == counter)
@@ -422,7 +425,7 @@ int main()
 		}
 
 		// Draw
-		projectile.Draw(standardShader);
+		projectileStream.Draw(standardShader);
 		floor.Draw(standardShader);
 		wall.Draw(standardShader);
 		skybox.Draw(skyboxShader);

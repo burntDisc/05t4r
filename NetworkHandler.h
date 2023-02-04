@@ -11,9 +11,10 @@ public:
 	// Structure to standardize the vertices used in the meshes
 	struct Gamestate
 	{
-		bool valid;
 		glm::vec3 position;
 		glm::vec3 orientation;
+		bool firing;
+		bool valid;
 	};
 	// TODO: without tmp constructor is optomized out O.O
 	NetworkHandler(int tmp);

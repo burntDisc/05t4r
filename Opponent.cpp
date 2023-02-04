@@ -7,10 +7,12 @@
 Opponent::Opponent
 (
 	const char* modelFile,
+    ProjectileStream& projectileStream,
 	glm::vec3 initTranslation,
 	glm::vec3 initScale,
 	glm::quat initRotation
 ) :
+    projectileStream(projectileStream),
 	modelRotation(initRotation),
 	GameObject(
 		modelFile,
@@ -86,7 +88,9 @@ void Opponent::Update(float time)
 	NetworkHandler::Gamestate state = NetworkHandler::GetGamestate(true);
 	if (state.valid)
 	{
-        rotation = LookRotation(state.orientation) * modelRotation;
+        firing = state.firing;
+        orientation = state.orientation;
+        rotation = LookRotation(orientation) * modelRotation;
 
         prevTranslation = nextTranslation;
         nextTranslation = state.position;
@@ -94,7 +98,10 @@ void Opponent::Update(float time)
         latency = time - prevStateTime;
         prevStateTime = time;
 	}
-
+    if (firing)
+    {
+        projectileStream.Fire(translation, orientation);
+    }
     float progress = (time - prevStateTime) / latency;
     translation.x = std::lerp(prevTranslation.x, nextTranslation.x, progress);
     translation.y = std::lerp(prevTranslation.y, nextTranslation.y, progress);
