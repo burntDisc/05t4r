@@ -195,6 +195,14 @@ int main()
 			projectileStream.Fire(
 				camera.position,
 				camera.orientation);
+			auto state = NetworkHandler::GetGamestate();
+			state.firing = true;
+			NetworkHandler::SetGamestate(state);
+		},
+		[]() -> void {
+			auto state = NetworkHandler::GetGamestate();
+			state.firing = false;
+			NetworkHandler::SetGamestate(state);
 		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
