@@ -24,10 +24,10 @@ GeneratedGround::GeneratedGround(
 void GeneratedGround::Update()
 {
 	// TODO maybe this should be built arouns square or this should be max (not width)
-	visiblePanelsToEdge = (int)(camera->position.y / panelWidth  + 2)*4 -1;
+	visiblePanelsToEdge = (int)(camera->translation.y / panelWidth  + 2)*4 -1;
 
-	float xDiff = camera->position.x - translation.x;
-	float zDiff = camera->position.z - translation.z;
+	float xDiff = camera->translation.x - translation.x;
+	float zDiff = camera->translation.z - translation.z;
 
 	if (abs(xDiff) > panelWidth / 2)
 	{

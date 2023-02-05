@@ -16,7 +16,7 @@ Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPositio
 	window(window),
 	windowWidth(width),
 	windowHeight(height),
-	position(startPosition)
+	translation(startPosition)
 {}
 
 void Camera::SetCameraUniforms(Shader& shader)
@@ -24,14 +24,14 @@ void Camera::SetCameraUniforms(Shader& shader)
 	float nearPlane = 0.01f;
 	float farPlane = 7000.0f;
 	// Makes camera look in the right direction from the right position
-	view = glm::lookAt(position, position + orientation, up);
+	view = glm::lookAt(translation, translation + orientation, up);
 	// Adds perspective to the scene
 	float aspectRatio = (float)windowWidth / windowHeight;
 
 	projection = glm::perspective(glm::radians(feildOfView), aspectRatio, nearPlane, farPlane);
 
 	shader.Activate();
-	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), position.x, position.y, position.z);
+	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), translation.x, translation.y, translation.z);
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
@@ -44,7 +44,7 @@ void Camera::SetSkyboxUniforms(Shader& skyboxShader)
 	glm::mat4 skyboxProjection = glm::mat4(1.0f);
 
 	// mat4 -> mat3 -> mat4 removes last row and column for translation
-	skyboxView = glm::mat4(glm::mat3(glm::lookAt(position, position + orientation, up)));
+	skyboxView = glm::mat4(glm::mat3(glm::lookAt(translation, translation + orientation, up)));
 	skyboxProjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
 	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(skyboxView));
 	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(skyboxProjection));
@@ -164,7 +164,7 @@ void Camera::ZoomAndLock(float* triggerValue)
 	if (*triggerValue == 1.0f)
 	{
 		glm::vec3 target = opponent->GetPosition();
-		glm::vec3 targetDirection = normalize(target - position);
+		glm::vec3 targetDirection = normalize(target - translation);
 		if (glm::angle(targetDirection, orientation) < acos(0)/10) // 9deg
 		{
 			targetLocked = true;
@@ -185,17 +185,17 @@ void Camera::Back()
 
 void Camera::Update(float time)
 {
-	glm::vec3 newPosition = position;
+	glm::vec3 newTranslation = translation;
 	if (glm::length(velocity) > friction)
 	{
 		velocity = velocity - friction * glm::normalize(velocity);
-		newPosition = MotionHandler::CollideAndSlide(position, velocity, surfaceNormal);
+		newTranslation = MotionHandler::CollideAndSlide(translation, velocity, surfaceNormal);
 	}
 	else
 	{
 		if (surfaceNormal == glm::vec3(0.0, 0.0, 0.0))
 		{
-			newPosition = MotionHandler::CollideAndSlide(position, velocity, surfaceNormal);
+			newTranslation = MotionHandler::CollideAndSlide(translation, velocity, surfaceNormal);
 		}
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
@@ -219,14 +219,14 @@ void Camera::Update(float time)
 		flatNav = false;
 		friction = airFriction;
 	}
-	position = newPosition;
+	translation = newTranslation;
 	if (targetLocked)
 	{
 		glm::vec3 target = opponent->GetPosition();
-		glm::vec3 orientation = normalize(target - position);
+		glm::vec3 orientation = normalize(target - translation);
 	}
 
-	NetworkHandler::SetGamestate(NetworkHandler::position, &newPosition);
+	NetworkHandler::SetGamestate(NetworkHandler::position, &newTranslation);
 	NetworkHandler::SetGamestate(NetworkHandler::orientation, &orientation);
 }
 

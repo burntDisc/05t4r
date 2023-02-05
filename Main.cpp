@@ -99,19 +99,25 @@ int main()
 	std::string projectilePath = parentDir + "/models/projectile/scene.gltf";
 	glm::vec3 projectileScale(2.0f, 2.0f, 2.0f);
 	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
-	ProjectileStream projectileStream(
+	ProjectileStream badProjectiles(
+		projectilePath.c_str(),
+		projectileScale
+	);
+
+	// Create projectile object
+	ProjectileStream goodProjectiles(
 		projectilePath.c_str(),
 		projectileScale
 	);
 
 	// Create Opponent object
-	std::string oppmPath = parentDir + "/models/statue/scene.gltf";
+	std::string oppModelPath = parentDir + "/models/statue/scene.gltf";
 	glm::vec3 oppTranslation(0.0f, 50.0f, 50.0f);
 	glm::quat oppRotation = glm::vec3(0.0f, -acos(0), 0.0f);
 	glm::vec3 oppScale(10.0f, 10.0f, 10.0f);
 	Opponent opp(
-		oppmPath.c_str(),
-		projectileStream,
+		oppModelPath.c_str(),
+		badProjectiles,
 		oppTranslation,
 		oppScale,
 		oppRotation
@@ -182,9 +188,9 @@ int main()
 		InputHandler::trigger,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER,
-		[&projectileStream, &camera](float* input) -> void {
-			projectileStream.Fire(
-				camera.position,
+		[&goodProjectiles, &camera](float* input) -> void {
+			goodProjectiles.Fire(
+				camera.translation,
 				camera.orientation,
 				input);
 		});
@@ -288,9 +294,9 @@ int main()
 			std::string xO = std::to_string(camera.orientation.x);
 			std::string yO = std::to_string(camera.orientation.y);
 			std::string zO = std::to_string(camera.orientation.z);
-			std::string xP = std::to_string(camera.position.x);
-			std::string yP = std::to_string(camera.position.y);
-			std::string zP = std::to_string(camera.position.z);
+			std::string xP = std::to_string(camera.translation.x);
+			std::string yP = std::to_string(camera.translation.y);
+			std::string zP = std::to_string(camera.translation.z);
 			std::string newTitle = "05t4r " + FPS + "FPS / " + ms + "ms Orientation: x: " + xO + " y: " + yO + " z: " + zO + "  Position: x: " + xP + " y: " + yP + " z: " + zP;
 			glfwSetWindowTitle(window, newTitle.c_str());
 
@@ -301,7 +307,8 @@ int main()
 			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update((float)time);
-			projectileStream.Update((float)time);
+			badProjectiles.Update((float)time);
+			goodProjectiles.Update((float)time);
 			opp.Update((float)time);
 			//projectile.Update();
 			if (lastCycle == counter)
@@ -332,7 +339,8 @@ int main()
 		}
 
 		// Draw
-		projectileStream.Draw(standardShader);
+		goodProjectiles.Draw(standardShader);
+		badProjectiles.Draw(standardShader);
 		floor.Draw(standardShader);
 		wall.Draw(standardShader);
 		skybox.Draw(skyboxShader);
