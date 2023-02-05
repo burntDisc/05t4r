@@ -1,6 +1,8 @@
 #include "ProjectileStream.h"
 #include "NetworkHandler.h"
 #include <iostream>
+#include <glm/gtx/projection.hpp>
+
 
 ProjectileStream::ProjectileStream(
 	const char* modelFile,
@@ -78,11 +80,17 @@ bool ProjectileStream::CheckCollision(glm::vec3 position)
 {
 	for (int i = 0; i < projectiles.size(); ++i)
 	{
-		float distance = glm::length(projectiles[i].translation - position);
-		if (distance < contactThreshold)
+		glm::vec3 travel = projectiles[i].translation - position;
+		glm::vec3 travelComponent = glm::proj(travel, projectiles[i].orientation);
+		glm::vec3 radialComponent = travel - travelComponent;
+		if (glm::length(radialComponent) < contactThreshold)
 		{
-			return true;
+			if (glm::length(travel) < speed * (projectiles[i].intensity + 1.0f))
+			{
+				return true;
+			}
 		}
+
 	}
 	return false;
 }

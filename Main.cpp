@@ -67,6 +67,11 @@ int main()
 	//Configures the blending function
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
+	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glfwSwapBuffers(window);
+
 	// Generate Shader objects-------------------------------------------------
 	std::vector<Shader> shaders;
 	Shader standardShader("standard.vert", "standard.frag");
