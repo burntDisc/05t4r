@@ -88,20 +88,33 @@ void Opponent::Update(float time)
 	NetworkHandler::Gamestate state = NetworkHandler::GetGamestate(true);
 	if (state.valid)
 	{
-        firing = state.firing;
+       // firing = state.firing;
         orientation = state.orientation;
         rotation = LookRotation(orientation) * modelRotation;
 
         prevTranslation = nextTranslation;
+        std::cout << "------position--------" << std::endl;
+        std::cout << state.position.x << std::endl;
+        std::cout << state.position.y << std::endl;
+        std::cout << state.position.z << std::endl;
+        std::cout << "------orientation--------" << std::endl;
+        std::cout << state.orientation.x << std::endl;
+        std::cout << state.orientation.y << std::endl;
+        std::cout << state.orientation.z << std::endl;
         nextTranslation = state.position;
 
         latency = time - prevStateTime;
         prevStateTime = time;
 	}
+
+    /*
     if (firing)
     {
+        std::cout << "opp fire" << std::endl;
         projectileStream.Fire(translation, orientation);
     }
+    */
+
     float progress = (time - prevStateTime) / latency;
     translation.x = std::lerp(prevTranslation.x, nextTranslation.x, progress);
     translation.y = std::lerp(prevTranslation.y, nextTranslation.y, progress);

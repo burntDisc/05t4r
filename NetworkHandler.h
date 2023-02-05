@@ -8,7 +8,10 @@
 class NetworkHandler
 {
 public:
+
+	enum feild { firing, valid, position, orientation };
 	// Structure to standardize the vertices used in the meshes
+	// should be max 508 bytes for UDP speed safety (no ip fragmentation)
 	struct Gamestate
 	{
 		glm::vec3 position;
@@ -20,7 +23,7 @@ public:
 	NetworkHandler(int tmp);
 	~NetworkHandler();
 
-	static void SetGamestate(Gamestate newGamestate);
+	static void SetGamestate(feild feild, void* value);
 
 	static Gamestate GetGamestate(bool consume = false);
 

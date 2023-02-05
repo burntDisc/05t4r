@@ -46,11 +46,32 @@ NetworkHandler::Gamestate NetworkHandler::GetGamestate(bool consume)
     return current_gamestate;
 }
 
-void NetworkHandler::SetGamestate(Gamestate newGamestate)
+void NetworkHandler::SetGamestate(feild feild, void* value)
 {
-    localMutex.lock();
-    localState = newGamestate;
-    localMutex.unlock();
+    switch (feild) {
+    case firing:
+        localMutex.lock();
+        localState.firing = *(bool*)value;
+        localMutex.unlock();
+        break;
+    case valid:
+        localMutex.lock();
+        localState.valid = *(bool*)value;
+        localMutex.unlock();
+        break;
+    case position:
+        localMutex.lock();
+        localState.position = *(glm::vec3*)value;
+        localMutex.unlock();
+        break;
+    case orientation:
+        localMutex.lock();
+        localState.orientation = *(glm::vec3*)value;
+        localMutex.unlock();
+        break;
+    default:
+        break;
+    }
 }
 
 void NetworkHandler::Client()

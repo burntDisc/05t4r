@@ -79,8 +79,6 @@ private:
 	const float gravity = 0.25f;
 	const float repulsionFac = 1.5f;
 
-	const glm::vec3 modelAdjustment = glm::vec3(0.0f, 5.0f, 0.0f);
-
 	// TODO Move these to input Handler
 	const float mouseLookSensitivity = 100.0f;
 	const float joystickLookSensitivity = 15.0f;

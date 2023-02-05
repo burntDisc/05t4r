@@ -225,11 +225,9 @@ void Camera::Update(float time)
 		glm::vec3 target = opponent->GetPosition();
 		glm::vec3 orientation = normalize(target - position);
 	}
-	auto state = NetworkHandler::GetGamestate();
-	state.position = newPosition;
-	state.orientation = orientation;
-	state.position += modelAdjustment;
-	NetworkHandler::SetGamestate(state);
+
+	NetworkHandler::SetGamestate(NetworkHandler::position, &newPosition);
+	NetworkHandler::SetGamestate(NetworkHandler::position, &orientation);
 }
 
 void Camera::AdjustVelocity(float* axes)
