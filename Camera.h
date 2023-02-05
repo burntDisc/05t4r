@@ -17,9 +17,6 @@ public:
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
-	// Prevents the camera from jumping around when first clicking left click
-	bool firstClick = true;
-
 	// window dimensions
 	int windowWidth;
 	int windowHeight;

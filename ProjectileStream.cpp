@@ -1,5 +1,5 @@
 #include "ProjectileStream.h"
-
+#include "NetworkHandler.h"
 #include <iostream>
 
 ProjectileStream::ProjectileStream(
@@ -42,11 +42,6 @@ glm::quat ProjectileStream::GetRotation(glm::vec3 newOrientation)
 
 void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity)
 {
-	float default_intensity = 1.0f;
-	if (intensity == nullptr)
-	{
-		intensity = &default_intensity;
-	}
 	if (currentTime - prevFireTime > fireInterval && *intensity > -0.5f)
 	{
 		prevFireTime = currentTime;
@@ -59,7 +54,17 @@ void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, 
 		if (projectiles.size() > maxProjectiles) {
 			projectiles.pop_front();
 		}
+
+		bool firing = true;
+		NetworkHandler::SetGamestate(NetworkHandler::firing, &firing);
 	}
+	else
+	{
+		bool notFiring = false;
+		NetworkHandler::SetGamestate(NetworkHandler::firing, &notFiring);
+
+	}
+
 }
 
 void ProjectileStream::Draw(Shader shader)

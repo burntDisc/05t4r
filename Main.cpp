@@ -25,7 +25,7 @@ namespace fs = std::experimental::filesystem;
 
 int main()
 {
-	// Set up OpenGl stack and window------------------------------------------
+	// Set up window-----------------------------------------------------------
 	// initilize glfw to handle input and window
 	glfwInit();
 	// Set GLFW version to OpenGL 3.3 with Core profile
@@ -51,7 +51,9 @@ int main()
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-	//Load GLAD to configure opengl
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+	//Load GLAD to configure opengl---------------------------------------------
 	gladLoadGL();
 	glViewport(0, 0, width, height);
 	// Enables the Depth Testing
@@ -168,7 +170,6 @@ int main()
 	MotionHandler::AddSolidObject(&floor);
 
 	//Setup input handler------------------------------------------------------
-	//TODO: use key modifier for dash on keyboard instead of seperate set
 	InputHandler::SetWindow(window);
 	InputHandler::Subscribe(
 		InputHandler::trigger,
@@ -186,21 +187,6 @@ int main()
 				camera.position,
 				camera.orientation,
 				input);
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_Q,
-		GLFW_PRESS,
-		[&projectileStream, &camera]() -> void {
-			projectileStream.Fire(
-				camera.position,
-				camera.orientation);
-			bool firing = true;
-			NetworkHandler::SetGamestate(NetworkHandler::firing, &firing);
-		},
-		[]() -> void {
-			bool notFiring = false;
-			NetworkHandler::SetGamestate(NetworkHandler::firing, &notFiring);
 		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
@@ -222,13 +208,6 @@ int main()
 		GLFW_GAMEPAD_BUTTON_A,
 		[&camera]() -> void {
 			camera.Jump();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_W,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.Forward();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
@@ -277,84 +256,6 @@ int main()
 		[&camera]() -> void {
 			camera.Break();
 		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_I,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.DashForward();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_J,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.DashLeft();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_K,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.DashBack();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_L,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.DashRight();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_M,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.Break();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_A,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.TranslateLeft();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_S,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.Back();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_D,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.TranslateRight();
-		});
-	InputHandler::Subscribe(
-		InputHandler::keyboard,
-		GLFW_KEY_SPACE,
-		GLFW_PRESS,
-		[&camera]() -> void {
-			camera.Jump();
-		});
-	InputHandler::Subscribe(
-		InputHandler::mouse,
-		GLFW_MOUSE_BUTTON_LEFT,
-		GLFW_PRESS,
-		[&camera, window]() -> void {
-			camera.BindCursor();
-		});
-	InputHandler::Subscribe(
-		InputHandler::mouse,
-		GLFW_MOUSE_BUTTON_LEFT,
-		GLFW_RELEASE,
-		[&camera, window]() -> void {
-			camera.UnbindCursor();
-		});
-
 	//Connect to network
 	NetworkHandler NH(0);
 

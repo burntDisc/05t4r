@@ -42,22 +42,6 @@ void InputHandler::ProcessInput()
 		int code = eventSubscriptions[i].input;
 		int event = eventSubscriptions[i].event;
 		switch (eventSubscriptions[i].type) {
-		case keyboard:
-			if (glfwGetKey(window, code) == event)
-			{
-				eventSubscriptions[i].pressCallback();
-				break;
-			}
-			eventSubscriptions[i].releaseCallback();
-			break;
-		case mouse:
-			if (glfwGetMouseButton(window, code) == event)
-			{
-				eventSubscriptions[i].pressCallback();
-				break;
-			}
-			eventSubscriptions[i].releaseCallback();
-			break;
 		case button:
 			GLFWgamepadstate state;
 			if (glfwGetGamepadState(code, &state))
