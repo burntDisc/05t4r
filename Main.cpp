@@ -278,6 +278,7 @@ int main()
 	unsigned int counter = 0;
 	unsigned int lastCycle = 0;
 
+	int hits = 0;
 	double GameLoopInterval = 1.00/30.00;  // seconds
 	while (!glfwWindowShouldClose(window))
 	{
@@ -314,6 +315,11 @@ int main()
 			badProjectiles.Update((float)time);
 			goodProjectiles.Update((float)time);
 			opp.Update((float)time);
+
+			if (badProjectiles.CheckCollision(camera.translation))
+			{
+				std::cout << "Hits Taken: " << hits++ << std::endl;
+			}
 			//projectile.Update();
 			if (lastCycle == counter)
 			{

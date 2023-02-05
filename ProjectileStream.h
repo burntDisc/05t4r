@@ -18,7 +18,10 @@ public:
 
 	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity);
 
+	bool CheckCollision(glm::vec3 position);
+
 private:
+	float contactThreshold = 3.0f;
 	bool networked;
 	float currentTime = 0;
 	const float fireInterval = 0.1f;

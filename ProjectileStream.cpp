@@ -73,6 +73,19 @@ void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, 
 
 }
 
+bool ProjectileStream::CheckCollision(glm::vec3 position)
+{
+	for (int i = 0; i < projectiles.size(); ++i)
+	{
+		float distance = glm::length(projectiles[i].translation - position);
+		if (distance < contactThreshold)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void ProjectileStream::Draw(Shader shader)
 {
 	for (int i = 0; i < projectiles.size(); ++i)
