@@ -15,7 +15,7 @@ public:
 	void Update(float time);
 	void Draw(Shader shader);
 
-	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity = nullptr);
+	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity);
 
 private:
 	float currentTime = 0;

@@ -57,6 +57,7 @@ void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, 
 
 		bool firing = true;
 		NetworkHandler::SetGamestate(NetworkHandler::firing, &firing);
+		NetworkHandler::SetGamestate(NetworkHandler::firingIntensity, intensity);
 	}
 	else
 	{

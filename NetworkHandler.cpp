@@ -49,6 +49,11 @@ NetworkHandler::Gamestate NetworkHandler::GetGamestate(bool consume)
 void NetworkHandler::SetGamestate(feild feild, void* value)
 {
     switch (feild) {
+    case firingIntensity:
+        localMutex.lock();
+        localState.firingIntensity = *(float*)value;
+        localMutex.unlock();
+        break;
     case firing:
         localMutex.lock();
         localState.firing = *(bool*)value;

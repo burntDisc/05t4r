@@ -89,6 +89,7 @@ void Opponent::Update(float time)
 	if (state.valid)
 	{
         firing = state.firing;
+        firingIntensity = state.firingIntensity;
         orientation = state.orientation;
         rotation = LookRotation(orientation) * modelRotation;
 
@@ -100,7 +101,7 @@ void Opponent::Update(float time)
 	}
     if (firing)
     {
-        projectileStream.Fire(translation, orientation);
+        projectileStream.Fire(translation, orientation, &firingIntensity);
     }
     float progress = (time - prevStateTime) / latency;
     translation.x = std::lerp(prevTranslation.x, nextTranslation.x, progress);

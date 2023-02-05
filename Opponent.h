@@ -18,6 +18,7 @@ public:
 	glm::vec3 GetPosition();
 private:
 	bool firing;
+	float firingIntensity;
 	float prevStateTime;
 	float latency;
 	glm::quat LookRotation(glm::vec3 orientation);
