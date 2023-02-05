@@ -199,7 +199,7 @@ int main()
 			NetworkHandler::SetGamestate(NetworkHandler::firing, &firing);
 		},
 		[]() -> void {
-			bool notFiring = true;
+			bool notFiring = false;
 			NetworkHandler::SetGamestate(NetworkHandler::firing, &notFiring);
 		});
 	InputHandler::Subscribe(
@@ -356,7 +356,7 @@ int main()
 		});
 
 	//Connect to network
-	//NetworkHandler NH(0);
+	NetworkHandler NH(0);
 
 	// Main Render loop--------------------------------------------------------
 	// 
