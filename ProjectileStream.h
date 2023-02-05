@@ -32,12 +32,13 @@ private:
 		glm::quat rotation;
 		glm::vec3 translation;
 		glm::vec3 orientation;
+		float intensity;
 	};
 	
 	std::deque<Projectile> projectiles;
 	glm::quat GetRotation(glm::vec3 newOrientation);
 	glm::vec3 modelOrientation;
-	const float speed = 70.0f;
+	const float speed = 30.0f;
 	const int maxProjectiles = 10;
 
 
