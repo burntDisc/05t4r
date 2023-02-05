@@ -227,7 +227,7 @@ void Camera::Update(float time)
 	}
 
 	NetworkHandler::SetGamestate(NetworkHandler::position, &newPosition);
-	NetworkHandler::SetGamestate(NetworkHandler::position, &orientation);
+	NetworkHandler::SetGamestate(NetworkHandler::orientation, &orientation);
 }
 
 void Camera::AdjustVelocity(float* axes)
