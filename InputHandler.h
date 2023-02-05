@@ -7,7 +7,7 @@
 class InputHandler
 {
 public:
-	enum InputType { joystick, button , trigger};
+	enum InputType {mouse, keyboard, joystick, button , trigger};
 
 	struct EventSubscription {
 		InputType type;
