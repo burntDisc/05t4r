@@ -85,7 +85,7 @@ void Opponent::Update(float time)
 {
     glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
 
-	NetworkHandler::Gamestate state = NetworkHandler::GetGamestate(true);
+	NetworkHandler::Gamestate state = NetworkHandler::GetRemoteGamestate(true);
 	if (state.valid)
 	{
         firing = state.firing;

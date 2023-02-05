@@ -98,16 +98,20 @@ int main()
 	// Create projectile object
 	std::string projectilePath = parentDir + "/models/projectile/scene.gltf";
 	glm::vec3 projectileScale(2.0f, 2.0f, 2.0f);
+	glm::vec3 projectileOrientation(0.0f, 0.0f, -1.0f);
 	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
 	ProjectileStream badProjectiles(
 		projectilePath.c_str(),
-		projectileScale
+		projectileScale,
+		projectileOrientation
 	);
 
 	// Create projectile object
 	ProjectileStream goodProjectiles(
 		projectilePath.c_str(),
-		projectileScale
+		projectileScale,
+		projectileOrientation,
+		true
 	);
 
 	// Create Opponent object

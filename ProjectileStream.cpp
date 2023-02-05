@@ -5,8 +5,10 @@
 ProjectileStream::ProjectileStream(
 	const char* modelFile,
 	glm::vec3 initScale,
-	glm::vec3 initModelOrientation
+	glm::vec3 initModelOrientation,
+	bool networked
 ):
+	networked(networked),
 	modelOrientation(initModelOrientation),
 	GameObject(
 		modelFile,
@@ -55,14 +57,17 @@ void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, 
 			projectiles.pop_front();
 		}
 
-		bool firing = true;
-		NetworkHandler::SetGamestate(NetworkHandler::firing, &firing);
-		NetworkHandler::SetGamestate(NetworkHandler::firingIntensity, intensity);
+		if (networked)
+		{
+			bool firing = true;
+			NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &firing);
+			NetworkHandler::SetLocalGamestate(NetworkHandler::firingIntensity, intensity);
+		}
 	}
-	else
+	else if(networked)
 	{
 		bool notFiring = false;
-		NetworkHandler::SetGamestate(NetworkHandler::firing, &notFiring);
+		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &notFiring);
 
 	}
 

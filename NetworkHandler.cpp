@@ -37,7 +37,7 @@ NetworkHandler::~NetworkHandler()
     delete server;
 }
 
-NetworkHandler::Gamestate NetworkHandler::GetGamestate(bool consume)
+NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(bool consume)
 {
     remoteMutex.lock();
     Gamestate current_gamestate = remoteState;
@@ -46,7 +46,7 @@ NetworkHandler::Gamestate NetworkHandler::GetGamestate(bool consume)
     return current_gamestate;
 }
 
-void NetworkHandler::SetGamestate(feild feild, void* value)
+void NetworkHandler::SetLocalGamestate(feild feild, void* value)
 {
     switch (feild) {
     case firingIntensity:

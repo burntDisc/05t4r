@@ -226,8 +226,8 @@ void Camera::Update(float time)
 		glm::vec3 orientation = normalize(target - translation);
 	}
 
-	NetworkHandler::SetGamestate(NetworkHandler::position, &newTranslation);
-	NetworkHandler::SetGamestate(NetworkHandler::orientation, &orientation);
+	NetworkHandler::SetLocalGamestate(NetworkHandler::position, &newTranslation);
+	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
 }
 
 void Camera::AdjustVelocity(float* axes)

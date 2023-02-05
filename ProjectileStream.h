@@ -10,7 +10,8 @@ public:
 	ProjectileStream(
 		const char* modelFile,
 		glm::vec3 initScale,
-		glm::vec3 initModelOrientation = glm::vec3(0.0f,0.0f,0.0f));
+		glm::vec3 initModelOrientation,
+		bool networked = false);
 	
 	void Update(float time);
 	void Draw(Shader shader);
@@ -18,6 +19,7 @@ public:
 	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity);
 
 private:
+	bool networked;
 	float currentTime = 0;
 	const float fireInterval = 0.1f;
 	float prevFireTime = 0;

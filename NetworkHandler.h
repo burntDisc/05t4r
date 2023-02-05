@@ -24,9 +24,9 @@ public:
 	NetworkHandler(int tmp);
 	~NetworkHandler();
 
-	static void SetGamestate(feild feild, void* value);
+	static void SetLocalGamestate(feild feild, void* value);
 
-	static Gamestate GetGamestate(bool consume = false);
+	static Gamestate GetRemoteGamestate(bool consume = false);
 
 	static void Client();
     static void Server();
