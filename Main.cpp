@@ -119,19 +119,20 @@ int main()
 	std::string parentDir = fs::current_path().string();
 
 	// Create projectile object
-	std::string projectilePath = parentDir + "/models/projectile/scene.gltf";
+	std::string badProjectilePath = parentDir + "/models/badProjectile/scene.gltf";
 	glm::vec3 projectileScale(1.0f, 1.0f, 1.0f);
 	glm::vec3 projectileOrientation(0.0f, 0.0f, -1.0f);
 	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
 	ProjectileStream badProjectiles(
-		projectilePath.c_str(),
+		badProjectilePath.c_str(),
 		projectileScale,
 		projectileOrientation
 	);
 
+	std::string goodProjectilePath = parentDir + "/models/goodProjectile/scene.gltf";
 	// Create projectile object
 	ProjectileStream goodProjectiles = ProjectileStream(
-		projectilePath.c_str(),
+		goodProjectilePath.c_str(),
 		projectileScale,
 		projectileOrientation
 	);
@@ -293,7 +294,7 @@ int main()
 			player.Break();
 		});
 	//Connect to network
-	//NetworkHandler NH(0);
+	NetworkHandler NH(0);
 
 	// Main Render loop--------------------------------------------------------
 	// 
