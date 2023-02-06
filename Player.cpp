@@ -170,7 +170,7 @@ void Player::Update(float time)
 	if (energy <= 1.0f - energyRegen) {
 		energy += energyRegen;
 	}
-	std::cout << energy << std::endl;
+
 	glm::vec3 newTranslation = translation;
 	if (glm::length(velocity) > friction)
 	{
