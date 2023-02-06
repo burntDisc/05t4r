@@ -6,8 +6,12 @@ class Overlay
 {
 public:
 	Overlay(std::vector<Vertex2D> vertices, std::vector<GLuint> indices);
+	Overlay();
+
 	void Draw(Shader shader);
-private:
+protected:
+	GLuint VBO_ID = 0;
+	void SetVertices();
 	std::vector<Vertex2D> vertices;
 	std::vector<GLuint> indices;
 	VertexArrayObject VAO;

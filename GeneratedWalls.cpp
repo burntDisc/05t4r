@@ -3,12 +3,12 @@
 #include <iostream>
 
 GeneratedWalls::GeneratedWalls(
-	Camera* camera,
+	Player& player,
 	const char* modelFile,
 	glm::vec3 initTranslation,
 	glm::vec3 initScale,
 	glm::quat initRotation) :
-	camera(camera),
+	player(player),
 	GameObject(
 		modelFile,
 		initTranslation,

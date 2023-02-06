@@ -5,7 +5,7 @@
 
 #include "Shader.h"
 #include "Model.h"
-#include "Camera.h"
+#include "Player.h"
 #include "GameObject.h"
 
 class GeneratedGround :
@@ -13,7 +13,7 @@ class GeneratedGround :
 {
 public:
 	GeneratedGround(
-		Camera* camera,
+		Player& player,
 		const char* modelFile,
 		glm::vec3 initTranslation = glm::vec3(0),
 		glm::vec3 initScale = glm::vec3(0),
@@ -30,7 +30,7 @@ private:
 	glm::vec3 GetPanelScale(int panelIndex, int numToEdge);
 	glm::vec3 GetPanelTranslation(int panelIndex, int numToEdge);
 
-	Camera* camera;
+	Player& player;
 
 	// pushes non-rectangular models together by buffer 
 	const float buffer = 8.0f;

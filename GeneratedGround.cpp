@@ -1,12 +1,12 @@
 #include "GeneratedGround.h"
 
 GeneratedGround::GeneratedGround(
-	Camera* camera,
+	Player& player,
 	const char* modelFile,
 	glm::vec3 initTranslation,
 	glm::vec3 initScale,
 	glm::quat initRotation) :
-	camera(camera),
+	player(player),
 	panelLength(0.0f),
 	panelWidth(0.0f),
 	flipOffsetX(1),
@@ -24,10 +24,10 @@ GeneratedGround::GeneratedGround(
 void GeneratedGround::Update()
 {
 	// TODO maybe this should be built arouns square or this should be max (not width)
-	visiblePanelsToEdge = (int)(camera->translation.y / panelWidth  + 2)*4 -1;
+	visiblePanelsToEdge = (int)(player.translation.y / panelWidth  + 2)*4 -1;
 
-	float xDiff = camera->translation.x - translation.x;
-	float zDiff = camera->translation.z - translation.z;
+	float xDiff = player.translation.x - translation.x;
+	float zDiff = player.translation.z - translation.z;
 
 	if (abs(xDiff) > panelWidth / 2)
 	{

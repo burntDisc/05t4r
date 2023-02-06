@@ -13,7 +13,7 @@ namespace fs = std::experimental::filesystem;
 
 #include "Shader.h"
 #include "GameObject.h"
-#include "Camera.h"
+#include "Player.h"
 #include "Skybox.h"
 #include "InputHandler.h"
 #include "MotionHandler.h"
@@ -23,6 +23,7 @@ namespace fs = std::experimental::filesystem;
 #include "NetworkHandler.h"
 #include "Opponent.h"
 #include "Overlay.h"
+#include "EnergyBarOverlay.h"
 
 int main()
 {
@@ -70,22 +71,22 @@ int main()
 
 	// Loading Overlay Logic
 	Shader shader2D("2d.vert", "2d.frag");
-	std::vector<Vertex2D> OverlayVertices;
-	OverlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	OverlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 1.0f, 0.0f)));
-	OverlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)));
+	std::vector<Vertex2D> overlayVertices;
+	overlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	overlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	overlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)));
 
-	std::vector<GLuint> OverlayIndices;
-	OverlayIndices.push_back(0);
-	OverlayIndices.push_back(1);
-	OverlayIndices.push_back(2);
+	std::vector<GLuint> overlayIndices;
+	overlayIndices.push_back(0);
+	overlayIndices.push_back(1);
+	overlayIndices.push_back(2);
 
 
-	Overlay overlay = Overlay(OverlayVertices, OverlayIndices);
+	Overlay loadingScreen = Overlay(overlayVertices, overlayIndices);
 
-	glClearColor(1.0f, 0.5f, 1.0f, 1.0f);
+	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	overlay.Draw(shader2D);
+	loadingScreen.Draw(shader2D);
 	glfwSwapBuffers(window);
 
 	// Generate Shader objects-------------------------------------------------
@@ -147,8 +148,10 @@ int main()
 		oppScale,
 		oppRotation
 	);
-	// Creates camera object
-	Camera camera(window, width, height, glm::vec3(10.0f, 10.0f, 2.0f), &opp);
+	// Creates /player object
+	Player player(window, width, height, glm::vec3(10.0f, 10.0f, 2.0f), &opp);
+	// Create HUD
+	EnergyBarOverlay energyBar = EnergyBarOverlay(player);
 
 	// Create SkyBox
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
@@ -176,7 +179,7 @@ int main()
 	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
 	GeneratedWalls wall(
-		&camera,
+		player,
 		wallModelPath.c_str(),
 		wallTranslation,
 		wallScale,
@@ -191,7 +194,7 @@ int main()
 	glm::quat floorRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 floorScale(10.0f, 10.0f, 10.0f);
 	GeneratedGround floor(
-		&camera,
+		player,
 		floorPath.c_str(),
 		floorTranslation,
 		floorScale,
@@ -206,89 +209,89 @@ int main()
 		InputHandler::trigger,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_AXIS_LEFT_TRIGGER,
-		[&camera](float* input) -> void {
-			camera.ZoomAndLock(input);
+		[&player](float* input) -> void {
+			player.ZoomAndLock(input);
 		});
 	InputHandler::Subscribe(
 		InputHandler::trigger,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER,
-		[&goodProjectiles, &camera](float* input) -> void {
+		[&goodProjectiles, &player](float* input) -> void {
 			goodProjectiles.Fire(
-				camera.translation,
-				camera.orientation,
+				player.translation,
+				player.orientation,
 				input);
 		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
 		GLFW_JOYSTICK_1,
 		0,
-		[&camera](float* input) -> void {
-			camera.AdjustVelocity(input);
+		[&player](float* input) -> void {
+			player.AdjustVelocity(input);
 		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
 		GLFW_JOYSTICK_1,
 		1,
-		[&camera](float* input) -> void {
-			camera.AdjustOrientation(input);
+		[&player](float* input) -> void {
+			player.AdjustOrientation(input);
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_A,
-		[&camera]() -> void {
-			camera.Jump();
+		[&player]() -> void {
+			player.Jump();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_LEFT_BUMPER,
-		[&camera]() -> void {
-			camera.DashLeft();
+		[&player]() -> void {
+			player.DashLeft();
 		},
-		[&camera]() -> void {
-			camera.ReadyDashLeft();
+		[&player]() -> void {
+			player.ReadyDashLeft();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER,
-		[&camera]() -> void {
-			camera.DashRight();
+		[&player]() -> void {
+			player.DashRight();
 		},
-		[&camera]() -> void {
-			camera.ReadyDashRight();
+		[&player]() -> void {
+			player.ReadyDashRight();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_Y,
-		[&camera]() -> void {
-			camera.DashForward();
+		[&player]() -> void {
+			player.DashForward();
 		},
-		[&camera]() -> void {
-			camera.ReadyDashForward();
+		[&player]() -> void {
+			player.ReadyDashForward();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_X,
-		[&camera]() -> void {
-			camera.DashBack();
+		[&player]() -> void {
+			player.DashBack();
 		},
-		[&camera]() -> void {
-			camera.ReadyDashBack();
+		[&player]() -> void {
+			player.ReadyDashBack();
 		});
 	InputHandler::Subscribe(
 		InputHandler::button,
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_BUTTON_B,
-		[&camera]() -> void {
-			camera.Break();
+		[&player]() -> void {
+			player.Break();
 		});
 	//Connect to network
-	NetworkHandler NH(0);
+	//NetworkHandler NH(0);
 
 	// Main Render loop--------------------------------------------------------
 	// 
@@ -317,12 +320,12 @@ int main()
 			// Creates new title
 			std::string FPS = std::to_string((1.0 / deltaTime) * counter);
 			std::string ms = std::to_string((deltaTime / counter) * 1000);
-			std::string xO = std::to_string(camera.orientation.x);
-			std::string yO = std::to_string(camera.orientation.y);
-			std::string zO = std::to_string(camera.orientation.z);
-			std::string xP = std::to_string(camera.translation.x);
-			std::string yP = std::to_string(camera.translation.y);
-			std::string zP = std::to_string(camera.translation.z);
+			std::string xO = std::to_string(player.orientation.x);
+			std::string yO = std::to_string(player.orientation.y);
+			std::string zO = std::to_string(player.orientation.z);
+			std::string xP = std::to_string(player.translation.x);
+			std::string yP = std::to_string(player.translation.y);
+			std::string zP = std::to_string(player.translation.z);
 			std::string newTitle = "05t4r " + FPS + "FPS / " + ms + "ms Orientation: x: " + xO + " y: " + yO + " z: " + zO + "  Position: x: " + xP + " y: " + yP + " z: " + zP;
 			glfwSetWindowTitle(window, newTitle.c_str());
 
@@ -330,14 +333,15 @@ int main()
 			lastTime = time;
 			counter = 0;
 			floor.Update();
-			camera.Update((float)time);
+			player.Update((float)time);
 			badProjectiles.Update((float)time);
 			goodProjectiles.Update((float)time);
 			opp.Update((float)time);
+			energyBar.Update();
 			// Handles Inputs and downstream effects
 			InputHandler::ProcessInput();
 
-			if (badProjectiles.CheckCollision(camera.translation))
+			if (badProjectiles.CheckCollision(player.translation))
 			{
 				std::cout << "Hits Taken: " << hits++ << std::endl;
 			}
@@ -361,11 +365,11 @@ int main()
 			Shader& shader = shaders[i];
 			if (shader.ID == skyboxShader.ID)
 			{
-				camera.SetSkyboxUniforms(shader);
+				player.SetSkyboxUniforms(shader);
 			}
 			else
 			{
-				camera.SetCameraUniforms(shader);
+				player.SetCameraUniforms(shader);
 			}
 		}
 
@@ -376,6 +380,7 @@ int main()
 		wall.Draw(standardShader);
 		skybox.Draw(skyboxShader);
 		opp.Draw(standardShader);
+		energyBar.Draw(shader2D);
 		//statue.Draw(standardShader);
 
 

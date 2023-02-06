@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Shader.h"
 #include "Model.h"
-#include "Camera.h"
+#include "Player.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -11,8 +11,9 @@ class GeneratedWalls :
     public GameObject
 {
 public:
+	//TODO use player to dynamically generate colliion objects like floor
 	GeneratedWalls(
-		Camera* camera,
+		Player& player,
 		const char* modelFile,
 		glm::vec3 initTranslation,
 		glm::vec3 initScale,
@@ -39,6 +40,6 @@ private:
 
 	glm::vec3 wallDimensions;
 
-	Camera* camera;
+	Player& player;
 
 };

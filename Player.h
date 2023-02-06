@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
-class Camera
+class Player
 {
 public:
 	// Camera description Vectors
@@ -23,7 +23,7 @@ public:
 	
 	GLFWwindow* window;
 
-	Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent);
+	Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent);
 
 	// Exports the POV related unifroms
 	void SetCameraUniforms(Shader& shader);
@@ -50,10 +50,9 @@ public:
 	void AdjustVelocity(float* axes);
 	void AdjustOrientation(float* axes);
 
-	// mouse behavior callbacks
-	void BindCursor();
-	void UnbindCursor();
+	float energy = 1.0f;
 private:
+
 	Opponent* opponent;
 	bool targetLocked = false;
 	float friction;
@@ -62,7 +61,7 @@ private:
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady = true;
-	void DirectionalDash(glm::vec3 direction, bool ready);
+	void DirectionalDash(glm::vec3 direction, bool& ready);
 
 	const float collisionAcceleration = 4.0f;
 	const float collisionFriction = 2.0f;
@@ -76,6 +75,9 @@ private:
 	const float maxSpeed = 5.0;
 	const float gravity = 0.25f;
 	const float repulsionFac = 1.5f;
+
+	const float energyDash = 0.01f;
+	const float energyRegen = 0.002f;
 
 	const float defaultLookSensitivity = 15.0f;
 	const float lockedLookSensitivity = 5.0f;

@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "Player.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -11,7 +11,7 @@
 
 #include <iostream> // remove
 
-Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent) :
+Player::Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent) :
 	opponent(opponent),
 	window(window),
 	windowWidth(width),
@@ -19,7 +19,7 @@ Camera::Camera(GLFWwindow* window, int width, int height, glm::vec3 startPositio
 	translation(startPosition)
 {}
 
-void Camera::SetCameraUniforms(Shader& shader)
+void Player::SetCameraUniforms(Shader& shader)
 {
 	float nearPlane = 0.01f;
 	float farPlane = 7000.0f;
@@ -36,7 +36,7 @@ void Camera::SetCameraUniforms(Shader& shader)
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
 
-void Camera::SetSkyboxUniforms(Shader& skyboxShader)
+void Player::SetSkyboxUniforms(Shader& skyboxShader)
 {
 
 	skyboxShader.Activate();
@@ -50,19 +50,19 @@ void Camera::SetSkyboxUniforms(Shader& skyboxShader)
 	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(skyboxProjection));
 }
 
-void Camera::Forward()
+void Player::Forward()
 {
 	float axes[2] = { 0.0, -1.0 };
 	AdjustVelocity(axes);
 }
 
-void Camera::TranslateLeft()
+void Player::TranslateLeft()
 {
 	float axes[2] = { -1.0, 0.0 };
 	AdjustVelocity(axes);
 }
 
-void Camera::Jump()
+void Player::Jump()
 {
 	if (flatNav)
 	{
@@ -71,67 +71,76 @@ void Camera::Jump()
 
 }
 
-void Camera::DirectionalDash(glm::vec3 direction, bool ready)
+void Player::DirectionalDash(glm::vec3 direction, bool& ready)
 {
-	if (DashForwardReady)
+	if (energy >= energyDash)
 	{
-		DashForwardReady = false;
-		velocity = dashInitVelocity * direction;
+		energy -= energyDash;
 	}
-	else
+	if (energy > energyDash)
 	{
-		velocity += dashAcceleration * direction;
+		if (ready)
+		{
+			ready = false;
+			velocity = glm::dot(direction, velocity) > 0.0f ?
+				glm::proj(velocity, direction) + dashInitVelocity * direction :
+				dashInitVelocity * direction;
+		}
+		else
+		{
+			velocity += dashAcceleration * direction;
+		}
 	}
 }
 
-void Camera::ReadyDashForward()
+void Player::ReadyDashForward()
 {
 	DashForwardReady = true;
 }
-void Camera::DashForward()
+void Player::DashForward()
 {
 	glm::vec3 direction = orientation;
 	DirectionalDash(direction, DashForwardReady);
 }
-void Camera::ReadyDashBack()
+void Player::ReadyDashBack()
 {
 	DashBackReady = true;
 }
-void Camera::DashBack()
+void Player::DashBack()
 {
 	glm::vec3 direction = -orientation;
 	DirectionalDash(direction, DashBackReady);
 }
-void Camera::ReadyDashLeft()
+void Player::ReadyDashLeft()
 {
 	DashLeftReady = true;
 }
-void Camera::DashLeft()
+void Player::DashLeft()
 {
 	glm::vec3 direction = - glm::normalize(glm::cross(orientation, up));
 	DirectionalDash(direction, DashLeftReady);
 }
-void Camera::ReadyDashRight()
+void Player::ReadyDashRight()
 {
 	DashRightReady = true;
 }
-void Camera::DashRight()
+void Player::DashRight()
 {
 	glm::vec3 direction = glm::normalize(glm::cross(orientation, up));
 	DirectionalDash(direction, DashRightReady);
 }
 
-void Camera::Break()
+void Player::Break()
 {
 	velocity -= velocity / 2.0f;
 }
 
-void Camera::TranslateRight()
+void Player::TranslateRight()
 {
 	float axes[2] = { 1.0, 0.0 };
 	AdjustVelocity(axes);
 }
-void Camera::ZoomAndLock(float* triggerValue)
+void Player::ZoomAndLock(float* triggerValue)
 {
 	feildOfView = ((2.0f - *triggerValue) / 2.0f) * 35.0f + 10.0f;
 	if (*triggerValue == 1.0f)
@@ -150,14 +159,18 @@ void Camera::ZoomAndLock(float* triggerValue)
 	}
 }
 
-void Camera::Back()
+void Player::Back()
 {
 	float axes[2] = { 0.0, 1.0 };
 	AdjustVelocity(axes);
 }
 
-void Camera::Update(float time)
+void Player::Update(float time)
 {
+	if (energy <= 1.0f - energyRegen) {
+		energy += energyRegen;
+	}
+	std::cout << energy << std::endl;
 	glm::vec3 newTranslation = translation;
 	if (glm::length(velocity) > friction)
 	{
@@ -203,7 +216,7 @@ void Camera::Update(float time)
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
 }
 
-void Camera::AdjustVelocity(float* axes)
+void Player::AdjustVelocity(float* axes)
 {
 	// Allows for flat movement as opposed to flying
 	bool alt = true;
@@ -240,7 +253,7 @@ void Camera::AdjustVelocity(float* axes)
 		calibratedHorizontalVelocity.z);
 }
 
-void Camera::AdjustOrientation(float* axes)
+void Player::AdjustOrientation(float* axes)
 {
 	float rotX = targetLocked? 
 		lockedLookSensitivity * axes[1] : 

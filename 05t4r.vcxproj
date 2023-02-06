@@ -180,8 +180,9 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="ElementBufferObject.h" />
+    <ClInclude Include="EnergyBarOverlay.h" />
     <ClInclude Include="ExplodingObject.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="GameObject.h" />
@@ -203,8 +204,9 @@
     <ClInclude Include="VertexBufferObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />
+    <ClCompile Include="EnergyBarOverlay.cpp" />
     <ClCompile Include="ExplodingObject.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
