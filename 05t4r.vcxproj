@@ -231,11 +231,12 @@
     <ClCompile Include="VertexBufferObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="2d.frag" />
-    <None Include="2d.vert" />
+    <None Include="2D.frag" />
+    <None Include="2D.vert" />
     <None Include="glitch.frag" />
     <None Include="glitch.geo" />
     <None Include="glitch.vert" />
+    <None Include="HUD.frag" />
     <None Include="packages.config" />
     <None Include="standard.frag" />
     <None Include="standard.vert" />

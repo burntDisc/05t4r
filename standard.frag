@@ -100,4 +100,6 @@ void main()
 {
 	// outputs final color
 	FragColor = directLight();
+	//TODO fix in models
+	FragColor[3] = 1.0;
 }

@@ -60,17 +60,17 @@ int main()
 	glViewport(0, 0, width, height);
 	// Enables the Depth Testing
 	glEnable(GL_DEPTH_TEST);
+	//Configures the blending function
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Uncomment to ignore internals of models (breaks explosion internals)
 	//glEnable(GL_CULL_FACE);
 	// Keeps front faces
 	//glCullFace(GL_FRONT);
 	// Uses counter clock-wise standard
 	//glFrontFace(GL_CCW);
-	//Configures the blending function
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	// Loading Overlay Logic
-	Shader shader2D("2d.vert", "2d.frag");
+	Shader shader2D("2D.vert", "2D.frag");
 	std::vector<Vertex2D> overlayVertices;
 	overlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	overlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -90,19 +90,20 @@ int main()
 	glfwSwapBuffers(window);
 
 	// Generate Shader objects-------------------------------------------------
-	std::vector<Shader> shaders;
+	Shader HUDShader("2D.vert", "HUD.frag");
+	std::vector<Shader> objectShaders;
 	Shader standardShader("standard.vert", "standard.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
-	shaders.push_back(standardShader);
-	shaders.push_back(skyboxShader);
+	objectShaders.push_back(standardShader);
+	objectShaders.push_back(skyboxShader);
 
 	// Set Lighting------------------------------------------------------------
 	glm::vec4 lightColor = glm::vec4(1.2f, 1.2f, 1.2f, 1.2f);
 	glm::vec3 lightPos = glm::vec3(20.0f, 20.0f, 20.0f);
 
-	for (int i = 0; i < shaders.size(); ++i)
+	for (int i = 0; i < objectShaders.size(); ++i)
 	{
-		Shader& shader = shaders[i];
+		Shader& shader = objectShaders[i];
 		if (shader.ID != skyboxShader.ID)
 		{
 			shader.Activate();
@@ -355,14 +356,14 @@ int main()
 
 		// Specify the color of the background GREEN For debug
 		// (Skybox Draws over)
-		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Updates shader camera matrices
-		for (int i = 0; i < shaders.size(); ++i)
+		for (int i = 0; i < objectShaders.size(); ++i)
 		{
-			Shader& shader = shaders[i];
+			Shader& shader = objectShaders[i];
 			if (shader.ID == skyboxShader.ID)
 			{
 				player.SetSkyboxUniforms(shader);
@@ -380,7 +381,7 @@ int main()
 		wall.Draw(standardShader);
 		skybox.Draw(skyboxShader);
 		opp.Draw(standardShader);
-		energyBar.Draw(shader2D);
+		energyBar.Draw(HUDShader);
 		//statue.Draw(standardShader);
 
 
@@ -392,9 +393,9 @@ int main()
 	}
 
 	// Delete and clean up
-	for (int i = 0; i < shaders.size(); ++i) 
+	for (int i = 0; i < objectShaders.size(); ++i)
 	{
-		shaders[i].Delete();
+		objectShaders[i].Delete();
 
 	}
 	glfwDestroyWindow(window);
