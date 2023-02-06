@@ -34,7 +34,8 @@ private:
 	glm::vec3 modelOrientation;
 	glm::quat GetRotation(glm::vec3 newOrientation);
 
-	const float launchOffset = 10.0f;
+	const float maxLaunchOffset = 15.0f;
+	const float minLaunchOffset = 8.0f;
 	const float speed = 30.0f;
 	const int maxProjectiles = 10;
 

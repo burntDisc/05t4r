@@ -45,6 +45,7 @@ glm::quat ProjectileStream::GetRotation(glm::vec3 newOrientation)
 
 void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity)
 {
+	float launchOffset = minLaunchOffset + (maxLaunchOffset - minLaunchOffset) * (float)rand() / (float)RAND_MAX;
 	Projectile newProjectile = {};
 	newProjectile.rotation = GetRotation(newOrientation);
 	newProjectile.orientation = newOrientation;
