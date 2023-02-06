@@ -269,21 +269,22 @@ void Camera::AdjustVelocity(float* axes)
 
 void Camera::AdjustOrientation(float* axes)
 {
-	if (!targetLocked)
+	float rotX = targetLocked? 
+		lockedLookSensitivity * axes[1] : 
+		defaultLookSensitivity * axes[1];
+	float rotY = targetLocked ? 
+		lockedLookSensitivity * axes[0] : 
+		defaultLookSensitivity * axes[0];
+
+	// Calculates upcoming vertical change in the orientation
+	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+
+	// Decides whether or not the next vertical orientation is legal or not
+	if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
 	{
-		float rotX = joystickLookSensitivity * axes[1];
-		float rotY = joystickLookSensitivity * axes[0];
-
-		// Calculates upcoming vertical change in the orientation
-		glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
-
-		// Decides whether or not the next vertical orientation is legal or not
-		if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
-		{
-			orientation = newOrientation;
-		}
-
-		// Rotates the orientation left and right
-		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+		orientation = newOrientation;
 	}
+
+	// Rotates the orientation left and right
+	orientation = glm::rotate(orientation, glm::radians(-rotY), up);
 }

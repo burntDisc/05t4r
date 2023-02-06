@@ -50,7 +50,7 @@ void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, 
 	{
 		prevFireTime = currentTime;
 		Projectile newProjectile;
-		newProjectile.translation = newTranslation;
+		newProjectile.translation = newTranslation + launchOffset * newOrientation;
 		newProjectile.orientation = newOrientation;
 		newProjectile.rotation = GetRotation(newOrientation);
 		newProjectile.intensity = *intensity;

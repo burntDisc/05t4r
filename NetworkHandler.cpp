@@ -107,6 +107,8 @@ void NetworkHandler::Client()
             runningMutex.unlock();
         }
 
+        std::cout << "Connected!" << std::endl;
+
         runningMutex.lock();
         while (running)
         {

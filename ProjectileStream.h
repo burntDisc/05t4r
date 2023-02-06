@@ -21,7 +21,7 @@ public:
 	bool CheckCollision(glm::vec3 position);
 
 private:
-	float contactThreshold = 3.0f;
+	float contactThreshold = 5.0f;
 	bool networked;
 	float currentTime = 0;
 	const float fireInterval = 0.1f;
@@ -40,6 +40,7 @@ private:
 	glm::vec3 modelOrientation;
 	const float speed = 30.0f;
 	const int maxProjectiles = 10;
+	const float launchOffset = 10.0f;
 
 
 };

@@ -102,7 +102,7 @@ int main()
 
 	// Create projectile object
 	std::string projectilePath = parentDir + "/models/projectile/scene.gltf";
-	glm::vec3 projectileScale(2.0f, 2.0f, 2.0f);
+	glm::vec3 projectileScale(1.0f, 1.0f, 1.0f);
 	glm::vec3 projectileOrientation(0.0f, 0.0f, -1.0f);
 	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
 	ProjectileStream badProjectiles(
@@ -313,13 +313,13 @@ int main()
 			// Resets times and counter
 			lastTime = time;
 			counter = 0;
-			// Handles Inputs and downstream effects
-			InputHandler::ProcessInput();
 			floor.Update();
 			camera.Update((float)time);
 			badProjectiles.Update((float)time);
 			goodProjectiles.Update((float)time);
 			opp.Update((float)time);
+			// Handles Inputs and downstream effects
+			InputHandler::ProcessInput();
 
 			if (badProjectiles.CheckCollision(camera.translation))
 			{

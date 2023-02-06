@@ -76,7 +76,6 @@ private:
 	const float gravity = 0.25f;
 	const float repulsionFac = 1.5f;
 
-	// TODO Move these to input Handler
-	const float mouseLookSensitivity = 100.0f;
-	const float joystickLookSensitivity = 15.0f;
+	const float defaultLookSensitivity = 15.0f;
+	const float lockedLookSensitivity = 5.0f;
 };
