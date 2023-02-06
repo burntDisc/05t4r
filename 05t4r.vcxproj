@@ -197,6 +197,7 @@
     <ClInclude Include="Opponent.h" />
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="ProjectileStream.h" />
+    <ClInclude Include="ReticleOverlay.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="Opponent.cpp" />
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="ProjectileStream.cpp" />
+    <ClCompile Include="ReticleOverlay.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Texture.cpp" />

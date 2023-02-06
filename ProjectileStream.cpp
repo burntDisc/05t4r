@@ -7,10 +7,8 @@
 ProjectileStream::ProjectileStream(
 	const char* modelFile,
 	glm::vec3 initScale,
-	glm::vec3 initModelOrientation,
-	bool networked
+	glm::vec3 initModelOrientation
 ):
-	networked(networked),
 	modelOrientation(initModelOrientation),
 	GameObject(
 		modelFile,
@@ -33,6 +31,7 @@ glm::quat ProjectileStream::GetRotation(glm::vec3 newOrientation)
 	{
 		// TODO: make math clearer
 		//https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another
+
 		glm::quat rotation = glm::cross(modelOrientation, newOrientation);
 		rotation.w = 
 			(float)sqrt(
@@ -46,34 +45,17 @@ glm::quat ProjectileStream::GetRotation(glm::vec3 newOrientation)
 
 void ProjectileStream::Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity)
 {
-	if (currentTime - prevFireTime > fireInterval && *intensity > -0.99f)
+	Projectile newProjectile = {};
+	newProjectile.rotation = GetRotation(newOrientation);
+	newProjectile.orientation = newOrientation;
+	newProjectile.translation =  newTranslation + launchOffset * newOrientation;
+	newProjectile.intensity = *intensity;
+
+	projectiles.push_back(newProjectile);
+	if (projectiles.size() > maxProjectiles) 
 	{
-		prevFireTime = currentTime;
-		Projectile newProjectile;
-		newProjectile.translation = newTranslation + launchOffset * newOrientation;
-		newProjectile.orientation = newOrientation;
-		newProjectile.rotation = GetRotation(newOrientation);
-		newProjectile.intensity = *intensity;
-
-		projectiles.push_back(newProjectile);
-		if (projectiles.size() > maxProjectiles) {
-			projectiles.pop_front();
-		}
-
-		if (networked)
-		{
-			bool firing = true;
-			NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &firing);
-			NetworkHandler::SetLocalGamestate(NetworkHandler::firingIntensity, intensity);
-		}
+		projectiles.pop_front();
 	}
-	else if(networked)
-	{
-		bool notFiring = false;
-		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &notFiring);
-
-	}
-
 }
 
 bool ProjectileStream::CheckCollision(glm::vec3 position)
@@ -105,7 +87,6 @@ void ProjectileStream::Draw(Shader shader)
 
 void ProjectileStream::Update(float time)
 {
-	currentTime = time;
 	for (int i = 0; i < projectiles.size(); ++i)
 	{
 		projectiles[i].translation += projectiles[i].orientation * speed * (projectiles[i].intensity + 1.0f);

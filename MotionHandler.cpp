@@ -283,7 +283,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 				edgeDotVelocity * edgeDotVelocity;
 			b = edgeSquaredLength * (2.0f * glm::dot(velocity, baseToVertex)) -
 				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
-			c = edgeSquaredLength * (1 - SquaredLength(baseToVertex)) +
+			c = edgeSquaredLength * (1.0f - SquaredLength(baseToVertex)) +
 				edgeDotBaseToVertex * edgeDotBaseToVertex;
 			// Does the swept sphere collide against infinite edge?
 			if (getLowestRoot(a, b, c, t, &newT)) {

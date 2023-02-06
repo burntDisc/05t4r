@@ -23,7 +23,7 @@ public:
 	
 	GLFWwindow* window;
 
-	Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent);
+	Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent& opponent);
 
 	// Exports the POV related unifroms
 	void SetCameraUniforms(Shader& shader);
@@ -33,28 +33,41 @@ public:
 
 	// input movement
 	void ZoomAndLock(float* triggerValue);
+
 	void Forward();
 	void TranslateLeft();
 	void Back();
 	void TranslateRight();
 	void Jump();
+
 	void DashForward();
 	void DashBack();
 	void DashLeft();
 	void DashRight();
+
 	void ReadyDashForward();
 	void ReadyDashBack();
 	void ReadyDashLeft();
 	void ReadyDashRight();
+
 	void Break();
+
+	void FireProjectile(float* intensity, ProjectileStream& projectileStream);
+
 	void AdjustVelocity(float* axes);
 	void AdjustOrientation(float* axes);
 
 	float energy = 1.0f;
-private:
-
-	Opponent* opponent;
 	bool targetLocked = false;
+
+	//used byt reticle
+	float zoom;
+private:
+	float currentTime = 0;
+	const float fireInterval = 0.1f;
+	float prevFireTime = 0;
+
+	Opponent& opponent;
 	float friction;
 	bool flatNav = false;
 	float feildOfView = 45.0f;
@@ -78,6 +91,7 @@ private:
 
 	const float energyDash = 0.01f;
 	const float energyRegen = 0.002f;
+	const float firingEnergy = 0.003f;
 
 	const float defaultLookSensitivity = 15.0f;
 	const float lockedLookSensitivity = 5.0f;

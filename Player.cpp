@@ -11,7 +11,7 @@
 
 #include <iostream> // remove
 
-Player::Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent* opponent) :
+Player::Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent& opponent) :
 	opponent(opponent),
 	window(window),
 	windowWidth(width),
@@ -48,6 +48,23 @@ void Player::SetSkyboxUniforms(Shader& skyboxShader)
 	skyboxProjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
 	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(skyboxView));
 	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(skyboxProjection));
+}
+
+void Player::FireProjectile(float* intensity, ProjectileStream& projectileStream)
+{
+	if (currentTime - prevFireTime > fireInterval && *intensity > -0.99f)
+	{
+		energy -= firingEnergy;
+		bool firing = true;
+		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &firing);
+		NetworkHandler::SetLocalGamestate(NetworkHandler::firingIntensity, intensity);
+		projectileStream.Fire(translation, orientation, intensity);
+	}
+	else
+	{
+		bool notFiring = false;
+		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &notFiring);
+	}
 }
 
 void Player::Forward()
@@ -142,10 +159,11 @@ void Player::TranslateRight()
 }
 void Player::ZoomAndLock(float* triggerValue)
 {
+	zoom = *triggerValue;
 	feildOfView = ((2.0f - *triggerValue) / 2.0f) * 35.0f + 10.0f;
 	if (*triggerValue == 1.0f)
 	{
-		glm::vec3 target = opponent->GetPosition();
+		glm::vec3 target = opponent.GetPosition();
 		glm::vec3 targetDirection = normalize(target - translation);
 		if (glm::angle(targetDirection, orientation) < acos(0)/10) // 9deg
 		{
@@ -167,6 +185,7 @@ void Player::Back()
 
 void Player::Update(float time)
 {
+	currentTime = time;
 	if (energy <= 1.0f - energyRegen) {
 		energy += energyRegen;
 	}
@@ -208,7 +227,7 @@ void Player::Update(float time)
 	translation = newTranslation;
 	if (targetLocked)
 	{
-		glm::vec3 target = opponent->GetPosition();
+		glm::vec3 target = opponent.GetPosition();
 		glm::vec3 orientation = normalize(target - translation);
 	}
 

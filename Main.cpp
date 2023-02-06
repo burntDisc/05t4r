@@ -130,11 +130,10 @@ int main()
 	);
 
 	// Create projectile object
-	ProjectileStream goodProjectiles(
+	ProjectileStream goodProjectiles = ProjectileStream(
 		projectilePath.c_str(),
 		projectileScale,
-		projectileOrientation,
-		true
+		projectileOrientation
 	);
 
 	// Create Opponent object
@@ -150,7 +149,12 @@ int main()
 		oppRotation
 	);
 	// Creates /player object
-	Player player(window, width, height, glm::vec3(10.0f, 10.0f, 2.0f), &opp);
+	Player player(
+		window, 
+		width, 
+		height, 
+		glm::vec3(10.0f, 10.0f, 2.0f),
+		opp);
 	// Create HUD
 	EnergyBarOverlay energyBar = EnergyBarOverlay(player);
 
@@ -218,10 +222,7 @@ int main()
 		GLFW_JOYSTICK_1,
 		GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER,
 		[&goodProjectiles, &player](float* input) -> void {
-			goodProjectiles.Fire(
-				player.translation,
-				player.orientation,
-				input);
+			player.FireProjectile(input, goodProjectiles);
 		});
 	InputHandler::Subscribe(
 		InputHandler::joystick,
