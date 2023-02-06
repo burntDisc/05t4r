@@ -71,9 +71,9 @@ int main()
 	// Loading Overlay Logic
 	Shader shader2D("2d.vert", "2d.frag");
 	std::vector<Vertex2D> OverlayVertices;
-	OverlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)));
-	OverlayVertices.push_back(Vertex2D(glm::vec2(0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-	OverlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)));
+	OverlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	OverlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	OverlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)));
 
 	std::vector<GLuint> OverlayIndices;
 	OverlayIndices.push_back(0);
@@ -83,7 +83,7 @@ int main()
 
 	Overlay overlay = Overlay(OverlayVertices, OverlayIndices);
 
-	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 0.5f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	overlay.Draw(shader2D);
 	glfwSwapBuffers(window);
