@@ -62,6 +62,7 @@ private:
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady = true;
+	void DirectionalDash(glm::vec3 direction, bool ready);
 
 	const float collisionAcceleration = 4.0f;
 	const float collisionFriction = 2.0f;

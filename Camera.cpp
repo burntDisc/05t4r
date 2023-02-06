@@ -71,14 +71,8 @@ void Camera::Jump()
 
 }
 
-void Camera::ReadyDashForward()
+void Camera::DirectionalDash(glm::vec3 direction, bool ready)
 {
-	DashForwardReady = true;
-}
-
-void Camera::DashForward()
-{
-	glm::vec3 direction = orientation;
 	if (DashForwardReady)
 	{
 		DashForwardReady = false;
@@ -90,62 +84,41 @@ void Camera::DashForward()
 	}
 }
 
+void Camera::ReadyDashForward()
+{
+	DashForwardReady = true;
+}
+void Camera::DashForward()
+{
+	glm::vec3 direction = orientation;
+	DirectionalDash(direction, DashForwardReady);
+}
 void Camera::ReadyDashBack()
 {
 	DashBackReady = true;
 }
-
 void Camera::DashBack()
 {
 	glm::vec3 direction = -orientation;
-	if (DashBackReady)
-	{
-		DashBackReady = false;
-		velocity = dashInitVelocity * direction;
-	}
-	else
-	{
-		velocity += dashAcceleration * direction;
-	}
+	DirectionalDash(direction, DashBackReady);
 }
-
 void Camera::ReadyDashLeft()
 {
 	DashLeftReady = true;
 }
-
 void Camera::DashLeft()
 {
 	glm::vec3 direction = - glm::normalize(glm::cross(orientation, up));
-	if (DashLeftReady)
-	{
-		DashLeftReady = false;
-		velocity = dashInitVelocity * direction;
-	}
-	else
-	{
-		velocity += dashAcceleration * direction;
-	}
+	DirectionalDash(direction, DashLeftReady);
 }
-
-
 void Camera::ReadyDashRight()
 {
 	DashRightReady = true;
 }
-
 void Camera::DashRight()
 {
 	glm::vec3 direction = glm::normalize(glm::cross(orientation, up));
-	if (DashRightReady)
-	{
-		DashRightReady = false;
-		velocity = dashInitVelocity * direction;
-	}
-	else
-	{
-		velocity += dashAcceleration * direction;
-	}
+	DirectionalDash(direction, DashRightReady);
 }
 
 void Camera::Break()
