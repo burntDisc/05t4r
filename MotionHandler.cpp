@@ -162,7 +162,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 		bool embeddedInPlane = false;
 		// Calculate the signed distance from sphere
 		// position to triangle plane
-		double signedDistToTrianglePlane =
+		float signedDistToTrianglePlane =
 			trianglePlane.SignedDistanceTo(colPackage->basePoint);
 		// cache this as we’re going to use it a few times below:
 		float normalDotVelocity =
@@ -178,17 +178,17 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 				// sphere is embedded in plane.
 				// It intersects in the whole range [0..1]
 				embeddedInPlane = true;
-				t0 = 0.0;
-				t1 = 1.0;
+				t0 = 0.0f;
+				t1 = 1.0f;
 			}
 		}
 		else {
 			// N dot D is not 0. Calculate intersection interval:
-			t0 = (-1.0 - signedDistToTrianglePlane) / normalDotVelocity;
-			t1 = (1.0 - signedDistToTrianglePlane) / normalDotVelocity;
+			t0 = (-1.0f - signedDistToTrianglePlane) / normalDotVelocity;
+			t1 = (1.0f - signedDistToTrianglePlane) / normalDotVelocity;
 			// Swap so t0 < t1
 			if (t0 > t1) {
-				double temp = t1;
+				float temp = t1;
 				t1 = t0;
 				t0 = temp;
 			}
@@ -199,10 +199,10 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 				return;
 			}
 			// Clamp to [0,1]
-			if (t0 < 0.0) t0 = 0.0;
-			if (t1 < 0.0) t1 = 0.0;
-			if (t0 > 1.0) t0 = 1.0;
-			if (t1 > 1.0) t1 = 1.0;
+			if (t0 < 0.0f) t0 = 0.0f;
+			if (t1 < 0.0f) t1 = 0.0f;
+			if (t0 > 1.0f) t0 = 1.0f;
+			if (t1 > 1.0f) t1 = 1.0f;
 		}
 		// OK, at this point we have two time values t0 and t1
 		// between which the swept sphere intersects with the
@@ -248,24 +248,24 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			// Check against points:
 			a = velocitySquaredLength;
 			// P1
-			b = 2.0 * glm::dot(velocity, base - p1);
-			c = SquaredLength(p1 - base) - 1.0;
+			b = 2.0f * glm::dot(velocity, base - p1);
+			c = SquaredLength(p1 - base) - 1.0f;
 			if (getLowestRoot(a, b, c, t, &newT)) {
 				t = newT;
 				foundCollison = true;
 				collisionPoint = p1;
 			}
 			// P2
-			b = 2.0 * glm::dot(velocity, base - p2);
-			c = SquaredLength(p2 - base) - 1.0;
+			b = 2.0f * glm::dot(velocity, base - p2);
+			c = SquaredLength(p2 - base) - 1.0f;
 			if (getLowestRoot(a, b, c, t, &newT)) {
 				t = newT;
 				foundCollison = true;
 				collisionPoint = p2;
 			}
 			// P3
-			b = 2.0 * glm::dot(velocity, base - p3);
-			c = SquaredLength(p3 - base) - 1.0;
+			b = 2.0f * glm::dot(velocity, base - p3);
+			c = SquaredLength(p3 - base) - 1.0f;
 			if (getLowestRoot(a, b, c, t, &newT)) {
 				t = newT;
 				foundCollison = true;
@@ -281,7 +281,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			// Calculate parameters for equation
 			a = edgeSquaredLength * -velocitySquaredLength +
 				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength * (2 * glm::dot(velocity, baseToVertex)) -
+			b = edgeSquaredLength * (2.0f * glm::dot(velocity, baseToVertex)) -
 				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
 			c = edgeSquaredLength * (1 - SquaredLength(baseToVertex)) +
 				edgeDotBaseToVertex * edgeDotBaseToVertex;
@@ -290,7 +290,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 				// Check if intersection is within line segment:
 				float f = (edgeDotVelocity * newT - edgeDotBaseToVertex) /
 					edgeSquaredLength;
-				if (f >= 0.0 && f <= 1.0) {
+				if (f >= 0.0f && f <= 1.0f) {
 					// intersection took place within segment.
 					t = newT;
 					foundCollison = true;
@@ -305,7 +305,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			edgeDotBaseToVertex = glm::dot(edge, baseToVertex);
 			a = edgeSquaredLength * -velocitySquaredLength +
 				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength * (2 * glm::dot(velocity, baseToVertex)) -
+			b = edgeSquaredLength * (2.0f * glm::dot(velocity, baseToVertex)) -
 				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
 			c = edgeSquaredLength * (1 - SquaredLength(baseToVertex)) +
 				edgeDotBaseToVertex * edgeDotBaseToVertex;
@@ -326,7 +326,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			edgeDotBaseToVertex = glm::dot(edge, baseToVertex);
 			a = edgeSquaredLength * -velocitySquaredLength +
 				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength * (2 * glm::dot(velocity, baseToVertex)) -
+			b = edgeSquaredLength * (2.0f * glm::dot(velocity, baseToVertex)) -
 				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
 			c = edgeSquaredLength * (1 - SquaredLength(baseToVertex)) +
 				edgeDotBaseToVertex * edgeDotBaseToVertex;
