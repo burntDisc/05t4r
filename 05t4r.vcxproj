@@ -194,6 +194,7 @@
     <ClInclude Include="MotionHandler.h" />
     <ClInclude Include="NetworkHandler.h" />
     <ClInclude Include="Opponent.h" />
+    <ClInclude Include="Overlay.h" />
     <ClInclude Include="ProjectileStream.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="MotionHandler.cpp" />
     <ClCompile Include="NetworkHandler.cpp" />
     <ClCompile Include="Opponent.cpp" />
+    <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="ProjectileStream.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
@@ -227,6 +229,8 @@
     <ClCompile Include="VertexBufferObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="2d.frag" />
+    <None Include="2d.vert" />
     <None Include="glitch.frag" />
     <None Include="glitch.geo" />
     <None Include="glitch.vert" />

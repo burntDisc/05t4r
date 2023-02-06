@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <glad/glad.h>
@@ -13,6 +14,12 @@ struct Vertex
 	glm::vec2 texUV;
 };
 
+struct Vertex2D
+{
+	glm::vec2 position;
+	glm::vec3 color;
+};
+
 class VertexBufferObject
 {
 public:
@@ -20,6 +27,7 @@ public:
 	GLuint ID;
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VertexBufferObject(std::vector<Vertex>& vertices);
+	VertexBufferObject(std::vector<Vertex2D>& vertices);
 	VertexBufferObject(std::vector<glm::mat4>& mat4s);
 
 	// Binds the VertexBufferObject

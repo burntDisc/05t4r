@@ -22,6 +22,7 @@ namespace fs = std::experimental::filesystem;
 #include "ProjectileStream.h"
 #include "NetworkHandler.h"
 #include "Opponent.h"
+#include "Overlay.h"
 
 int main()
 {
@@ -67,9 +68,24 @@ int main()
 	//Configures the blending function
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// Loading Overlay Logic
+	Shader shader2D("2d.vert", "2d.frag");
+	std::vector<Vertex2D> OverlayVertices;
+	OverlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)));
+	OverlayVertices.push_back(Vertex2D(glm::vec2(0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+	OverlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f)));
+
+	std::vector<GLuint> OverlayIndices;
+	OverlayIndices.push_back(0);
+	OverlayIndices.push_back(1);
+	OverlayIndices.push_back(2);
+
+
+	Overlay overlay = Overlay(OverlayVertices, OverlayIndices);
 
 	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	overlay.Draw(shader2D);
 	glfwSwapBuffers(window);
 
 	// Generate Shader objects-------------------------------------------------
