@@ -24,6 +24,7 @@ namespace fs = std::experimental::filesystem;
 #include "Opponent.h"
 #include "Overlay.h"
 #include "EnergyBarOverlay.h"
+#include "HealthBarOverlay.h"
 #include "ReticleOverlay.h"
 
 int main()
@@ -35,6 +36,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	// Create window with screen width of monitor (DISABLED)
 	auto monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
@@ -42,11 +44,13 @@ int main()
 	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-	// FULL SCREEN DISABLED FOR DEBUGGING
-	unsigned int width = 1500;
-	unsigned int height = 900;
-	GLFWwindow* window = glfwCreateWindow(1500, 900, "5t4r", NULL, NULL);
-	// GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
+	// FULL SCREEN Enabled
+	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
+
+	unsigned int width = mode->width;//1500;
+	unsigned int height = mode->height;//900;
+	//GLFWwindow* window = glfwCreateWindow(width, height, "5t4r", NULL, NULL);
+
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -74,10 +78,11 @@ int main()
 	std::vector<Shader> shaders;
 	Shader shader2D("2D.vert", "2D.frag");
 	shaders.push_back(shader2D);
+
 	std::vector<Vertex2D> overlayVertices;
-	overlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	overlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 1.0f, 0.0f)));
-	overlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)));
+	overlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 0.0f)));
+	overlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 0.0f, 0.0f)));
+	overlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 0.0f)));
 
 	std::vector<GLuint> overlayIndices;
 	overlayIndices.push_back(0);
@@ -161,6 +166,7 @@ int main()
 		glm::vec3(10.0f, 10.0f, 2.0f),
 		opp);
 	// Create HUD
+	HealthBarOverlay healthBar = HealthBarOverlay(player);
 	EnergyBarOverlay energyBar = EnergyBarOverlay(player);
 	ReticleOverlay reticle = ReticleOverlay(player);
 
@@ -345,6 +351,7 @@ int main()
 			badProjectiles.Update((float)time);
 			goodProjectiles.Update((float)time);
 			opp.Update((float)time);
+			healthBar.Update();
 			energyBar.Update();
 			reticle.Update();
 			// Handles Inputs and downstream effects
@@ -390,6 +397,7 @@ int main()
 		wall.Draw(standardShader);
 		skybox.Draw(skyboxShader);
 		opp.Draw(standardShader);
+		healthBar.Draw(HUDShader);
 		energyBar.Draw(HUDShader);
 		reticle.Draw(shader2D);
 		//statue.Draw(standardShader);

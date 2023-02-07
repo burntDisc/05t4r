@@ -52,7 +52,7 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 
 void EnergyBarOverlay::Update()
 {
-	float rightCornerX = player.energy - 0.5f;
+	float rightCornerX = player.energy * (xMax - xMin) + xMin;
 
 	vertices[0] = Vertex2D(glm::vec2(rightCornerX, yMax), glm::vec3(0.5f, 0.0f, 1.0f));
 	vertices[1] = Vertex2D(glm::vec2(rightCornerX, yMin), glm::vec3(0.5f, 0.0f, 1.0f));

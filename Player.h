@@ -59,15 +59,12 @@ public:
 	void AdjustOrientation(float* axes);
 
 	float energy = 1.0f;
+	float health = 100.0f;
 	bool targetLocked = false;
-
-	//used by reticle
 	float zoom;
 private:
 	void Reset();
 	glm::vec3 spawnPoint;
-
-	float health = 100.0f;
 	float currentTime = 0;
 	const float fireInterval = 0.1f;
 	float prevFireTime = 0;
