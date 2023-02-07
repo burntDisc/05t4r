@@ -10,10 +10,12 @@ public:
     void Update();
 private:
     void UpdateVertices();
+    float zoomFac;
+    const float zoomIncrement = 1.0f;
     const float maxRadius = 0.2;
     const float minRadius = 0.05;
-    const float rotationOffset = 0.2;
-    const float radialOffset = 0.03;
+    const float rotationOffset = 0.15;
+    const float radialOffset = 0.018;
     Player& player;
 
 };

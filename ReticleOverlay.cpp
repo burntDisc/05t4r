@@ -32,6 +32,14 @@ void ReticleOverlay::Update()
 void ReticleOverlay::UpdateVertices()
 {
 	vertices.clear();
+	if (zoomFac + zoomIncrement < (1.0 - player.zoom) / 2.0)
+	{
+		zoomFac += zoomIncrement;
+	}
+	else if (zoomFac - zoomIncrement > (1.0 - player.zoom) / 2.0)
+	{
+		zoomFac -= zoomIncrement;
+	}
 	float zoomFac = ( 1.0 - player.zoom) / 2.0;
 	float radius = zoomFac * (maxRadius - minRadius) + minRadius;
 	float rotation = zoomFac * 4.0f * acos(0) - acos(0) / 3.0f; // * 2*PI / (2*PI * 1/6)
