@@ -374,7 +374,7 @@ int main()
 		for (int i = 0; i < shaders.size(); ++i)
 		{
 			Shader& shader = shaders[i];
-			if (shader.ID == skyboxShader.ID || shader.ID == HUDShader.ID || shader.ID == shader2D.ID)
+			if (shader.ID == skyboxShader.ID)
 			{
 				player.SetSkyboxUniforms(shader);
 			}
