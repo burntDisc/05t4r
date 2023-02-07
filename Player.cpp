@@ -90,20 +90,28 @@ void Player::Jump()
 
 void Player::DirectionalDash(glm::vec3 direction, bool& ready)
 {
-	if (energy >= energyDash)
+	if (ready)
 	{
-		energy -= energyDash;
-	}
-	if (energy > energyDash)
-	{
-		if (ready)
+		if (energy >= energyInitDash)
+		{
+			energy -= energyInitDash;
+		}
+		if (energy > energyInitDash)
 		{
 			ready = false;
 			velocity = glm::dot(direction, velocity) > 0.0f ?
 				glm::proj(velocity, direction) + dashInitVelocity * direction :
 				dashInitVelocity * direction;
 		}
-		else
+	}
+	else
+	{
+		if (energy >= energySustainDash)
+		{
+			energy -= energySustainDash;
+		}
+
+		if (energy > energySustainDash)
 		{
 			velocity += dashAcceleration * direction;
 		}

@@ -89,7 +89,8 @@ private:
 	const float gravity = 0.25f;
 	const float repulsionFac = 1.5f;
 
-	const float energyDash = 0.01f;
+	const float energyInitDash = 0.09f;
+	const float energySustainDash = 0.01f;
 	const float energyRegen = 0.002f;
 	const float firingEnergy = 0.003f;
 
