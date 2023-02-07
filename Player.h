@@ -54,6 +54,7 @@ public:
 
 	void FireProjectile(float* intensity, ProjectileStream& projectileStream);
 
+	void TakeDamage(float damage);
 	void AdjustVelocity(float* axes);
 	void AdjustOrientation(float* axes);
 
@@ -63,6 +64,10 @@ public:
 	//used by reticle
 	float zoom;
 private:
+	void Reset();
+	glm::vec3 spawnPoint;
+
+	float health = 100.0f;
 	float currentTime = 0;
 	const float fireInterval = 0.1f;
 	float prevFireTime = 0;

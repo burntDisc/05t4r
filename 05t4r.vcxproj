@@ -180,6 +180,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="HealthBarOverlay.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ElementBufferObject.h" />
     <ClInclude Include="EnergyBarOverlay.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="VertexBufferObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HealthBarOverlay.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />
     <ClCompile Include="EnergyBarOverlay.cpp" />
@@ -233,8 +235,8 @@
     <ClCompile Include="VertexBufferObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="2D.frag" />
-    <None Include="2D.vert" />
+    <None Include="2d.frag" />
+    <None Include="2d.vert" />
     <None Include="glitch.frag" />
     <None Include="glitch.geo" />
     <None Include="glitch.vert" />

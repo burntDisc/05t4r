@@ -24,9 +24,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ElementBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,15 +75,27 @@
     <ClInclude Include="Opponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnergyBarOverlay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReticleOverlay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthBarOverlay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ElementBufferObject.cpp">
@@ -149,6 +158,21 @@
     <ClCompile Include="Opponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnergyBarOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReticleOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBarOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="standard.frag">
@@ -180,6 +204,15 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="glitch.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="2d.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="2d.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="HUD.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

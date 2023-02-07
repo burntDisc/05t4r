@@ -71,7 +71,9 @@ int main()
 	// Uses counter clock-wise standard
 	//glFrontFace(GL_CCW);
 	// Loading Overlay Logic
+	std::vector<Shader> shaders;
 	Shader shader2D("2D.vert", "2D.frag");
+	shaders.push_back(shader2D);
 	std::vector<Vertex2D> overlayVertices;
 	overlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	overlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -92,19 +94,19 @@ int main()
 
 	// Generate Shader objects-------------------------------------------------
 	Shader HUDShader("2D.vert", "HUD.frag");
-	std::vector<Shader> objectShaders;
 	Shader standardShader("standard.vert", "standard.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
-	objectShaders.push_back(standardShader);
-	objectShaders.push_back(skyboxShader);
+	shaders.push_back(HUDShader);
+	shaders.push_back(standardShader);
+	shaders.push_back(skyboxShader);
 
 	// Set Lighting------------------------------------------------------------
 	glm::vec4 lightColor = glm::vec4(1.2f, 1.2f, 1.2f, 1.2f);
 	glm::vec3 lightPos = glm::vec3(20.0f, 20.0f, 20.0f);
 
-	for (int i = 0; i < objectShaders.size(); ++i)
+	for (int i = 0; i < shaders.size(); ++i)
 	{
-		Shader& shader = objectShaders[i];
+		Shader& shader = shaders[i];
 		if (shader.ID != skyboxShader.ID)
 		{
 			shader.Activate();
@@ -351,6 +353,7 @@ int main()
 
 			if (badProjectiles.CheckCollision(player.translation))
 			{
+				player.TakeDamage(1.0f);
 				std::cout << "Hits Taken: " << hits++ << std::endl;
 			}
 			//projectile.Update();
@@ -368,10 +371,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Updates shader camera matrices
-		for (int i = 0; i < objectShaders.size(); ++i)
+		for (int i = 0; i < shaders.size(); ++i)
 		{
-			Shader& shader = objectShaders[i];
-			if (shader.ID == skyboxShader.ID)
+			Shader& shader = shaders[i];
+			if (shader.ID == skyboxShader.ID || shader.ID == HUDShader.ID || shader.ID == shader2D.ID)
 			{
 				player.SetSkyboxUniforms(shader);
 			}
@@ -401,9 +404,9 @@ int main()
 	}
 
 	// Delete and clean up
-	for (int i = 0; i < objectShaders.size(); ++i)
+	for (int i = 0; i < shaders.size(); ++i)
 	{
-		objectShaders[i].Delete();
+		shaders[i].Delete();
 
 	}
 	glfwDestroyWindow(window);

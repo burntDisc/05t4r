@@ -12,6 +12,7 @@
 #include <iostream> // remove
 
 Player::Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent& opponent) :
+	spawnPoint(startPosition),
 	opponent(opponent),
 	window(window),
 	windowWidth(width),
@@ -243,6 +244,15 @@ void Player::Update(float time)
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
 }
 
+void Player::TakeDamage(float damage)
+{
+	health -= damage;
+	if (health < 0)
+	{
+		Reset();
+	}
+}
+
 void Player::AdjustVelocity(float* axes)
 {
 	// Allows for flat movement as opposed to flying
@@ -300,4 +310,10 @@ void Player::AdjustOrientation(float* axes)
 
 	// Rotates the orientation left and right
 	orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+}
+
+void Player::Reset()
+{
+	translation = spawnPoint;
+	health = 100;
 }
