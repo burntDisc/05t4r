@@ -53,8 +53,6 @@ void EnergyBarOverlay::Update()
 	float rightCornerX = player.energy - 0.5f;
 	vertices[0].position[0] = rightCornerX;
 	vertices[1].position[0] = rightCornerX;
-	GLint offset = 0;
-	VAO.Bind();
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec2), (void*)&vertices[0].position);

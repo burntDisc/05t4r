@@ -9,6 +9,11 @@ public:
     ReticleOverlay(Player& player);
     void Update();
 private:
+    void UpdateVertices();
+    const float maxRadius = 0.2;
+    const float minRadius = 0.05;
+    const float rotationOffset = 0.2;
+    const float radialOffset = 0.03;
     Player& player;
 
 };

@@ -24,6 +24,7 @@ namespace fs = std::experimental::filesystem;
 #include "Opponent.h"
 #include "Overlay.h"
 #include "EnergyBarOverlay.h"
+#include "ReticleOverlay.h"
 
 int main()
 {
@@ -158,6 +159,7 @@ int main()
 		opp);
 	// Create HUD
 	EnergyBarOverlay energyBar = EnergyBarOverlay(player);
+	ReticleOverlay reticle = ReticleOverlay(player);
 
 	// Create SkyBox
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
@@ -341,6 +343,7 @@ int main()
 			goodProjectiles.Update((float)time);
 			opp.Update((float)time);
 			energyBar.Update();
+			reticle.Update();
 			// Handles Inputs and downstream effects
 			InputHandler::ProcessInput();
 
@@ -384,6 +387,7 @@ int main()
 		skybox.Draw(skyboxShader);
 		opp.Draw(standardShader);
 		energyBar.Draw(HUDShader);
+		reticle.Draw(shader2D);
 		//statue.Draw(standardShader);
 
 

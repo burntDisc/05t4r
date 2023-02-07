@@ -60,7 +60,7 @@ public:
 	float energy = 1.0f;
 	bool targetLocked = false;
 
-	//used byt reticle
+	//used by reticle
 	float zoom;
 private:
 	float currentTime = 0;

@@ -8,33 +8,77 @@ ReticleOverlay::ReticleOverlay(Player& player) :
 	player(player),
 	Overlay::Overlay()
 {
-	std::vector<Vertex2D> barVertices;
-
-	// right corners of bar
-	barVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.95f), glm::vec3(0.5f, 0.0f, 1.0f)));
-	barVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.92f), glm::vec3(0.5f, 0.0f, 1.0f)));
-
-	std::vector<GLuint> barIndices;
-
-	// first bar triangle
-	barIndices.push_back(0);
-	barIndices.push_back(1);
-	barIndices.push_back(2);
-
-	vertices = barVertices;
-	indices = barIndices;
+	//All triangle vertices are unique and there are 9
+	for (int i = 0; i < 9; ++i)
+	{
+		indices.push_back(i);
+	}
+	UpdateVertices();
 	SetVertices();
 }
 
 void ReticleOverlay::Update()
 {
-	float rightCornerX = player.energy - 0.5f;
-	vertices[0].position[0] = rightCornerX;
-	vertices[1].position[0] = rightCornerX;
-	GLint offset = 0;
-	VAO.Bind();
+	UpdateVertices();
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec2), (void*)&vertices[0].position);
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(Vertex2D), sizeof(glm::vec2), (void*)&vertices[1].position);
+	//reset vertex positions
+	for (int i = 0; i < 9; ++i)
+	{
+		glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex2D), sizeof(Vertex2D), (void*)&vertices[i]);
+	}
+}
+
+void ReticleOverlay::UpdateVertices()
+{
+	vertices.clear();
+	float zoomFac = ( 1.0 - player.zoom) / 2.0;
+	float radius = zoomFac * (maxRadius - minRadius) + minRadius;
+	float rotation = zoomFac * 4.0f * acos(0) - acos(0) / 3.0f; // * 2*PI / (2*PI * 1/6)
+
+	glm::vec3 accentColor = player.targetLocked ?
+		glm::vec3(0.0f, 0.0f, 1.0f):
+		glm::vec3(0.0f, 1.0f, 0.0f);
+
+	glm::vec2 triangleAVert0(
+		radius * cos(rotation),
+		radius * sin(rotation));
+	glm::vec2 triangleAVert1(
+		(radius + radialOffset) * cos(rotation + rotationOffset),
+		(radius + radialOffset) * sin(rotation + rotationOffset));
+	glm::vec2 triangleAVert2(
+		(radius + radialOffset) * cos(rotation - rotationOffset),
+		(radius + radialOffset) * sin(rotation - rotationOffset));
+	vertices.push_back(Vertex2D(triangleAVert0, glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(triangleAVert1, glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(triangleAVert2, accentColor));
+
+	glm::vec2 triangleBVert0(
+		radius* cos(rotation + (4 * acos(0)) / 3),
+		radius * sin(rotation + (4 * acos(0)) / 3));
+	glm::vec2 triangleBVert1(
+		(radius + radialOffset) * cos(rotation + (4 * acos(0)) / 3 + rotationOffset),
+		(radius + radialOffset) * sin(rotation + (4 * acos(0)) / 3 + rotationOffset));
+	glm::vec2 triangleBVert2(
+		(radius + radialOffset) * cos(rotation + (4 * acos(0)) / 3 - rotationOffset),
+		(radius + radialOffset) * sin(rotation + (4 * acos(0)) / 3 - rotationOffset));
+
+	vertices.push_back(Vertex2D(triangleBVert0, glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(triangleBVert1, glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(triangleBVert2, accentColor));
+
+	glm::vec2 triangleCVert0(
+		radius* cos(rotation + (8 * acos(0)) / 3),
+		radius * sin(rotation + (8 * acos(0)) / 3));
+	glm::vec2 triangleCVert1(
+		(radius + radialOffset) * cos(rotation + (8 * acos(0)) / 3 + rotationOffset),
+		(radius + radialOffset) * sin(rotation + (8 * acos(0)) / 3 + rotationOffset));
+	glm::vec2 triangleCVert2(
+		(radius + radialOffset) * cos(rotation + (8 * acos(0)) / 3 - rotationOffset),
+		(radius + radialOffset) * sin(rotation + (8 * acos(0)) / 3 - rotationOffset));
+
+	vertices.push_back(Vertex2D(triangleCVert0, glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(triangleCVert1, glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(triangleCVert2, accentColor));
+
 }
