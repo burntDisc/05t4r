@@ -88,24 +88,5 @@ void ReticleOverlay::UpdateVertices()
 	vertices.push_back(Vertex2D(triangleCVert0, glm::vec3(1.0f, 0.7f, 0.7f)));
 	vertices.push_back(Vertex2D(triangleCVert1, glm::vec3(1.0f, 0.7f, 0.7f)));
 	vertices.push_back(Vertex2D(triangleCVert2, accentColor));
-	AdjustVertices();
-}
-
-void ReticleOverlay::AdjustVertices()
-{
-	//TODO: move this adjustment to shader
-	for (int i = 0; i < 9; ++i)
-	{
-		glm::mat4 persepctive = glm::perspective(glm::radians(45.0f), (float)player.windowWidth / player.windowHeight, 0.1f, 100.0f);
-
-		glm::vec4 test;
-		test.x = vertices[i].position.x;
-		test.y = vertices[i].position.y;
-		test.z = 0.0;
-
-		test = persepctive * test;
-		vertices[i].position.x = test.x;
-		vertices[i].position.y = test.y;
-
-	}
+	AdjustVertices(player.windowWidth, player.windowHeight);
 }

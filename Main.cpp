@@ -155,8 +155,7 @@ int main()
 		oppModelOffset
 	);
 	// Creates /player object
-	Player player(
-		window, 
+	Player player( 
 		width, 
 		height, 
 		glm::vec3(10.0f, 10.0f, 2.0f),

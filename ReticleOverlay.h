@@ -10,7 +10,6 @@ public:
     void Update();
 private:
     void UpdateVertices();
-    void AdjustVertices();
     float zoomFac;
     const float zoomIncrement = 1.0f;
     const float maxRadius = 0.10;

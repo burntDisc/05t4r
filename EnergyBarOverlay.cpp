@@ -7,20 +7,20 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 	std::vector<Vertex2D> barVertices;
 
 	// right corners of bar
-	barVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.95f), glm::vec3(0.5f, 0.0f, 1.0f)));
-	barVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.92f), glm::vec3(0.5f, 0.0f, 1.0f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMax, yMax), glm::vec3(0.5f, 0.0f, 1.0f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMax, yMin), glm::vec3(0.5f, 0.0f, 1.0f)));
 
 	// left corners of bar
-	barVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.95f), glm::vec3(1.0f, 0.7f, 0.7f)));
-	barVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.92f), glm::vec3(1.0f, 0.7f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMin, yMax), glm::vec3(1.0f, 0.7f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMin, yMin), glm::vec3(1.0f, 0.7f, 0.7f)));
 
 	// right corners of background
-	barVertices.push_back(Vertex2D(glm::vec2(0.505f, 0.955f), glm::vec3(0.7f, 1.0f, 0.7f)));
-	barVertices.push_back(Vertex2D(glm::vec2(0.505f, 0.915f), glm::vec3(0.7f, 1.0f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMax + borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
 
 	// left corners of background
-	barVertices.push_back(Vertex2D(glm::vec2(-0.505f, 0.955f), glm::vec3(1.0f, 0.7f, 0.7f)));
-	barVertices.push_back(Vertex2D(glm::vec2(-0.505f, 0.915f), glm::vec3(1.0f, 0.7f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMax + borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMin - borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
 
 	std::vector<GLuint> barIndices;
 
@@ -45,14 +45,20 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 
 	vertices = barVertices;
 	indices = barIndices;
+
+	AdjustVertices(player.windowWidth, player.windowHeight);
 	SetVertices();
 }
 
 void EnergyBarOverlay::Update()
 {
 	float rightCornerX = player.energy - 0.5f;
-	vertices[0].position[0] = rightCornerX;
-	vertices[1].position[0] = rightCornerX;
+
+	vertices[0] = Vertex2D(glm::vec2(rightCornerX, yMax), glm::vec3(0.5f, 0.0f, 1.0f));
+	vertices[1] = Vertex2D(glm::vec2(rightCornerX, yMin), glm::vec3(0.5f, 0.0f, 1.0f));
+
+	AdjustVertex(player.windowWidth, player.windowHeight, vertices[0]);
+	AdjustVertex(player.windowWidth, player.windowHeight, vertices[1]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec2), (void*)&vertices[0].position);

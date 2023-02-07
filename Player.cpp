@@ -11,7 +11,7 @@
 
 #include <iostream> // remove
 
-Player::Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent& opponent) :
+Player::Player(int width, int height, glm::vec3 startPosition, Opponent& opponent) :
 	spawnPoint(startPosition),
 	opponent(opponent),
 	window(window),
@@ -37,6 +37,7 @@ void Player::SetCameraUniforms(Shader& shader)
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
 
+//TODO: move window width and camera uniforms out of player
 void Player::SetSkyboxUniforms(Shader& skyboxShader)
 {
 

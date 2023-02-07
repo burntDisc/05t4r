@@ -23,7 +23,7 @@ public:
 	
 	GLFWwindow* window;
 
-	Player(GLFWwindow* window, int width, int height, glm::vec3 startPosition, Opponent& opponent);
+	Player(int width, int height, glm::vec3 startPosition, Opponent& opponent);
 
 	// Exports the POV related unifroms
 	void SetCameraUniforms(Shader& shader);

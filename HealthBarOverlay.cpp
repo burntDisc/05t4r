@@ -5,46 +5,61 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 	player(player),
 	Overlay::Overlay()
 {
-	std::vector<Vertex2D> barsVertices;
+	std::vector<Vertex2D> barVertices;
 
-	// create bars
-	for (int i = 0; i < 64; ++i)
-	{
-		vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.95f), glm::vec3(0.5f, 0.0f, 1.0f)));
-		vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.92f), glm::vec3(0.5f, 0.0f, 1.0f)));
-		vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.95f), glm::vec3(0.5f, 0.0f, 1.0f)));
-		vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.92f), glm::vec3(0.5f, 0.0f, 1.0f)));
+	// right corners of bar
+	barVertices.push_back(Vertex2D(glm::vec2(xMax, yMax), glm::vec3(0.5f, 0.0f, 1.0f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMax, yMin), glm::vec3(0.5f, 0.0f, 1.0f)));
 
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
+	// left corners of bar
+	barVertices.push_back(Vertex2D(glm::vec2(xMin, yMax), glm::vec3(1.0f, 0.7f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMin, yMin), glm::vec3(1.0f, 0.7f, 0.7f)));
 
-		indices.push_back(2);
-		indices.push_back(3);
-		indices.push_back(0);
-	}
+	// right corners of background
+	barVertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMax + borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
 
-	//create background
-	vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.95f), glm::vec3(0.5f, 0.0f, 1.0f)));
-	vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.92f), glm::vec3(0.5f, 0.0f, 1.0f)));
-	vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.95f), glm::vec3(0.5f, 0.0f, 1.0f)));
-	vertices.push_back(Vertex2D(glm::vec2(0.5f, 0.92f), glm::vec3(0.5f, 0.0f, 1.0f)));
+	// left corners of background
+	barVertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMax + borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMin - borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
 
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(2);
+	std::vector<GLuint> barIndices;
 
-	indices.push_back(2);
-	indices.push_back(3);
-	indices.push_back(0);
+	// first bar triangle
+	barIndices.push_back(0);
+	barIndices.push_back(1);
+	barIndices.push_back(2);
+
+	//second bar triangle
+	barIndices.push_back(2);
+	barIndices.push_back(3);
+	barIndices.push_back(1);
+	// first background triangle
+	barIndices.push_back(4);
+	barIndices.push_back(5);
+	barIndices.push_back(6);
+
+	//second background triangle
+	barIndices.push_back(6);
+	barIndices.push_back(7);
+	barIndices.push_back(5);
+
+	vertices = barVertices;
+	indices = barIndices;
+
+	AdjustVertices(player.windowWidth, player.windowHeight);
 	SetVertices();
 }
 
 void HealthBarOverlay::Update()
 {
 	float rightCornerX = player.energy - 0.5f;
-	vertices[0].position[0] = rightCornerX;
-	vertices[1].position[0] = rightCornerX;
+
+	vertices[0] = Vertex2D(glm::vec2(rightCornerX, yMax), glm::vec3(0.5f, 0.0f, 1.0f));
+	vertices[1] = Vertex2D(glm::vec2(rightCornerX, yMin), glm::vec3(0.5f, 0.0f, 1.0f));
+
+	AdjustVertex(player.windowWidth, player.windowHeight, vertices[0]);
+	AdjustVertex(player.windowWidth, player.windowHeight, vertices[1]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec2), (void*)&vertices[0].position);
