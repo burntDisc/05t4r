@@ -10,7 +10,8 @@ Opponent::Opponent
     ProjectileStream& projectileStream,
 	glm::vec3 initTranslation,
 	glm::vec3 initScale,
-	glm::quat initRotation
+	glm::quat initRotation,
+    glm::vec3 modelOffset
 ) :
     projectileStream(projectileStream),
 	modelRotation(initRotation),
@@ -18,7 +19,8 @@ Opponent::Opponent
 		modelFile,
 		initTranslation,
 		initScale,
-		initRotation)
+		initRotation,
+        modelOffset)
 {}
 
 // define z+ as forward

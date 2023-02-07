@@ -1,8 +1,8 @@
 #include "GameObject.h"
 
-GameObject::GameObject(const char* modelFile, glm::vec3 initTranslation, glm::vec3 initScale, glm::quat initRotation) :
+GameObject::GameObject(const char* modelFile, glm::vec3 initTranslation, glm::vec3 initScale, glm::quat initRotation, glm::vec3 modelOffset) :
 	validWorldPositions(false), 
-	model(modelFile), 
+	model(modelFile, modelOffset),
 	translation(initTranslation),
 	rotation(initRotation),
 	scale(initScale)

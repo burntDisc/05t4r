@@ -15,7 +15,7 @@ class Model
 {
 public:
 	// Loads in a model from a file and stores file info
-	Model(const char* file);
+	Model(const char* file, glm::vec3 modelOffset = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	void Draw
 	(
@@ -29,6 +29,7 @@ public:
 	std::vector<glm::mat4> meshTransforms;
 
 private:
+	glm::vec3 baseTranslation;
 	// gtlf file data
 	const char* file;
 	std::vector<unsigned char> bin;

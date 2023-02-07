@@ -12,7 +12,8 @@ public:
 		ProjectileStream& projectileStream,
 		glm::vec3 initTranslation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 initScale = glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f));
+		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3 modelOffset = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	void Update(float time);
 	glm::vec3 GetPosition();

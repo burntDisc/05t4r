@@ -4,7 +4,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "FileLoader.h"
 
-Model::Model(const char* file)
+Model::Model(const char* file, glm::vec3 modelOffset):
+	baseTranslation(modelOffset)
 {
 	std::string text;
 	// Make a gtlfJSON object
@@ -306,7 +307,7 @@ std::vector<Vertex> Model::AssembleVertices
 		(
 			Vertex
 			{
-				positions[i],
+				positions[i] + baseTranslation,
 				normals[i],
 				glm::vec3(1.0f, 1.0f, 1.0f),
 				texUVs[i]

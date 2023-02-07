@@ -139,16 +139,18 @@ int main()
 	);
 
 	// Create Opponent object
-	std::string oppModelPath = parentDir + "/models/statue/scene.gltf";
+	std::string oppModelPath = parentDir + "/models/statue/prototype/scene.gltf";
 	glm::vec3 oppTranslation(0.0f, 50.0f, 50.0f);
 	glm::quat oppRotation = glm::vec3(0.0f, -acos(0), 0.0f);
 	glm::vec3 oppScale(10.0f, 10.0f, 10.0f);
+	glm::vec3 oppModelOffset(0.68f, 0.15f, 0.20f);
 	Opponent opp(
 		oppModelPath.c_str(),
 		badProjectiles,
 		oppTranslation,
 		oppScale,
-		oppRotation
+		oppRotation,
+		oppModelOffset
 	);
 	// Creates /player object
 	Player player(
