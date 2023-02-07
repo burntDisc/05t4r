@@ -123,7 +123,7 @@ int main()
 
 	// Create projectile object
 	std::string badProjectilePath = parentDir + "/models/badProjectile/scene.gltf";
-	glm::vec3 projectileScale(1.0f, 1.0f, 1.0f);
+	glm::vec3 projectileScale(0.5f, 0.5f, 0.5f);
 	glm::vec3 projectileOrientation(0.0f, 0.0f, -1.0f);
 	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
 	ProjectileStream badProjectiles(
