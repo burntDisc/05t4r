@@ -17,7 +17,7 @@ private:
     const float borderWidth = barBuffer;
     const float xMax = -0.65f;
     const float xMin = -0.72f;
-    const float yMax = 0.36f;
+    const float yMax = 0.4f;
     const float yMin = -0.4f;
 };
 

@@ -15,7 +15,7 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 	barVertices.push_back(Vertex2D(glm::vec2(xMin, yMin), glm::vec3(1.0f, 0.7f, 0.7f)));
 
 	// right corners of background
-	barVertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMax + borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
+	barVertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMax + borderWidth), glm::vec3(0.7f, 0.8f, 0.4f)));
 	barVertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
 
 	// left corners of background
@@ -54,8 +54,8 @@ void EnergyBarOverlay::Update()
 {
 	float rightCornerX = player.energy * (xMax - xMin) + xMin;
 
-	vertices[0] = Vertex2D(glm::vec2(rightCornerX, yMax), glm::vec3(0.5f, 0.0f, 1.0f));
-	vertices[1] = Vertex2D(glm::vec2(rightCornerX, yMin), glm::vec3(0.5f, 0.0f, 1.0f));
+	vertices[0] = Vertex2D(glm::vec2(rightCornerX, yMax), glm::vec3(0.7f, 0.8f, 0.4f));
+	vertices[1] = Vertex2D(glm::vec2(rightCornerX, yMin), glm::vec3(0.7f, 0.8f, 0.4f));
 
 	AdjustVertex(player.windowWidth, player.windowHeight, vertices[0]);
 	AdjustVertex(player.windowWidth, player.windowHeight, vertices[1]);
