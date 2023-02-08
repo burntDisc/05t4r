@@ -180,6 +180,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="HealthBarOverlay.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ElementBufferObject.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="VertexBufferObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="HealthBarOverlay.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />

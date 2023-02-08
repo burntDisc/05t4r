@@ -26,6 +26,7 @@ namespace fs = std::experimental::filesystem;
 #include "EnergyBarOverlay.h"
 #include "HealthBarOverlay.h"
 #include "ReticleOverlay.h"
+#include "Camera.h"
 
 int main()
 {
@@ -304,8 +305,12 @@ int main()
 		[&player]() -> void {
 			player.Break();
 		});
+
 	//Connect to network
 	NetworkHandler NH(0);
+
+	// Camera
+	Camera camera(width, height, &player.translation, &player.orientation, &player.feildOfView);
 
 	// Main Render loop--------------------------------------------------------
 	// 
@@ -382,11 +387,11 @@ int main()
 			Shader& shader = shaders[i];
 			if (shader.ID == skyboxShader.ID)
 			{
-				player.SetSkyboxUniforms(shader);
+				camera.SetSkyboxUniforms(shader);
 			}
 			else
 			{
-				player.SetCameraUniforms(shader);
+				camera.SetCameraUniforms(shader);
 			}
 		}
 
