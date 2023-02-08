@@ -293,12 +293,15 @@ void Player::AdjustVelocity(float* axes)
 
 void Player::AdjustOrientation(float* axes)
 {
+	float zoomFac = (1 - zoom) / 2;
+	float lookSensitivity = minLookSensitivity + (maxLookSensitivity - minLookSensitivity) * zoomFac;
+
 	float rotX = targetLocked? 
 		lockedLookSensitivity * axes[1] : 
-		defaultLookSensitivity * axes[1];
+		lookSensitivity * axes[1];
 	float rotY = targetLocked ? 
 		lockedLookSensitivity * axes[0] : 
-		defaultLookSensitivity * axes[0];
+		lookSensitivity * axes[0];
 
 	// Calculates upcoming vertical change in the orientation
 	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
