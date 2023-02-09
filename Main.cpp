@@ -45,12 +45,12 @@ int main()
 	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-	// FULL SCREEN Enabled
-	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
 
-	unsigned int width = mode->width;//1500;
-	unsigned int height = mode->height;//900;
-	//GLFWwindow* window = glfwCreateWindow(width, height, "5t4r", NULL, NULL);
+	// Set Screen and Size
+	int width = 1500; //mode->width;//1500;
+	int height = 900; //mode->height;//900;
+	GLFWwindow* window = glfwCreateWindow(width, height, "5t4r", NULL, NULL);
+	//GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
 
 	if (window == NULL)
 	{
@@ -162,14 +162,12 @@ int main()
 	);
 	// Creates /player object
 	Player player( 
-		width, 
-		height, 
 		glm::vec3(10.0f, 10.0f, 2.0f),
 		opp);
 	// Create HUD
 	HealthBarOverlay healthBar = HealthBarOverlay(player);
 	EnergyBarOverlay energyBar = EnergyBarOverlay(player);
-	ReticleOverlay reticle = ReticleOverlay(player);
+	ReticleOverlay reticle = ReticleOverlay(player, width, height);
 
 	// Create SkyBox
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";

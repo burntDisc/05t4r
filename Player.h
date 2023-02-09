@@ -10,24 +10,19 @@ class Player
 {
 public:
 	// Camera description Vectors
-	glm::vec3 translation;
+	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 orientation = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
-	// window dimensions
-	int windowWidth;
-	int windowHeight;
-	
-	GLFWwindow* window;
+	// TODO: figureout why window is blank without this******
+	GLFWwindow* window; //***********************************
+	//*******************************************************
 
-	Player(int width, int height, glm::vec3 startPosition, Opponent& opponent);
+	Player(glm::vec3 startPosition, Opponent& opponent);
 
-	// Exports the POV related unifroms
-	void SetCameraUniforms(Shader& shader);
-	void SetSkyboxUniforms(Shader& skyboxShader);
 
 	void Update(float time);
 

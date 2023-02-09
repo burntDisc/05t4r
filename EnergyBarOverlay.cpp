@@ -46,7 +46,6 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 	vertices = barVertices;
 	indices = barIndices;
 
-	AdjustVertices(player.windowWidth, player.windowHeight);
 	SetVertices();
 }
 
@@ -56,9 +55,6 @@ void EnergyBarOverlay::Update()
 
 	vertices[0] = Vertex2D(glm::vec2(rightCornerX, yMax), glm::vec3(0.7f, 0.8f, 0.4f));
 	vertices[1] = Vertex2D(glm::vec2(rightCornerX, yMin), glm::vec3(0.7f, 0.8f, 0.4f));
-
-	AdjustVertex(player.windowWidth, player.windowHeight, vertices[0]);
-	AdjustVertex(player.windowWidth, player.windowHeight, vertices[1]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec2), (void*)&vertices[0].position);

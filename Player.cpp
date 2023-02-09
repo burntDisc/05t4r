@@ -9,48 +9,11 @@
 #include "MotionHandler.h"
 #include "NetworkHandler.h"
 
-#include <iostream> // remove
-
-Player::Player(int width, int height, glm::vec3 startPosition, Opponent& opponent) :
+Player::Player(glm::vec3 startPosition, Opponent& opponent) :
 	spawnPoint(startPosition),
 	opponent(opponent),
-	window(window),
-	windowWidth(width),
-	windowHeight(height),
 	translation(startPosition)
 {}
-
-void Player::SetCameraUniforms(Shader& shader)
-{
-	float nearPlane = 0.01f;
-	float farPlane = 7000.0f;
-	// Makes camera look in the right direction from the right position
-	view = glm::lookAt(translation, translation + orientation, up);
-	// Adds perspective to the scene
-	float aspectRatio = (float)windowWidth / windowHeight;
-
-	projection = glm::perspective(glm::radians(feildOfView), aspectRatio, nearPlane, farPlane);
-
-	shader.Activate();
-	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), translation.x, translation.y, translation.z);
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-}
-
-//TODO: move window width and camera uniforms out of player
-void Player::SetSkyboxUniforms(Shader& skyboxShader)
-{
-
-	skyboxShader.Activate();
-	glm::mat4 skyboxView = glm::mat4(1.0f);
-	glm::mat4 skyboxProjection = glm::mat4(1.0f);
-
-	// mat4 -> mat3 -> mat4 removes last row and column for translation
-	skyboxView = glm::mat4(glm::mat3(glm::lookAt(translation, translation + orientation, up)));
-	skyboxProjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
-	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(skyboxView));
-	glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(skyboxProjection));
-}
 
 void Player::FireProjectile(float* intensity, ProjectileStream& projectileStream)
 {

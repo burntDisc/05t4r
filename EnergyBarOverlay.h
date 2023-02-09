@@ -11,10 +11,10 @@ public:
     void Update();
 private:
     Player& player;
-    const float xMax = 0.36f;
-    const float xMin = -0.36f;
-    const float yMax = 0.39f;
-    const float yMin = 0.38f;
-    const float borderWidth = 0.001f;
+    const float xMax = 0.80f;
+    const float xMin = -0.80f;
+    const float yMax = 0.99f;
+    const float yMin = 0.91f;
+    const float borderWidth = 0.01f;
 };
 

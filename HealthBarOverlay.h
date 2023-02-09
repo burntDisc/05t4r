@@ -15,9 +15,9 @@ private:
     const int numBars = 64;
     const float barBuffer = 0.002f;
     const float borderWidth = barBuffer;
-    const float xMax = -0.65f;
-    const float xMin = -0.72f;
-    const float yMax = 0.4f;
-    const float yMin = -0.4f;
+    const float xMax = -0.7f;
+    const float xMin = -0.8f;
+    const float yMax = 0.8f;
+    const float yMin = -0.8f;
 };
 

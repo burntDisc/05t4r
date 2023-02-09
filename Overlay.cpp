@@ -30,39 +30,6 @@ void Overlay::SetVertices()
 	EBO.Unbind();
 }
 
-//TODO OPTIMIZATION: move both below adjustment functions to shader
-void Overlay::AdjustVertices(float windowWidth, float windowHeight)
-{
-	for (int i = 0; i < vertices.size(); ++i)
-	{
-		glm::mat4 persepctive = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
-
-		glm::vec4 vec;
-		vec.x = vertices[i].position.x;
-		vec.y = vertices[i].position.y;
-		vec.z = 0.0;
-
-		vec = persepctive * vec;
-		vertices[i].position.x = vec.x;
-		vertices[i].position.y = vec.y;
-
-	}
-}
-
-void Overlay::AdjustVertex(float windowWidth, float windowHeight, Vertex2D& vertex)
-{
-	glm::mat4 persepctive = glm::perspective(glm::radians(45.0f), (float)windowWidth / windowHeight, 0.1f, 100.0f);
-
-	glm::vec4 vec;
-	vec.x = vertex.position.x;
-	vec.y = vertex.position.y;
-	vec.z = 0.0;
-
-	vec = persepctive * vec;
-	vertex.position.x = vec.x;
-	vertex.position.y = vec.y;
-}
-
 void Overlay::Draw(Shader shader)
 {
 	// Bind shader to be set uniforms

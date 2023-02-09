@@ -53,7 +53,6 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 	indices.push_back(indiceOffset + 3);
 	indices.push_back(indiceOffset + 1);
 
-	AdjustVertices(player.windowWidth, player.windowHeight);
 	SetVertices();
 }
 
