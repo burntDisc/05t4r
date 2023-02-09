@@ -59,6 +59,7 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 void HealthBarOverlay::UpdateIndices(int bars)
 {
 	indices.clear();
+	// bars
 	for (int i = 0; i < bars; ++i)
 	{
 		// rectangle indices
@@ -72,6 +73,8 @@ void HealthBarOverlay::UpdateIndices(int bars)
 		indices.push_back(i * 4 + 3);
 		indices.push_back(i * 4 + 1);
 	}
+
+	// background
 	// rectangle indices
 	// first triangle
 	int indiceOffset = numBars * 4;
@@ -83,6 +86,7 @@ void HealthBarOverlay::UpdateIndices(int bars)
 	indices.push_back(indiceOffset + 2);
 	indices.push_back(indiceOffset + 3);
 	indices.push_back(indiceOffset + 1);
+	SetVertices();
 }
 
 void HealthBarOverlay::Update()
