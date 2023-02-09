@@ -15,7 +15,7 @@ private:
     const float zoomIncrement = 1.0f;
     const float maxRadius = 0.30;
     const float minRadius = 0.03;
-    const float rotationOffset = 0.1;
+    const float rotationOffset = 0.05;
     const float radialOffset = 0.05;
     Player& player;
 
