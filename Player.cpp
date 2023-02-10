@@ -17,18 +17,13 @@ Player::Player(glm::vec3 startPosition, Opponent& opponent) :
 
 void Player::FireProjectile(float* intensity, ProjectileStream& projectileStream)
 {
-	if (currentTime - prevFireTime > fireInterval && *intensity > -0.99f)
+	bool firing = currentTime - prevFireTime > fireInterval && *intensity > -0.99f;
+	NetworkHandler::outState.firing = firing;
+	if (firing)
 	{
 		energy -= firingEnergy;
-		bool firing = true;
-		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &firing);
-		NetworkHandler::SetLocalGamestate(NetworkHandler::firingIntensity, intensity);
+		NetworkHandler::outState.firingIntensity = *intensity;
 		projectileStream.Fire(translation, orientation, intensity);
-	}
-	else
-	{
-		bool notFiring = false;
-		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &notFiring);
 	}
 }
 
@@ -204,8 +199,9 @@ void Player::Update(float time)
 		glm::vec3 orientation = normalize(target - translation);
 	}
 
-	NetworkHandler::SetLocalGamestate(NetworkHandler::position, &newTranslation);
-	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
+	NetworkHandler::outState.translation = translation;
+	NetworkHandler::outState.orientation = orientation;
+	NetworkHandler::PushState(time);
 }
 
 void Player::TakeDamage(float damage)

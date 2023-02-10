@@ -1,5 +1,4 @@
 #include "Opponent.h"
-#include "NetworkHandler.h"
 
 #include <iostream>
 #include <cmath>
@@ -13,6 +12,7 @@ Opponent::Opponent
 	glm::quat initRotation,
     glm::vec3 modelOffset
 ) :
+    currentState({}),
     projectileStream(projectileStream),
 	modelRotation(initRotation),
 	GameObject(
@@ -85,30 +85,21 @@ glm::quat Opponent::LookRotation(glm::vec3 orientation)
 
 void Opponent::Update(float time)
 {
+    double delta = time - currentTime;
+    currentTime = time;
+
     glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
 
-	NetworkHandler::Gamestate state = NetworkHandler::GetRemoteGamestate(true);
-	if (state.valid)
-	{
-        firing = state.firing;
-        firingIntensity = state.firingIntensity;
-        orientation = state.orientation;
-        rotation = LookRotation(orientation) * modelRotation;
+	currentState = NetworkHandler::GetState(currentState.time + delta);
 
-        prevTranslation = nextTranslation;
-        nextTranslation = state.position;
+    orientation = currentState.orientation;
+    rotation = LookRotation(orientation) * modelRotation;
+    translation = currentState.translation;
 
-        latency = time - prevStateTime;
-        prevStateTime = time;
-	}
-    if (firing)
+    if (currentState.firing)
     {
-        projectileStream.Fire(translation, orientation, &firingIntensity);
+        projectileStream.Fire(translation, orientation, &currentState.firingIntensity);
     }
-    float progress = (time - prevStateTime) / latency;
-    translation.x = std::lerp(prevTranslation.x, nextTranslation.x, progress);
-    translation.y = std::lerp(prevTranslation.y, nextTranslation.y, progress);
-    translation.z = std::lerp(prevTranslation.z, nextTranslation.z, progress);
 }
 
 glm::vec3 Opponent::GetPosition()
