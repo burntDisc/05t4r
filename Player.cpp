@@ -206,7 +206,7 @@ void Player::Update(double time)
 
 	NetworkHandler::SetLocalGamestate(NetworkHandler::position, &newTranslation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
-	NetworkHandler::SetLocalGamestate(NetworkHandler::time, &time);
+	NetworkHandler::PushGamestate(time);
 }
 
 void Player::TakeDamage(float damage)

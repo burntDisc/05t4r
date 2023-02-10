@@ -27,12 +27,14 @@ public:
 
 	static void SetLocalGamestate(feild feild, void* value);
 
+	static void PushGamestate(double time);
 	static Gamestate GetRemoteGamestate(double time);
 
 	static void Client();
     static void Server();
 
 	static std::queue<Gamestate> remoteState;
+	static std::queue<Gamestate> localStates;
 	static Gamestate localState;
 
 	static std::mutex remoteMutex;
