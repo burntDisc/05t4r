@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+
 #include <windows.h> // TODO this is for Sleep() (needs to be cross platform)
 //****************************************
 // TODO should be lock_guard not mutex
@@ -9,14 +10,13 @@
 using boost::asio::ip::udp;
 enum { max_length = 1024 };
 
-std::mutex NetworkHandler::inMutex;
-std::mutex NetworkHandler::outMutex;
+NetworkHandler::Gamestate NetworkHandler::localState;
+NetworkHandler::Gamestate NetworkHandler::remoteState;
+std::mutex NetworkHandler::remoteMutex;
+std::mutex NetworkHandler::localMutex;
+
 bool NetworkHandler::running;
 std::mutex NetworkHandler::runningMutex;
-std::queue<NetworkHandler::Gamestate> NetworkHandler::inStates;
-std::queue<NetworkHandler::Gamestate> NetworkHandler::outStates;
-NetworkHandler::Gamestate NetworkHandler::outState;
-NetworkHandler::Gamestate NetworkHandler::inState;
 
 NetworkHandler::NetworkHandler(int tmp)
 {
@@ -37,31 +37,51 @@ NetworkHandler::~NetworkHandler()
     delete server;
 }
 
-void NetworkHandler::PushState(double time)
+NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(bool consume)
 {
-    outState.time = time;
-    outMutex.lock();
-    outStates.push(outState);
-    outMutex.unlock();
+    remoteMutex.lock();
+    Gamestate current_gamestate = remoteState;
+    remoteState.valid = !consume;
+    remoteMutex.unlock();
+    return current_gamestate;
 }
 
-NetworkHandler::Gamestate NetworkHandler::GetState(double time)
+void NetworkHandler::SetLocalGamestate(feild feild, void* value)
 {
-    inMutex.lock();
-    while (!inStates.empty())
-    {
-        if (inStates.front().time < time)
-        {
-            inStates.pop();
-        }
-        else
-        {
-            inState = inStates.front();
-        }
+    switch (feild) {
+    case firingIntensity:
+        localMutex.lock();
+        localState.firingIntensity = *(float*)value;
+        localMutex.unlock();
+        break;
+    case firing:
+        localMutex.lock();
+        localState.firing = *(bool*)value;
+        localMutex.unlock();
+        break;
+    case valid:
+        localMutex.lock();
+        localState.valid = *(bool*)value;
+        localMutex.unlock();
+        break;
+    case position:
+        localMutex.lock();
+        localState.position = *(glm::vec3*)value;
+        localMutex.unlock();
+        break;
+    case orientation:
+        localMutex.lock();
+        localState.orientation = *(glm::vec3*)value;
+        localMutex.unlock();
+        break;
+    case time:
+        localMutex.lock();
+        localState.time = *(double*)time;
+        localMutex.unlock();
+        break;
+    default:
+        break;
     }
-    inMutex.unlock();
-
-    return inState;
 }
 
 void NetworkHandler::Client()
@@ -98,17 +118,15 @@ void NetworkHandler::Client()
         while (running)
         {
             runningMutex.unlock();
-
-            Gamestate recievedStates[maxStates];
+            Gamestate in_state;
             udp::endpoint sender_endpoint;
-            size_t replyLength = sock.receive_from(boost::asio::buffer(recievedStates, maxStates * sizeof(Gamestate)), sender_endpoint);
+            size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, sizeof(in_state)), sender_endpoint);
 
-            for (int i = 0; i < replyLength / sizeof(Gamestate); ++i)
-            {
-                inMutex.lock();
-                inStates.push(recievedStates[i]);
-                inMutex.unlock();
-            }
+            in_state.valid = reply_length > 0;
+
+            remoteMutex.lock();
+            remoteState = in_state;
+            remoteMutex.unlock();
 
             runningMutex.lock();
         }
@@ -142,21 +160,11 @@ void NetworkHandler::Server()
         {
             runningMutex.unlock();
 
-            Gamestate toSendStates[maxStates];
+            localMutex.lock();
+            Gamestate out_state = localState;
+            localMutex.unlock();
 
-            outMutex.lock();
-            size_t numStates = outStates.size();
-            outMutex.unlock();
-
-            for (int i = 0; i < numStates; ++i)
-            {
-                outMutex.lock();
-                toSendStates[i] = outStates.front();
-                outStates.pop();
-                outMutex.unlock();
-            }
-
-            sock.send_to(boost::asio::buffer(toSendStates, numStates * sizeof(Gamestate)), sender_endpoint);
+            sock.send_to(boost::asio::buffer(&out_state, sizeof(out_state)), sender_endpoint);
 
             runningMutex.lock();
         }
