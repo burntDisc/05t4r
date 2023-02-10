@@ -41,7 +41,7 @@ public:
 	static std::mutex runningMutex;
 
 private:
-	static const int maxStates = 64;
+	static const size_t maxStates = 64;
 	static Gamestate inState;
 	static std::queue<Gamestate> inStates;
 	static std::queue<Gamestate> outStates;
