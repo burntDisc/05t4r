@@ -155,11 +155,12 @@ void NetworkHandler::Server()
         {
             runningMutex.unlock();
 
+            Gamestate out_state[maxSize];
             localMutex.lock();
-            Gamestate out_state = localState;
+            out_state[3] = localState;
             localMutex.unlock();
 
-            sock.send_to(boost::asio::buffer(&out_state, sizeof(out_state)), sender_endpoint);
+            sock.send_to(boost::asio::buffer(out_state, maxSize * sizeof(Gamestate)), sender_endpoint);
 
             runningMutex.lock();
         }
