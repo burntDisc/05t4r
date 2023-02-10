@@ -82,32 +82,28 @@ glm::quat Opponent::LookRotation(glm::vec3 orientation)
     return quaternion;
 }
 
-void Opponent::Update(float time)
+void Opponent::Update(double time)
 {
+    loopTime = time - prevStateTime;
+    prevStateTime = time;
+
     glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
 
-	state = NetworkHandler::GetRemoteGamestate(state.time + latency);
-	if (state.valid)
-	{
-        firing = state.firing;
-        firingIntensity = state.firingIntensity;
-        orientation = state.orientation;
-        rotation = LookRotation(orientation) * modelRotation;
+	state = NetworkHandler::GetRemoteGamestate(state.time + loopTime, state);
 
-        prevTranslation = nextTranslation;
-        nextTranslation = state.position;
+    firing = state.firing;
+    firingIntensity = state.firingIntensity;
+    orientation = state.orientation;
+    rotation = LookRotation(orientation) * modelRotation;
 
-        latency = time - prevStateTime;
-        prevStateTime = time;
-	}
+    prevTranslation = nextTranslation;
+    nextTranslation = state.position;
+
     if (firing)
     {
         projectileStream.Fire(translation, orientation, &firingIntensity);
     }
-    float progress = (time - prevStateTime) / latency;
-    translation.x = std::lerp(prevTranslation.x, nextTranslation.x, progress);
-    translation.y = std::lerp(prevTranslation.y, nextTranslation.y, progress);
-    translation.z = std::lerp(prevTranslation.z, nextTranslation.z, progress);
+    translation = state.position;
 }
 
 glm::vec3 Opponent::GetPosition()

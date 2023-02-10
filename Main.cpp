@@ -353,7 +353,7 @@ int main()
 			player.Update(time);
 			badProjectiles.Update((float)time);
 			goodProjectiles.Update((float)time);
-			opp.Update((float)time);
+			opp.Update(time);
 			healthBar.Update();
 			energyBar.Update();
 			reticle.Update();

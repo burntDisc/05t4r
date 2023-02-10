@@ -54,9 +54,8 @@ void NetworkHandler::PushGamestate(double time)
     localMutex.unlock();
 }
 
-NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time)
+NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time, Gamestate currentState)
 {
-    Gamestate returnState = {.valid = false};
     remoteMutex.lock();
     size_t states = remoteStates.size();
     remoteMutex.unlock();
@@ -70,12 +69,12 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time)
         }
         else
         {
-            returnState = remoteStates.front();
+            currentState = remoteStates.front();
             i = states;
         }
         remoteMutex.unlock();
     }
-    return returnState;
+    return currentState;
 
 }
 
@@ -143,13 +142,20 @@ void NetworkHandler::Client()
             udp::endpoint sender_endpoint;
             size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, maxSize * sizeof(Gamestate)), sender_endpoint);
 
+            remoteMutex.lock();
+            while (remoteStates.size() > 0)
+            {
+                remoteStates.pop();
+            }
+            remoteMutex.unlock();
+
             for (int i = 0; i < reply_length / sizeof(Gamestate); ++i)
             {
                 remoteMutex.lock();
                 remoteStates.push(in_state[i]);
                 remoteMutex.unlock();
             }
-
+            
             runningMutex.lock();
         }
         runningMutex.unlock();

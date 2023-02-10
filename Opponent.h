@@ -16,14 +16,14 @@ public:
 		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 modelOffset = glm::vec3(0.0f, 0.0f, 0.0f));
 
-	void Update(float time);
+	void Update(double time);
 	glm::vec3 GetPosition();
 private:
 	NetworkHandler::Gamestate state;
 	bool firing;
 	float firingIntensity;
-	float prevStateTime;
-	float latency;
+	double prevStateTime;
+	double loopTime;
 	glm::quat LookRotation(glm::vec3 orientation);
 	glm::quat modelRotation;
 	glm::vec3 prevTranslation;
