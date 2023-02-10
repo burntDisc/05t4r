@@ -74,11 +74,6 @@ void NetworkHandler::SetLocalGamestate(feild feild, void* value)
         localState.orientation = *(glm::vec3*)value;
         localMutex.unlock();
         break;
-    case time:
-        localMutex.lock();
-        localState.time = *(double*)time;
-        localMutex.unlock();
-        break;
     default:
         break;
     }
