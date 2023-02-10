@@ -4,18 +4,19 @@
 #include <thread>
 #include <mutex>
 #include <boost/asio.hpp>
-
+#include <queue>
 class NetworkHandler
 {
 public:
 
-	enum feild { firingIntensity, firing, valid, position, orientation };
+	enum feild { time, firingIntensity, firing, valid, position, orientation };
 	// Structure to standardize the vertices used in the meshes
 	// should be max 508 bytes for UDP speed safety (no ip fragmentation)
 	struct Gamestate
 	{
 		glm::vec3 position;
 		glm::vec3 orientation;
+		double time;
 		float firingIntensity;
 		bool firing;
 		bool valid;
@@ -26,12 +27,12 @@ public:
 
 	static void SetLocalGamestate(feild feild, void* value);
 
-	static Gamestate GetRemoteGamestate(bool consume = false);
+	static Gamestate GetRemoteGamestate(double time);
 
 	static void Client();
     static void Server();
 
-	static Gamestate remoteState;
+	static std::queue<Gamestate> remoteState;
 	static Gamestate localState;
 
 	static std::mutex remoteMutex;

@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "ProjectileStream.h"
+#include "NetworkHandler.h"
 
 class Opponent :
 	public GameObject
@@ -18,6 +19,7 @@ public:
 	void Update(float time);
 	glm::vec3 GetPosition();
 private:
+	NetworkHandler::Gamestate state;
 	bool firing;
 	float firingIntensity;
 	float prevStateTime;

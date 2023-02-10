@@ -350,7 +350,7 @@ int main()
 			lastTime = time;
 			counter = 0;
 			floor.Update();
-			player.Update((float)time);
+			player.Update(time);
 			badProjectiles.Update((float)time);
 			goodProjectiles.Update((float)time);
 			opp.Update((float)time);

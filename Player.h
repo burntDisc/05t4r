@@ -24,7 +24,7 @@ public:
 	Player(glm::vec3 startPosition, Opponent& opponent);
 
 
-	void Update(float time);
+	void Update(double time);
 
 	// input movement
 	void ZoomAndLock(float* triggerValue);

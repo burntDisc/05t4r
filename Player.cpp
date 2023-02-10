@@ -156,7 +156,7 @@ void Player::Back()
 	AdjustVelocity(axes);
 }
 
-void Player::Update(float time)
+void Player::Update(double time)
 {
 	currentTime = time;
 	if (energy <= 1.0f - energyRegen) {
@@ -206,6 +206,7 @@ void Player::Update(float time)
 
 	NetworkHandler::SetLocalGamestate(NetworkHandler::position, &newTranslation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
+	NetworkHandler::SetLocalGamestate(NetworkHandler::time, &time);
 }
 
 void Player::TakeDamage(float damage)

@@ -1,5 +1,4 @@
 #include "Opponent.h"
-#include "NetworkHandler.h"
 
 #include <iostream>
 #include <cmath>
@@ -87,7 +86,7 @@ void Opponent::Update(float time)
 {
     glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
 
-	NetworkHandler::Gamestate state = NetworkHandler::GetRemoteGamestate(true);
+	state = NetworkHandler::GetRemoteGamestate(state.time + latency);
 	if (state.valid)
 	{
         firing = state.firing;

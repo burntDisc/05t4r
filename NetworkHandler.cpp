@@ -11,7 +11,7 @@ using boost::asio::ip::udp;
 enum { max_length = 1024 };
 
 NetworkHandler::Gamestate NetworkHandler::localState;
-NetworkHandler::Gamestate NetworkHandler::remoteState;
+std::queue<NetworkHandler::Gamestate> NetworkHandler::remoteState;
 std::mutex NetworkHandler::remoteMutex;
 std::mutex NetworkHandler::localMutex;
 
@@ -20,6 +20,14 @@ std::mutex NetworkHandler::runningMutex;
 
 NetworkHandler::NetworkHandler(int tmp)
 {
+    Gamestate startState = {
+        .position = glm::vec3(10.0f,10.0f,10.0f),
+        .orientation = glm::vec3(0.0f,0.0f,1.0f),
+        .firingIntensity = 0.0f,
+        .firing = false,
+        .valid = true
+    };
+    remoteState.push(startState);
     std::cout << "Starting network threads..." << std::endl;
     running = false;
     client = new std::thread(Client);
@@ -37,13 +45,29 @@ NetworkHandler::~NetworkHandler()
     delete server;
 }
 
-NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(bool consume)
+NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time)
 {
+    Gamestate returnState;
     remoteMutex.lock();
-    Gamestate current_gamestate = remoteState;
-    remoteState.valid = !consume;
+    size_t states = remoteState.size();
     remoteMutex.unlock();
-    return current_gamestate;
+
+    for (int i = 0; i < states; ++i)
+    {
+        remoteMutex.lock();
+        if (remoteState.front().time < time)
+        {
+            remoteState.pop();
+        }
+        else
+        {
+            returnState = remoteState.front();
+            i = states;
+        }
+        remoteMutex.unlock();
+    }
+    return returnState;
+
 }
 
 void NetworkHandler::SetLocalGamestate(feild feild, void* value)
@@ -72,6 +96,11 @@ void NetworkHandler::SetLocalGamestate(feild feild, void* value)
     case orientation:
         localMutex.lock();
         localState.orientation = *(glm::vec3*)value;
+        localMutex.unlock();
+        break;
+    case time:
+        localMutex.lock();
+        localState.time = *(double*)value;
         localMutex.unlock();
         break;
     default:
@@ -116,11 +145,11 @@ void NetworkHandler::Client()
             Gamestate in_state[maxSize];
             udp::endpoint sender_endpoint;
             size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, maxSize * sizeof(Gamestate)), sender_endpoint);
-
+    
             in_state[3].valid = reply_length > 0;
 
             remoteMutex.lock();
-            remoteState = in_state[3];
+            remoteState.push(in_state[3]);
             remoteMutex.unlock();
 
             runningMutex.lock();
