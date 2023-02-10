@@ -12,7 +12,7 @@ enum { max_length = 1024 };
 
 NetworkHandler::Gamestate NetworkHandler::localState;
 std::queue<NetworkHandler::Gamestate> NetworkHandler::localStates;
-std::queue<NetworkHandler::Gamestate> NetworkHandler::remoteState;
+std::queue<NetworkHandler::Gamestate> NetworkHandler::remoteStates;
 std::mutex NetworkHandler::remoteMutex;
 std::mutex NetworkHandler::localMutex;
 
@@ -28,7 +28,7 @@ NetworkHandler::NetworkHandler(int tmp)
         .firing = false,
         .valid = true
     };
-    remoteState.push(startState);
+    remoteStates.push(startState);
     std::cout << "Starting network threads..." << std::endl;
     running = false;
     client = new std::thread(Client);
@@ -58,19 +58,19 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time)
 {
     Gamestate returnState = {.valid = false};
     remoteMutex.lock();
-    size_t states = remoteState.size();
+    size_t states = remoteStates.size();
     remoteMutex.unlock();
 
     for (int i = 0; i < states; ++i)
     {
         remoteMutex.lock();
-        if (remoteState.front().time < time)
+        if (remoteStates.front().time < time)
         {
-            remoteState.pop();
+            remoteStates.pop();
         }
         else
         {
-            returnState = remoteState.front();
+            returnState = remoteStates.front();
             i = states;
         }
         remoteMutex.unlock();
@@ -142,12 +142,13 @@ void NetworkHandler::Client()
             Gamestate in_state[maxSize];
             udp::endpoint sender_endpoint;
             size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, maxSize * sizeof(Gamestate)), sender_endpoint);
-    
-            in_state[3].valid = reply_length > 0;
 
-            remoteMutex.lock();
-            remoteState.push(in_state[3]);
-            remoteMutex.unlock();
+            for (int i = 0; i < reply_length / sizeof(Gamestate); ++i)
+            {
+                remoteMutex.lock();
+                remoteStates.push(in_state[i]);
+                remoteMutex.unlock();
+            }
 
             runningMutex.lock();
         }

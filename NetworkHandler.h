@@ -33,7 +33,7 @@ public:
 	static void Client();
     static void Server();
 
-	static std::queue<Gamestate> remoteState;
+	static std::queue<Gamestate> remoteStates;
 	static std::queue<Gamestate> localStates;
 	static Gamestate localState;
 
