@@ -113,14 +113,14 @@ void NetworkHandler::Client()
         while (running)
         {
             runningMutex.unlock();
-            Gamestate in_state;
+            Gamestate in_state[maxSize];
             udp::endpoint sender_endpoint;
-            size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, sizeof(in_state)), sender_endpoint);
+            size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, maxSize * sizeof(Gamestate)), sender_endpoint);
 
-            in_state.valid = reply_length > 0;
+            in_state[3].valid = reply_length > 0;
 
             remoteMutex.lock();
-            remoteState = in_state;
+            remoteState = in_state[3];
             remoteMutex.unlock();
 
             runningMutex.lock();

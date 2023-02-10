@@ -41,6 +41,7 @@ public:
 	static std::mutex runningMutex;
 
 private:
+	static const size_t maxSize = 10;
 	std::thread* client = nullptr;
     std::thread* server = nullptr;
 };
