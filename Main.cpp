@@ -323,7 +323,7 @@ int main()
 	double GameLoopInterval = 1.00/30.00;  // seconds
 	while (!glfwWindowShouldClose(window))
 	{
-
+		NetworkHandler::SetLocalGamestate(NetworkHandler::time, &time);
 		// Updates counter and times
 		time = glfwGetTime();
 		deltaTime = time - lastTime;
