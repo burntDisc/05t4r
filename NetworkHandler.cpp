@@ -1,7 +1,6 @@
 #include "NetworkHandler.h"
 
 #include <iostream>
-#include <algorithm>
 
 #include <windows.h> // TODO this is for Sleep() (needs to be cross platform)
 //****************************************
@@ -146,7 +145,7 @@ void NetworkHandler::Server()
             Gamestate toSendStates[maxStates];
 
             outMutex.lock();
-            size_t numStates = std::min(outStates.size(), maxStates);
+            size_t numStates = outStates.size();
             outMutex.unlock();
 
             for (int i = 0; i < numStates; ++i)
