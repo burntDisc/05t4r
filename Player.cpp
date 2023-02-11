@@ -204,7 +204,7 @@ void Player::Update(double time)
 		glm::vec3 orientation = normalize(target - translation);
 	}
 
-	NetworkHandler::SetLocalGamestate(NetworkHandler::position, &newTranslation);
+	NetworkHandler::SetLocalGamestate(NetworkHandler::translation, &translation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
 	NetworkHandler::PushGamestate(time);
 }

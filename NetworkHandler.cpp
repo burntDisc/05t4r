@@ -22,7 +22,7 @@ std::mutex NetworkHandler::runningMutex;
 NetworkHandler::NetworkHandler(int tmp)
 {
     Gamestate startState = {
-        .position = glm::vec3(10.0f,10.0f,10.0f),
+        .translation = glm::vec3(10.0f,10.0f,10.0f),
         .orientation = glm::vec3(0.0f,0.0f,1.0f),
         .firingIntensity = 0.0f,
         .firing = false,
@@ -90,8 +90,8 @@ void NetworkHandler::SetLocalGamestate(feild feild, void* value)
     case valid:
         localState.valid = *(bool*)value;
         break;
-    case position:
-        localState.position = *(glm::vec3*)value;
+    case translation:
+        localState.translation = *(glm::vec3*)value;
         break;
     case orientation:
         localState.orientation = *(glm::vec3*)value;

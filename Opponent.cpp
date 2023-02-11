@@ -92,7 +92,7 @@ void Opponent::Update(double time)
 	state = NetworkHandler::GetRemoteGamestate(state.time + loopTime, state);
 
     rotation = LookRotation(state.orientation) * modelRotation;
-    translation = state.position;
+    translation = state.translation;
 
     if (state.firing)
     {
