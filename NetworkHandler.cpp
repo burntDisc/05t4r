@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <cmath>
 #include <algorithm>
 #include <windows.h> // TODO this is for Sleep() (needs to be cross platform)
 //****************************************
@@ -66,13 +67,15 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time, Gamest
         if (remoteStates.front().time < time)
         {
             remoteStates.pop();
+            remoteMutex.unlock();
         }
         else
         {
-            currentState = remoteStates.front();
+            Gamestate rawState = remoteStates.front();
+            remoteMutex.unlock();
+            currentState = GetLerpedState(currentState, rawState, time);
             i = states;
         }
-        remoteMutex.unlock();
     }
     return currentState;
 
@@ -206,4 +209,21 @@ void NetworkHandler::Server()
         std::cerr << "Exception: " << e.what() << "\n";
     }
 
+}
+
+NetworkHandler::Gamestate NetworkHandler::GetLerpedState(Gamestate oldState, Gamestate newState, double time)
+{
+    Gamestate lerpedState = newState;
+
+    double timeFactor = (time - oldState.time) / (newState.time - oldState.time);
+
+    lerpedState.translation.x = std::lerp(oldState.translation.x, newState.translation.x, timeFactor);
+    lerpedState.translation.y = std::lerp(oldState.translation.y, newState.translation.y, timeFactor);
+    lerpedState.translation.z = std::lerp(oldState.translation.z, newState.translation.z, timeFactor);
+
+    lerpedState.orientation.x = std::lerp(oldState.orientation.x, newState.orientation.x, timeFactor);
+    lerpedState.orientation.y = std::lerp(oldState.orientation.y, newState.orientation.y, timeFactor);
+    lerpedState.orientation.z = std::lerp(oldState.orientation.z, newState.orientation.z, timeFactor);
+
+    return lerpedState;
 }

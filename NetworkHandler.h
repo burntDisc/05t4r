@@ -44,6 +44,7 @@ public:
 	static std::mutex runningMutex;
 
 private:
+	static Gamestate GetLerpedState(Gamestate oldState, Gamestate newState, double time);
 	static const size_t maxSize = 10;
 	std::thread* client = nullptr;
     std::thread* server = nullptr;

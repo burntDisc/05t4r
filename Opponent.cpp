@@ -1,7 +1,6 @@
 #include "Opponent.h"
 
 #include <iostream>
-#include <cmath>
 
 Opponent::Opponent
 (
@@ -81,6 +80,8 @@ glm::quat Opponent::LookRotation(glm::vec3 orientation)
     quaternion.w = (m01 - m10) * num2;
     return quaternion;
 }
+
+//TODO handle interloop-firing?
 
 void Opponent::Update(double time)
 {
