@@ -91,19 +91,13 @@ void Opponent::Update(double time)
 
 	state = NetworkHandler::GetRemoteGamestate(state.time + loopTime, state);
 
-    firing = state.firing;
-    firingIntensity = state.firingIntensity;
-    orientation = state.orientation;
-    rotation = LookRotation(orientation) * modelRotation;
-
-    prevTranslation = nextTranslation;
-    nextTranslation = state.position;
-
-    if (firing)
-    {
-        projectileStream.Fire(translation, orientation, &firingIntensity);
-    }
+    rotation = LookRotation(state.orientation) * modelRotation;
     translation = state.position;
+
+    if (state.firing)
+    {
+        projectileStream.Fire(translation, state.orientation, &state.firingIntensity);
+    }
 }
 
 glm::vec3 Opponent::GetPosition()

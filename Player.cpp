@@ -138,7 +138,7 @@ void Player::ZoomAndLock(float* triggerValue)
 	{
 		glm::vec3 target = opponent.GetPosition();
 		glm::vec3 targetDirection = normalize(target - translation);
-		if (glm::angle(targetDirection, orientation) < acos(0)/10) // 9deg
+		if (glm::angle(targetDirection, orientation) < lockAngle)
 		{
 			targetLocked = true;
 			orientation = targetDirection;

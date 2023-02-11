@@ -20,15 +20,10 @@ public:
 	glm::vec3 GetPosition();
 private:
 	NetworkHandler::Gamestate state;
-	bool firing;
-	float firingIntensity;
 	double prevStateTime;
 	double loopTime;
 	glm::quat LookRotation(glm::vec3 orientation);
 	glm::quat modelRotation;
-	glm::vec3 prevTranslation;
-	glm::vec3 nextTranslation;
-	glm::vec3 orientation;
 	ProjectileStream& projectileStream;
 };
 

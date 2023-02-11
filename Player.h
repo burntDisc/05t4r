@@ -94,4 +94,5 @@ private:
 	const float maxLookSensitivity = 15.0f;
 	const float minLookSensitivity = 2.0f;
 	const float lockedLookSensitivity = 5.0f;
+	const float lockAngle = acos(0) / 10;
 };
