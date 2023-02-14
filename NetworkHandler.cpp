@@ -74,7 +74,7 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time, Gamest
             Gamestate rawState = remoteStates.front();
             remoteMutex.unlock();
             currentState = GetLerpedState(currentState, rawState, time);
-            i = states;
+            break;
         }
     }
     return currentState;
