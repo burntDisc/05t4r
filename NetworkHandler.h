@@ -21,7 +21,9 @@ public:
 		bool firing;
 		bool valid;
 	};
-	// TODO: without tmp constructor is optomized out O.O
+
+	//TODO: manage data to prevent cheating
+	// TODO: without tmp constructor is optomized out O.O (likely non issue now)
 	NetworkHandler(int tmp);
 	~NetworkHandler();
 

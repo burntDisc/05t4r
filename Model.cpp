@@ -30,12 +30,12 @@ Model::Model(const char* file, glm::vec3 modelOffset):
 	TraverseNode(0);
 }
 
-void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
+void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm::vec3 scale, glm::mat4 objectTransform)
 {
 	// Go over all meshes and draw each one
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Mesh::Draw(shader, meshTransforms[i], translation, rotation, scale);
+		meshes[i].Mesh::Draw(shader, meshTransforms[i], translation, rotation, scale, objectTransform);
 	}
 }
 

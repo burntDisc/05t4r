@@ -35,10 +35,11 @@ Mesh::Mesh
 void Mesh::Draw
 (
 	Shader& shader,
-	glm::mat4 matrix,
+	glm::mat4 meshTransform,
 	glm::vec3 translation,
 	glm::quat rotation,
-	glm::vec3 scale
+	glm::vec3 scale,
+	glm::mat4 object
 )
 {
 	// Bind shader to be set uniforms
@@ -79,6 +80,7 @@ void Mesh::Draw
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rotationMatrix));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(scaleMatrix));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "object"), 1, GL_FALSE, glm::value_ptr(object));
 
 	// Draw mesh
 	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);

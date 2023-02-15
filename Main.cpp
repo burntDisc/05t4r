@@ -27,6 +27,7 @@ namespace fs = std::experimental::filesystem;
 #include "HealthBarOverlay.h"
 #include "ReticleOverlay.h"
 #include "Camera.h"
+#include "Rig.h"
 
 int main()
 {
@@ -160,6 +161,16 @@ int main()
 		oppRotation,
 		oppModelOffset
 	);
+
+	Model first(oppModelPath.c_str());
+	Model second(oppModelPath.c_str());
+	//test object
+	Rig riggedObject(
+		2,
+		Rig::RiggedModel {first, glm::vec3(0.0f,0.0f,10.0f)},
+		Rig::RiggedModel {second, glm::vec3(0.0f,0.0f,-10.0f) }
+	);
+
 	// Creates /player object
 	Player player( 
 		glm::vec3(10.0f, 10.0f, 2.0f),
@@ -403,6 +414,7 @@ int main()
 		healthBar.Draw(HUDShader);
 		energyBar.Draw(HUDShader);
 		reticle.Draw(shader2D);
+		riggedObject.Draw(standardShader, opp.GetPosition(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 10.0f, 10.0f));
 		//statue.Draw(standardShader);
 
 

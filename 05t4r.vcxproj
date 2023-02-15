@@ -181,6 +181,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Rig.h" />
     <ClInclude Include="HealthBarOverlay.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ElementBufferObject.h" />
@@ -208,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Rig.cpp" />
     <ClCompile Include="HealthBarOverlay.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ElementBufferObject.cpp" />
