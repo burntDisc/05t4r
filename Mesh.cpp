@@ -35,7 +35,7 @@ Mesh::Mesh
 void Mesh::Draw
 (
 	Shader& shader,
-	glm::mat4 meshTransform,
+	glm::mat4 matrix,
 	glm::vec3 translation,
 	glm::quat rotation,
 	glm::vec3 scale,
