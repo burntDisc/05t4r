@@ -11,7 +11,7 @@ class Player
 public:
 	// Camera description Vectors
 	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 orientation = glm::vec3(0.0f, 0.0f, 1.0f);
+	glm::vec3 orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 view = glm::mat4(1.0f);

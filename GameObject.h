@@ -10,7 +10,7 @@ class GameObject
 {
 public:
 	GameObject(
-		const char* modelFile, 
+		const char* modelFile = nullptr, 
 		glm::vec3 initTranslation = glm::vec3(0.0f,0.0f,0.0f),
 		glm::vec3 initScale = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::quat initRotation = glm::vec3(0.0f, 0.0f, 0.0f),

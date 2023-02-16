@@ -31,7 +31,7 @@ uniform mat4 scale;
 void main()
 {
 	// calculates current position
-	vertexWorldPosition = vec3(model * object * translation * rotation * scale * vec4(aPos, 1.0f));
+	vertexWorldPosition = vec3(model * translation * rotation * object * scale * vec4(aPos, 1.0f));
 	// Assigns the normal from the Vertex Data to "Normal"
 	Normal = aNormal;
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"

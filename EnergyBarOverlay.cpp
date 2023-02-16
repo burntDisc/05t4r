@@ -23,6 +23,15 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 	barVertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMin - borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
 
 	std::vector<GLuint> barIndices;
+	// first background triangle
+	barIndices.push_back(4);
+	barIndices.push_back(5);
+	barIndices.push_back(6);
+
+	//second background triangle
+	barIndices.push_back(6);
+	barIndices.push_back(7);
+	barIndices.push_back(5);
 
 	// first bar triangle
 	barIndices.push_back(0);
@@ -33,15 +42,6 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 	barIndices.push_back(2);
 	barIndices.push_back(3);
 	barIndices.push_back(1);
-	// first background triangle
-	barIndices.push_back(4);
-	barIndices.push_back(5);
-	barIndices.push_back(6);
-
-	//second background triangle
-	barIndices.push_back(6);
-	barIndices.push_back(7);
-	barIndices.push_back(5);
 
 	vertices = barVertices;
 	indices = barIndices;

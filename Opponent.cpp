@@ -1,25 +1,38 @@
 #include "Opponent.h"
 
 #include <iostream>
+#include <cmath>
 
 Opponent::Opponent
 (
-	const char* modelFile,
+    const char* modelFile,
     ProjectileStream& projectileStream,
-	glm::vec3 initTranslation,
-	glm::vec3 initScale,
-	glm::quat initRotation,
+    glm::vec3 initTranslation,
+    glm::vec3 initScale,
+    glm::quat initRotation,
     glm::vec3 modelOffset
 ) :
+    Rig(initTranslation,
+        initRotation,
+        initScale),
     projectileStream(projectileStream),
-	modelRotation(initRotation),
-	GameObject(
-		modelFile,
-		initTranslation,
-		initScale,
-		initRotation,
-        modelOffset)
-{}
+    modelRotation(initRotation)
+{
+    glm::quat tempRot = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 tempScale = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 legRotationOffset = glm::vec3(0.0f, 0.0f, acos(0.0f) / 3); 
+    glm::vec3 armRotationOffset = glm::vec3(0.0f, 0.0f, 6 * acos(0.0f) / 2);
+    //chest
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.0f,0.0f,0.0f), tempRot, tempScale });
+    //head
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.0f,0.5f,0.0f), tempRot, tempScale });
+    //arms
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.5f, 0.5f, 0.0f), armRotationOffset, tempScale });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(-0.5f ,0.5f, 0.0f), -armRotationOffset, tempScale });
+    //legs
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.5f,-0.5f, 0.0f),legRotationOffset, glm::vec3(0.5f, 2.0f, 0.5f) });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(-0.5f,-0.5f, 0.0f), -legRotationOffset, glm::vec3(0.5f, 2.0f, 0.5f) });
+}
 
 // define z+ as forward
 
@@ -90,7 +103,7 @@ void Opponent::Update(double time)
 
     glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
 
-	state = NetworkHandler::GetRemoteGamestate(state.time + loopTime, state);
+    state = NetworkHandler::GetRemoteGamestate(state.time + loopTime, state);
 
     rotation = LookRotation(state.orientation) * modelRotation;
     translation = state.translation;
@@ -99,6 +112,48 @@ void Opponent::Update(double time)
     {
         projectileStream.Fire(translation, state.orientation, &state.firingIntensity);
     }
+    UpdateRightLeg(time);
+    UpdateLeftLeg(time);
+}
+
+void Opponent::DummyUpdate(double time)
+{
+    translation = glm::vec3(0.0, 10.0f, 0.0);
+    rotation = LookRotation(glm::vec3(0.0f,0.0f,1.0f));
+
+    loopTime = time - prevStateTime;
+    prevStateTime = time;
+
+    float travelLength = 70.0f;
+    double travelTime = 2.0;
+    
+    translation.y = 10.0f;
+    rotation = LookRotation(normalize(translation - glm::vec3(travelLength / 2, translation.y, travelLength / 2)));
+    double loopTime = (time - travelTime * 4.0 * (int)(time / (travelTime * 4.0)));
+    if (loopTime < travelTime)
+    {
+        double segTime = loopTime;
+        translation.x = std::lerp(0.0f, travelLength, loopTime / travelTime);
+        translation.z = 0.0f;
+    }
+    else if (loopTime < 2 * travelTime)
+    {
+        translation.x = travelLength;
+        translation.z = std::lerp(0.0f, travelLength, (loopTime - travelTime) / travelTime);
+    }
+    else if (loopTime < 3 * travelTime)
+    {
+        translation.x = std::lerp(travelLength, 0.0f, (loopTime - 2 * travelTime) / travelTime);
+        translation.z = travelLength;
+    }
+    else
+    {
+        translation.x = 0.0f;
+        translation.z = std::lerp(travelLength, 0.0f, (loopTime - 3 * travelTime) / travelTime);
+    }
+
+    UpdateRightLeg(time);
+    UpdateLeftLeg(time);
 }
 
 glm::vec3 Opponent::GetPosition()
@@ -106,3 +161,28 @@ glm::vec3 Opponent::GetPosition()
     return translation;
 }
 
+void Opponent::UpdateLeftLeg(double time)
+{
+    float timeFac = 1.0f;
+    int legIndex = leftLeg;
+    float legLength = 2.0f;
+    float legAngle = acos(0);
+    float phase = time * timeFac;
+    riggedModels[legIndex].translation.z = legLength * sin(phase);
+    riggedModels[legIndex].translation.y = -legLength * 0.75 - 0.25 * abs(legLength * cos(phase));
+
+    riggedModels[legIndex].rotation = glm::quat(glm::vec3(legAngle * sin(-phase), 0.0f, 0.0f));
+}
+
+void Opponent::UpdateRightLeg(double time)
+{
+    float timeFac = 1.0f;
+    int legIndex = rightLeg;
+    float legLength = 2.0f;
+    float legAngle = acos(0);
+    float phase = time * timeFac + 2*acos(0);
+    riggedModels[legIndex].translation.z = legLength * sin(phase);
+    riggedModels[legIndex].translation.y = -legLength * 0.75 - 0.25 * abs(legLength * cos(phase));
+
+    riggedModels[legIndex].rotation = glm::quat(glm::vec3(legAngle * sin(-phase), 0.0f, 0.0f));
+}

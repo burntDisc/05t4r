@@ -1,7 +1,6 @@
 #pragma once
 #include "Model.h"
 #include "Shader.h"
-#include <cstdarg>
 
 class Rig
 {
@@ -9,18 +8,21 @@ public:
 	struct RiggedModel
 	{
 		Model model;
-		glm::vec3 translationOffset;
+		glm::vec3 translation;
+		glm::quat rotation;
+		glm::vec3 scale;
 	};
 
-	Rig(int numModels,...);
-	void Draw
-	(
-		Shader& shader,
-		glm::vec3 translation,
-		glm::quat rotation,
-		glm::vec3 scale
-	);
-private:
+	Rig(glm::vec3 initTranslation, glm::quat initRotation, glm::vec3 initScale);
+
+	void AddModel(RiggedModel model);
+
+	void Draw(Shader& shader);
+
+	glm::vec3 translation;
+	glm::quat rotation;
+	glm::vec3 scale;
+protected:
 	std::vector<RiggedModel> riggedModels;
 };
 

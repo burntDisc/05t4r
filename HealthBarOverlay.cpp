@@ -6,6 +6,21 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 	Overlay::Overlay()
 {
 	float barOffset = (yMax - yMin) / numBars;
+
+
+	// background rectangle indices
+	// first triangle
+	int indiceOffset = numBars * 4;
+	indices.push_back(indiceOffset + 0);
+	indices.push_back(indiceOffset + 1);
+	indices.push_back(indiceOffset + 2);
+
+	//second triangle
+	indices.push_back(indiceOffset + 2);
+	indices.push_back(indiceOffset + 3);
+	indices.push_back(indiceOffset + 1);
+
+	// assemble bars
 	for (int i = 0; i < numBars; ++i)
 	{
 		float barYMin = yMin + barOffset * i;
@@ -30,7 +45,9 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 		indices.push_back(i * 4 + 3);
 		indices.push_back(i * 4 + 1);
 	}
-	// add background
+
+
+	// add background vertices
 
 	// left top
 	vertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMax + borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
@@ -41,6 +58,15 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 	// right bottom
 	vertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
 
+
+	SetVertices();
+}
+
+void HealthBarOverlay::UpdateIndices(int bars)
+{
+	indices.clear();
+
+	// background
 	// rectangle indices
 	// first triangle
 	int indiceOffset = numBars * 4;
@@ -53,12 +79,6 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 	indices.push_back(indiceOffset + 3);
 	indices.push_back(indiceOffset + 1);
 
-	SetVertices();
-}
-
-void HealthBarOverlay::UpdateIndices(int bars)
-{
-	indices.clear();
 	// bars
 	for (int i = 0; i < bars; ++i)
 	{
@@ -73,19 +93,6 @@ void HealthBarOverlay::UpdateIndices(int bars)
 		indices.push_back(i * 4 + 3);
 		indices.push_back(i * 4 + 1);
 	}
-
-	// background
-	// rectangle indices
-	// first triangle
-	int indiceOffset = numBars * 4;
-	indices.push_back(indiceOffset + 0);
-	indices.push_back(indiceOffset + 1);
-	indices.push_back(indiceOffset + 2);
-
-	//second triangle
-	indices.push_back(indiceOffset + 2);
-	indices.push_back(indiceOffset + 3);
-	indices.push_back(indiceOffset + 1);
 	SetVertices();
 }
 

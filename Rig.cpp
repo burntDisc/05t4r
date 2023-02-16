@@ -1,19 +1,23 @@
 #include "Rig.h"
 
-Rig::Rig(int numModels, ...)
+Rig::Rig
+(
+	glm::vec3 initTranslation,
+	glm::quat initRotation, 
+	glm::vec3 initScale
+):
+	translation(initTranslation),
+	rotation(initRotation),
+	scale(initScale)
+{}
+
+void Rig::AddModel(RiggedModel model)
 {
-	va_list valist;
-	va_start(valist, numModels);
-
-	for (int i = 0; i < numModels; i++) { 
-		riggedModels.push_back(va_arg(valist, RiggedModel));
-	}
-
-	va_end(valist); 
-
+	riggedModels.push_back(model);
 }
 
-void Rig::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
+//TODO - mesh warp?
+void Rig::Draw(Shader& shader)
 {
 	for (int i = 0; i < riggedModels.size(); ++i)
 	{
@@ -24,9 +28,9 @@ void Rig::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm::v
 		glm::mat4 rotationMat = glm::mat4(1.0f);
 		glm::mat4 scaleMat = glm::mat4(1.0f);
 
-		translationMat = glm::translate(translationMat, riggedModels[i].translationOffset);
-		//rotationMat = glm::mat4_cast(riggedModels[i].rotationOffset);
-		//scaleMat = glm::scale(scaleMat, scale);
+		translationMat = glm::translate(translationMat, riggedModels[i].translation);
+		rotationMat = glm::mat4_cast(riggedModels[i].rotation);
+		scaleMat = glm::scale(scaleMat, riggedModels[i].scale);
 
 		// Create updated Transformation matrix
 		glm::mat4 transformMatrix = glm::mat4(1.0f) * translationMat * rotationMat * scaleMat;
