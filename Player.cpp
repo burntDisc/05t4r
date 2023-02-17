@@ -177,7 +177,7 @@ void Player::Update(double time)
 		}
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
-
+	
 	if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
 	{
 		flatNav = true;
@@ -207,6 +207,8 @@ void Player::Update(double time)
 	NetworkHandler::SetLocalGamestate(NetworkHandler::translation, &translation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::velocity, &velocity);
+	bool colliding = surfaceNormal != glm::vec3(0.0, 0.0, 0.0);
+	NetworkHandler::SetLocalGamestate(NetworkHandler::colliding, &colliding);
 	NetworkHandler::PushGamestate(time);
 }
 

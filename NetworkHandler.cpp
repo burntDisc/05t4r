@@ -105,6 +105,9 @@ void NetworkHandler::SetLocalGamestate(feild feild, void* value)
     case velocity:
         localState.velocity = *(glm::vec3*)value;
         break;
+    case colliding:
+        localState.colliding = *(bool*)value;
+        break;
     default:
         break;
     }

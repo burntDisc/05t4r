@@ -9,7 +9,7 @@ class NetworkHandler
 {
 public:
 
-	enum feild { time, firingIntensity, firing, valid, translation, orientation , velocity};
+	enum feild { time, firingIntensity, firing, valid, translation, orientation , velocity, colliding};
 	// Structure to standardize the vertices used in the meshes
 	// should be max 508 bytes for UDP speed safety (no ip fragmentation)
 	struct Gamestate
@@ -21,6 +21,7 @@ public:
 		float firingIntensity;
 		bool firing;
 		bool valid;
+		bool colliding;
 	};
 
 	//TODO: manage data to prevent cheating
