@@ -102,6 +102,9 @@ void NetworkHandler::SetLocalGamestate(feild feild, void* value)
     case time:
         localState.time = *(double*)value;
         break;
+    case velocity:
+        localState.velocity = *(glm::vec3*)value;
+        break;
     default:
         break;
     }
@@ -224,6 +227,10 @@ NetworkHandler::Gamestate NetworkHandler::GetLerpedState(Gamestate oldState, Gam
     lerpedState.orientation.x = std::lerp(oldState.orientation.x, newState.orientation.x, timeFactor);
     lerpedState.orientation.y = std::lerp(oldState.orientation.y, newState.orientation.y, timeFactor);
     lerpedState.orientation.z = std::lerp(oldState.orientation.z, newState.orientation.z, timeFactor);
+
+    lerpedState.velocity.x = std::lerp(oldState.velocity.x, newState.velocity.x, timeFactor);
+    lerpedState.velocity.y = std::lerp(oldState.velocity.y, newState.velocity.y, timeFactor);
+    lerpedState.velocity.z = std::lerp(oldState.velocity.z, newState.velocity.z, timeFactor);
 
     return lerpedState;
 }

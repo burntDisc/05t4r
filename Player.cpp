@@ -206,6 +206,7 @@ void Player::Update(double time)
 
 	NetworkHandler::SetLocalGamestate(NetworkHandler::translation, &translation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
+	NetworkHandler::SetLocalGamestate(NetworkHandler::velocity, &velocity);
 	NetworkHandler::PushGamestate(time);
 }
 

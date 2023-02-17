@@ -9,11 +9,12 @@ class NetworkHandler
 {
 public:
 
-	enum feild { time, firingIntensity, firing, valid, translation, orientation };
+	enum feild { time, firingIntensity, firing, valid, translation, orientation , velocity};
 	// Structure to standardize the vertices used in the meshes
 	// should be max 508 bytes for UDP speed safety (no ip fragmentation)
 	struct Gamestate
 	{
+		glm::vec3 velocity;
 		glm::vec3 translation;
 		glm::vec3 orientation;
 		double time;

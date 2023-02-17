@@ -21,8 +21,8 @@ public:
 	glm::vec3 GetPosition();
 private:
 	enum PartIndex { chest, head, leftArm, rightArm, leftLeg, rightLeg };
-	void UpdateLeftLeg(double time);
-	void UpdateRightLeg(double time);
+	void UpdateLeftLeg(double time, float speed);
+	void UpdateRightLeg(double time, float speed);
 	NetworkHandler::Gamestate state;
 	double prevStateTime;
 	double loopTime;
