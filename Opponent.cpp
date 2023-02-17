@@ -19,19 +19,19 @@ Opponent::Opponent
     modelRotation(initRotation)
 {
     glm::quat tempRot = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 tempScale = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 legRotationOffset = glm::vec3(0.0f, 0.0f, acos(0.0f) / 3); 
-    glm::vec3 armRotationOffset = glm::vec3(0.0f, 0.0f, 6 * acos(0.0f) / 2);
+    glm::vec3 armRotationOffset = glm::vec3(0.0f, 0.0f, acos(0.0f) / 3);
+
     //chest
-    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.0f,0.0f,0.0f), tempRot, tempScale });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(0.0f,0.0f,0.0f), tempRot, glm::vec3(0.7f, 1.0f, 0.7f) });
     //head
-    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.0f,0.5f,0.0f), tempRot, tempScale });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(0.0f,1.0f,0.0f), tempRot, glm::vec3(0.5f, 0.5f, 0.5f) });
     //arms
-    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.5f, 0.5f, 0.0f), armRotationOffset, tempScale });
-    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(-0.5f ,0.5f, 0.0f), -armRotationOffset, tempScale });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(1.0f, -0.1f, 0.0f), armRotationOffset, glm::vec3(0.3f, 1.0f, 0.3f) });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(-1.0f, -0.1f, 0.0f), -armRotationOffset, glm::vec3(0.3f, 1.0f, 0.3f) });
     //legs
-    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(0.5f,-0.5f, 0.0f),legRotationOffset, glm::vec3(0.5f, 2.0f, 0.5f) });
-    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), 5.0f * glm::vec3(-0.5f,-0.5f, 0.0f), -legRotationOffset, glm::vec3(0.5f, 2.0f, 0.5f) });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(0.5f,-1.5f, 0.0f),legRotationOffset, glm::vec3(0.3f, 1.0f, 0.3f) });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(-0.5f,-1.5f, 0.0f), -legRotationOffset, glm::vec3(0.3f, 1.0f, 0.3f) });
 }
 
 // define z+ as forward
@@ -112,8 +112,8 @@ void Opponent::Update(double time)
     {
         projectileStream.Fire(translation, state.orientation, &state.firingIntensity);
     }
-    UpdateRightLeg(translation.x + translation.y, glm::length(state.velocity));
-    UpdateLeftLeg(time, glm::length(state.velocity));
+    glm::vec3 xzVelocity = state.velocity - glm::vec3(0.0f, state.velocity.z, 0.0f);
+    UpdateRig(translation.x + translation.y, glm::length(xzVelocity));
 }
 
 
@@ -123,34 +123,36 @@ glm::vec3 Opponent::GetPosition()
     return translation;
 }
 
-void Opponent::UpdateLeftLeg(double positionFac, float speed)
+
+void Opponent::UpdateRig(double positionFac, float speed)
 {
+    float zOffsetAngle = 0.2f;
     float speedFac = 1.0f;
-    int legIndex = leftLeg;
+    float legHeight = -1.5f;
+    float armHeight = 1.0f;
     float legLength = 2.0f;
-    float legAngle = 
+    float armLength = 2.0f;
+    float magnitude = 
         state.colliding?
         speed / 2.0f :
         0.0f; 
-    float phase = positionFac * speedFac;
-    riggedModels[legIndex].translation.z = legAngle * sin(phase);
-    riggedModels[legIndex].translation.y = -legLength * 0.75 - legAngle * abs(legLength * cos(phase));
+    float phaseA = positionFac * speedFac;
 
-    riggedModels[legIndex].rotation = glm::quat(glm::vec3(legAngle * sin(-phase), 0.0f, 0.0f));
-}
+    riggedModels[leftLeg].translation.z = magnitude * sin(phaseA);
+    riggedModels[leftLeg].translation.y = legHeight  - magnitude * abs(legLength * cos(phaseA));
+    riggedModels[leftLeg].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseA), 0.0f, zOffsetAngle));
 
-void Opponent::UpdateRightLeg(double positionFac, float speed)
-{
-    float speedFac = 1.0f;
-    int legIndex = rightLeg;
-    float legLength = 2.0f;
-    float legAngle =
-        state.colliding ?
-        speed / 2.0f :
-        0.0f;
-    float phase = positionFac * speedFac + 2*acos(0);
-    riggedModels[legIndex].translation.z = legAngle * sin(phase);
-    riggedModels[legIndex].translation.y = -legLength * 0.75 - legAngle * abs(legLength * cos(phase));
+    riggedModels[rightArm].translation.z = magnitude * sin(phaseA);
+    riggedModels[rightArm].translation.y = armHeight  - magnitude * abs(armLength * cos(phaseA));
+    riggedModels[rightArm].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseA), 0.0f, -zOffsetAngle));
 
-    riggedModels[legIndex].rotation = glm::quat(glm::vec3(legAngle * sin(-phase), 0.0f, 0.0f));
+    float phaseB = positionFac * speedFac + 2 * acos(0);
+
+    riggedModels[rightLeg].translation.z = magnitude * sin(phaseB);
+    riggedModels[rightLeg].translation.y = legHeight  - magnitude * abs(legLength * cos(phaseB));
+    riggedModels[rightLeg].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseB), 0.0f, -zOffsetAngle));
+
+    riggedModels[leftArm].translation.z = magnitude * sin(phaseB);
+    riggedModels[leftArm].translation.y = armHeight  - magnitude * abs(armLength * cos(phaseB));
+    riggedModels[leftArm].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseB), 0.0f, zOffsetAngle));
 }
