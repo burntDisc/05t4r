@@ -128,7 +128,10 @@ void Opponent::UpdateLeftLeg(double positionFac, float speed)
     float speedFac = 1.0f;
     int legIndex = leftLeg;
     float legLength = 2.0f;
-    float legAngle = speed / 2.0f;
+    float legAngle = 
+        state.colliding?
+        speed / 2.0f :
+        0.0f; 
     float phase = positionFac * speedFac;
     riggedModels[legIndex].translation.z = legAngle * sin(phase);
     riggedModels[legIndex].translation.y = -legLength * 0.75 - legAngle * abs(legLength * cos(phase));
@@ -141,7 +144,10 @@ void Opponent::UpdateRightLeg(double positionFac, float speed)
     float speedFac = 1.0f;
     int legIndex = rightLeg;
     float legLength = 2.0f;
-    float legAngle = speed/2.0f;
+    float legAngle =
+        state.colliding ?
+        speed / 2.0f :
+        0.0f;
     float phase = positionFac * speedFac + 2*acos(0);
     riggedModels[legIndex].translation.z = legAngle * sin(phase);
     riggedModels[legIndex].translation.y = -legLength * 0.75 - legAngle * abs(legLength * cos(phase));
