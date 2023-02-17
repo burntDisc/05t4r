@@ -112,73 +112,38 @@ void Opponent::Update(double time)
     {
         projectileStream.Fire(translation, state.orientation, &state.firingIntensity);
     }
-    UpdateRightLeg(time, glm::length(state.velocity));
+    UpdateRightLeg(translation.x + translation.y, glm::length(state.velocity));
     UpdateLeftLeg(time, glm::length(state.velocity));
 }
 
-void Opponent::DummyUpdate(double time)
-{
-    translation = glm::vec3(0.0, 10.0f, 0.0);
-    rotation = LookRotation(glm::vec3(0.0f,0.0f,1.0f));
 
-    loopTime = time - prevStateTime;
-    prevStateTime = time;
-
-    float travelLength = 70.0f;
-    double travelTime = 2.0;
-    
-    translation.y = 10.0f;
-    rotation = LookRotation(normalize(translation - glm::vec3(travelLength / 2, translation.y, travelLength / 2)));
-    double loopTime = (time - travelTime * 4.0 * (int)(time / (travelTime * 4.0)));
-    if (loopTime < travelTime)
-    {
-        double segTime = loopTime;
-        translation.x = std::lerp(0.0f, travelLength, loopTime / travelTime);
-        translation.z = 0.0f;
-    }
-    else if (loopTime < 2 * travelTime)
-    {
-        translation.x = travelLength;
-        translation.z = std::lerp(0.0f, travelLength, (loopTime - travelTime) / travelTime);
-    }
-    else if (loopTime < 3 * travelTime)
-    {
-        translation.x = std::lerp(travelLength, 0.0f, (loopTime - 2 * travelTime) / travelTime);
-        translation.z = travelLength;
-    }
-    else
-    {
-        translation.x = 0.0f;
-        translation.z = std::lerp(travelLength, 0.0f, (loopTime - 3 * travelTime) / travelTime);
-    }
-}
 
 glm::vec3 Opponent::GetPosition()
 {
     return translation;
 }
 
-void Opponent::UpdateLeftLeg(double time, float speed)
+void Opponent::UpdateLeftLeg(double positionFac, float speed)
 {
-    float timeFac = 1.0f;
+    float speedFac = 1.0f;
     int legIndex = leftLeg;
     float legLength = 2.0f;
-    float legAngle = acos(0);
-    float phase = time * timeFac;
-    riggedModels[legIndex].translation.z = legLength * sin(phase);
-    riggedModels[legIndex].translation.y = -legLength * 0.75 - 0.25 * abs(legLength * cos(phase));
+    float legAngle = speed / 2.0f;
+    float phase = positionFac * speedFac;
+    riggedModels[legIndex].translation.z = legAngle * sin(phase);
+    riggedModels[legIndex].translation.y = -legLength * 0.75 - legAngle * abs(legLength * cos(phase));
 
     riggedModels[legIndex].rotation = glm::quat(glm::vec3(legAngle * sin(-phase), 0.0f, 0.0f));
 }
 
-void Opponent::UpdateRightLeg(double time, float speed)
+void Opponent::UpdateRightLeg(double positionFac, float speed)
 {
-    float timeFac = 1.0f;
+    float speedFac = 1.0f;
     int legIndex = rightLeg;
     float legLength = 2.0f;
-    float legAngle = speed/20.0f;
-    float phase = time * timeFac + 2*acos(0);
-    riggedModels[legIndex].translation.z = legLength * sin(phase);
+    float legAngle = speed/2.0f;
+    float phase = positionFac * speedFac + 2*acos(0);
+    riggedModels[legIndex].translation.z = legAngle * sin(phase);
     riggedModels[legIndex].translation.y = -legLength * 0.75 - legAngle * abs(legLength * cos(phase));
 
     riggedModels[legIndex].rotation = glm::quat(glm::vec3(legAngle * sin(-phase), 0.0f, 0.0f));
