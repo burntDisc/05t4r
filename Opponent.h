@@ -20,6 +20,8 @@ public:
 	glm::vec3 GetPosition();
 private:
 	enum PartIndex { chest, head, leftArm, rightArm, leftLeg, rightLeg };
+	float walkMagnitude = 0.0f;
+	const float walkdecay = 0.01f;
 	void UpdateRig(double positionFac, float speed);
 	NetworkHandler::Gamestate state;
 	double prevStateTime;

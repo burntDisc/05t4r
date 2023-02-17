@@ -126,33 +126,33 @@ glm::vec3 Opponent::GetPosition()
 
 void Opponent::UpdateRig(double positionFac, float speed)
 {
-    float zOffsetAngle = 0.2f;
+    float zOffsetAngle = 0.02f;
     float speedFac = 1.0f;
     float legHeight = -1.5f;
     float armHeight = 1.0f;
     float legLength = 2.0f;
     float armLength = 2.0f;
-    float magnitude = 
+    walkMagnitude =
         state.colliding?
         speed / 2.0f :
-        0.0f; 
+        std::max(0.0f, walkMagnitude - walkdecay); 
     float phaseA = positionFac * speedFac;
 
-    riggedModels[leftLeg].translation.z = magnitude * sin(phaseA);
-    riggedModels[leftLeg].translation.y = legHeight  - magnitude * abs(legLength * cos(phaseA));
-    riggedModels[leftLeg].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseA), 0.0f, zOffsetAngle));
+    riggedModels[leftLeg].translation.z = walkMagnitude * sin(phaseA);
+    riggedModels[leftLeg].translation.y = legHeight  - walkMagnitude * abs(legLength * cos(phaseA));
+    riggedModels[leftLeg].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseA), 0.0f, zOffsetAngle));
 
-    riggedModels[rightArm].translation.z = magnitude * sin(phaseA);
-    riggedModels[rightArm].translation.y = armHeight  - magnitude * abs(armLength * cos(phaseA));
-    riggedModels[rightArm].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseA), 0.0f, -zOffsetAngle));
+    riggedModels[rightArm].translation.z = walkMagnitude * sin(phaseA);
+    riggedModels[rightArm].translation.y = armHeight  - walkMagnitude * abs(armLength * cos(phaseA));
+    riggedModels[rightArm].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseA), 0.0f, -zOffsetAngle));
 
     float phaseB = positionFac * speedFac + 2 * acos(0);
 
-    riggedModels[rightLeg].translation.z = magnitude * sin(phaseB);
-    riggedModels[rightLeg].translation.y = legHeight  - magnitude * abs(legLength * cos(phaseB));
-    riggedModels[rightLeg].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseB), 0.0f, -zOffsetAngle));
+    riggedModels[rightLeg].translation.z = walkMagnitude * sin(phaseB);
+    riggedModels[rightLeg].translation.y = legHeight  - walkMagnitude * abs(legLength * cos(phaseB));
+    riggedModels[rightLeg].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseB), 0.0f, -zOffsetAngle));
 
-    riggedModels[leftArm].translation.z = magnitude * sin(phaseB);
-    riggedModels[leftArm].translation.y = armHeight  - magnitude * abs(armLength * cos(phaseB));
-    riggedModels[leftArm].rotation = glm::quat(glm::vec3(magnitude * sin(-phaseB), 0.0f, zOffsetAngle));
+    riggedModels[leftArm].translation.z = walkMagnitude * sin(phaseB);
+    riggedModels[leftArm].translation.y = armHeight  - walkMagnitude * abs(armLength * cos(phaseB));
+    riggedModels[leftArm].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseB), 0.0f, zOffsetAngle));
 }
