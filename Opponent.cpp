@@ -116,7 +116,7 @@ void Opponent::Update(double time)
     }
     glm::vec3 xzVelocity = state.velocity - glm::vec3(0.0f, state.velocity.z, 0.0f);
     
-    UpdateRig(distanceTraveled, glm::length(xzVelocity));
+    UpdateRig(distanceTraveled, glm::length(xzVelocity), state.colliding);
 }
 
 void Opponent::DummyUpdate(double time, Player& player)
@@ -126,7 +126,12 @@ void Opponent::DummyUpdate(double time, Player& player)
     prevStateTime = time;
     rotation = LookRotation(player.orientation) * modelRotation;
 
-    float distanceTraveled = glm::length(((-player.translation) - (-glm::vec3(0.0f, player.translation.y, 0.0f))) - (translation - glm::vec3(0.0f, translation.y, 0.0f)));
+    float distance = glm::length(((-player.translation) - (-glm::vec3(0.0f, player.translation.y, 0.0f))) - (translation - glm::vec3(0.0f, translation.y, 0.0f)));
+
+    float travel = (distance + prevDistance + prevPrevDistance) / 3.0f;
+
+    prevPrevDistance = prevDistance;
+    prevDistance = distance;
 
     translation = -player.translation;
     translation.y = -translation.y;
@@ -135,7 +140,7 @@ void Opponent::DummyUpdate(double time, Player& player)
         projectileStream.Fire(translation, player.orientation, &state.firingIntensity);
     }
     glm::vec3 xzVelocity = player.velocity - glm::vec3(0.0f, player.velocity.y, 0.0f);
-    UpdateRig(distanceTraveled, glm::length(xzVelocity));
+    UpdateRig(travel, glm::length(xzVelocity), player.flatNav);
 }
 
 glm::vec3 Opponent::GetPosition()
@@ -144,7 +149,7 @@ glm::vec3 Opponent::GetPosition()
 }
 
 
-void Opponent::UpdateRig(float travel, float speed)
+void Opponent::UpdateRig(float travel, float speed, bool colliding)
 {
     const float zOffsetAngle = 0.02f;
     const float speedFac = 0.2f;
@@ -155,11 +160,11 @@ void Opponent::UpdateRig(float travel, float speed)
     const float maxAngle = acos(0)/2;
     const float minTravel = 10.0f;
     const float walkdecay = 0.5f;
-    const int collisionsTillAir = 10;
+    const int collisionsTillAir = 5;
     phase += travel * speedFac;
 
     collisions =
-        state.colliding ?
+        colliding ?
         collisionsTillAir :
         collisions - 1;
     walkMagnitude =

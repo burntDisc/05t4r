@@ -58,6 +58,7 @@ public:
 	bool targetLocked = false;
 	float zoom;
 	float feildOfView = 45.0f;
+	bool flatNav = false;
 private:
 	void Reset();
 	glm::vec3 spawnPoint;
@@ -67,7 +68,6 @@ private:
 
 	Opponent& opponent;
 	float friction;
-	bool flatNav = false;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
 	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady = true;

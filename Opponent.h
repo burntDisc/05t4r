@@ -27,8 +27,9 @@ private:
 	enum PartIndex { chest, head, leftArm, rightArm, leftLeg, rightLeg };
 	int collisions;
 	float phase = 0.0f;
+	float prevDistance, prevPrevDistance;
 	float walkMagnitude = 0.0f;
-	void UpdateRig(float travel, float speed);
+	void UpdateRig(float travel, float speed, bool colliding);
 	NetworkHandler::Gamestate state;
 	double prevStateTime;
 	double loopTime;
