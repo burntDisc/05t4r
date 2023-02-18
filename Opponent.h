@@ -25,6 +25,7 @@ public:
 	glm::vec3 GetPosition();
 private:
 	enum PartIndex { chest, head, leftArm, rightArm, leftLeg, rightLeg };
+	int collisions;
 	float phase = 0.0f;
 	float walkMagnitude = 0.0f;
 	void UpdateRig(float travel, float speed);
