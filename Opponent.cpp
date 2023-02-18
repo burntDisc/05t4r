@@ -1,4 +1,5 @@
 #include "Opponent.h"
+#include "Player.h"
 
 #include <iostream>
 #include <cmath>
@@ -23,7 +24,7 @@ Opponent::Opponent
     glm::vec3 armRotationOffset = glm::vec3(0.0f, 0.0f, acos(0.0f) / 3);
 
     //chest
-    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(0.0f,0.0f,0.0f), tempRot, glm::vec3(0.7f, 1.0f, 0.7f) });
+    Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(0.0f,0.0f,0.0f), tempRot, glm::vec3(0.7f, 0.7f, 0.7f) });
     //head
     Rig::AddModel(Rig::RiggedModel{ Model(modelFile), glm::vec3(0.0f,1.0f,0.0f), tempRot, glm::vec3(0.5f, 0.5f, 0.5f) });
     //arms
@@ -106,6 +107,7 @@ void Opponent::Update(double time)
     state = NetworkHandler::GetRemoteGamestate(state.time + loopTime, state);
 
     rotation = LookRotation(state.orientation) * modelRotation;
+    float distanceTraveled = glm::length((state.translation - state.translation.y) - (translation - translation.y));
     translation = state.translation;
 
     if (state.firing)
@@ -113,10 +115,28 @@ void Opponent::Update(double time)
         projectileStream.Fire(translation, state.orientation, &state.firingIntensity);
     }
     glm::vec3 xzVelocity = state.velocity - glm::vec3(0.0f, state.velocity.z, 0.0f);
-    UpdateRig(translation.x + translation.y, glm::length(xzVelocity));
+    
+    UpdateRig(distanceTraveled, glm::length(xzVelocity));
 }
 
+void Opponent::DummyUpdate(double time, Player& player)
+{
+    state.colliding = true;
+    loopTime = time - prevStateTime;
+    prevStateTime = time;
+    rotation = LookRotation(player.orientation) * modelRotation;
 
+    float distanceTraveled = glm::length(((-player.translation) - (-glm::vec3(0.0f, player.translation.y, 0.0f))) - (translation - glm::vec3(0.0f, translation.y, 0.0f)));
+
+    translation = -player.translation;
+    translation.y = -translation.y;
+    if (state.firing)
+    {
+        projectileStream.Fire(translation, player.orientation, &state.firingIntensity);
+    }
+    glm::vec3 xzVelocity = player.velocity - glm::vec3(0.0f, player.velocity.y, 0.0f);
+    UpdateRig(distanceTraveled, glm::length(xzVelocity));
+}
 
 glm::vec3 Opponent::GetPosition()
 {
@@ -124,35 +144,43 @@ glm::vec3 Opponent::GetPosition()
 }
 
 
-void Opponent::UpdateRig(double positionFac, float speed)
+void Opponent::UpdateRig(float travel, float speed)
 {
-    float zOffsetAngle = 0.02f;
-    float speedFac = 1.0f;
-    float legHeight = -1.5f;
-    float armHeight = 1.0f;
-    float legLength = 2.0f;
-    float armLength = 2.0f;
+    const float zOffsetAngle = 0.02f;
+    const float speedFac = 0.2f;
+    const float legHeight = -0.7f;
+    const float armHeight = 1.0f;
+    const float legLength = 1.0f;
+    const float armLength = 1.0f;
+    const float angleFac = 1.0f;
+    const float minTravel = 10.0f;
+    const float walkdecay = 0.1f;
+
+     phase += travel * speedFac;
+
     walkMagnitude =
-        state.colliding?
-        speed / 2.0f :
-        std::max(0.0f, walkMagnitude - walkdecay); 
-    float phaseA = positionFac * speedFac;
+        state.colliding && travel > 0.0f?
+        1.0f :
+        std::max(0.0f, walkMagnitude - walkdecay);
+    float phaseA = phase;
+    float phaseB = phase + 2 * acos(0);
 
-    riggedModels[leftLeg].translation.z = walkMagnitude * sin(phaseA);
-    riggedModels[leftLeg].translation.y = legHeight  - walkMagnitude * abs(legLength * cos(phaseA));
-    riggedModels[leftLeg].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseA), 0.0f, zOffsetAngle));
+    float MaxAngle = angleFac * walkMagnitude;
 
-    riggedModels[rightArm].translation.z = walkMagnitude * sin(phaseA);
-    riggedModels[rightArm].translation.y = armHeight  - walkMagnitude * abs(armLength * cos(phaseA));
-    riggedModels[rightArm].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseA), 0.0f, -zOffsetAngle));
+    riggedModels[leftLeg].translation.z = legLength * sin(MaxAngle) * walkMagnitude * sin(phaseA - acos(0));
+    riggedModels[leftLeg].translation.y = legHeight - (legLength - legLength * cos(MaxAngle) * walkMagnitude * abs(legLength * cos(phaseA)));
+    riggedModels[leftLeg].rotation = glm::quat(glm::vec3(MaxAngle * cos(phaseA), 0.0f, -zOffsetAngle));
 
-    float phaseB = positionFac * speedFac + 2 * acos(0);
+    riggedModels[rightLeg].translation.z = legLength * sin(MaxAngle) * walkMagnitude * sin(phaseB - acos(0));
+    riggedModels[rightLeg].translation.y = legHeight - (legLength - legLength * cos(MaxAngle) * walkMagnitude * abs(legLength * cos(phaseB)));
+    riggedModels[rightLeg].rotation = glm::quat(glm::vec3(MaxAngle * cos(phaseB), 0.0f, zOffsetAngle));
 
-    riggedModels[rightLeg].translation.z = walkMagnitude * sin(phaseB);
-    riggedModels[rightLeg].translation.y = legHeight  - walkMagnitude * abs(legLength * cos(phaseB));
-    riggedModels[rightLeg].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseB), 0.0f, -zOffsetAngle));
+    riggedModels[leftArm].translation.z = armLength * sin(MaxAngle) * walkMagnitude * sin(phaseB - acos(0));
+    riggedModels[leftArm].translation.y = armHeight - (armLength - armLength * cos(MaxAngle) * walkMagnitude * abs(armLength * cos(phaseB)));
+    riggedModels[leftArm].rotation = glm::quat(glm::vec3(MaxAngle * cos(phaseB), 0.0f, -zOffsetAngle));
 
-    riggedModels[leftArm].translation.z = walkMagnitude * sin(phaseB);
-    riggedModels[leftArm].translation.y = armHeight  - walkMagnitude * abs(armLength * cos(phaseB));
-    riggedModels[leftArm].rotation = glm::quat(glm::vec3(walkMagnitude * sin(-phaseB), 0.0f, zOffsetAngle));
+    riggedModels[rightArm].translation.z = armLength * sin(MaxAngle) * walkMagnitude * sin(phaseA - acos(0));
+    riggedModels[rightArm].translation.y = armHeight - (armLength - armLength * cos(MaxAngle) * walkMagnitude * abs(armLength * cos(phaseA)));
+    riggedModels[rightArm].rotation = glm::quat(glm::vec3(MaxAngle * cos(phaseA), 0.0f, zOffsetAngle));
+
 }
