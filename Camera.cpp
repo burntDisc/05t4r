@@ -15,7 +15,7 @@ Camera::Camera(int windowWidth, int windowHeight, glm::vec3* translation, glm::v
 void Camera::SetCameraUniforms(Shader& shader)
 {
 	float nearPlane = 0.01f;
-	float farPlane = 7000.0f;
+	float farPlane = 6000.0f;
 	// Makes camera look in the right direction from the right position
 
 	glm::mat4 view = glm::mat4(1.0f); 
