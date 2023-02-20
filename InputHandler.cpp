@@ -1,4 +1,5 @@
 #include "InputHandler.h"
+#include <math.h>
 
 std::vector<InputHandler::EventSubscription> InputHandler::eventSubscriptions;
 std::vector<InputHandler::InputSubscription> InputHandler::inputSubscriptions;
@@ -89,16 +90,19 @@ void InputHandler::ProcessInput()
 
 			if (output && count > outputIndex + 1)
 			{
-				if (abs(output[outputIndex]) > joystickThreshold || abs(output[outputIndex + 1]) > joystickThreshold)
+				const float& xAxis = output[outputIndex];
+				const float& yAxis = output[outputIndex + 1];
+				float squaredMagnitude = xAxis * xAxis + yAxis * yAxis;
+				if ( squaredMagnitude > joystickThreshold * joystickThreshold)
 				{
+					double angle = atan2(xAxis, yAxis);
+					double magnitude = sqrt(squaredMagnitude);
+
 					float adjustedValues[2];
-					//TODO scale input
-					adjustedValues[0] = 
-						(output[outputIndex] - joystickThreshold) / (1.0f - joystickThreshold) *
-						abs((output[outputIndex] - joystickThreshold) / (1.0f - joystickThreshold));
-					adjustedValues[1] = 
-						(output[outputIndex + 1] - joystickThreshold) / (1.0f - joystickThreshold) *
-						abs((output[outputIndex + 1] - joystickThreshold) / (1.0f - joystickThreshold));
+
+					adjustedValues[0] = (magnitude - joystickThreshold) * sin(angle);
+					adjustedValues[1] = (magnitude - joystickThreshold) * cos(angle);
+
 					inputSubscriptions[i].callback(adjustedValues);
 				}
 			}
