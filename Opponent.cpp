@@ -161,6 +161,7 @@ void Opponent::UpdateRig(float travel, float speed, bool colliding)
     const float minTravel = 10.0f;
     const float walkdecay = 0.5f;
     const int collisionsTillAir = 5;
+    const float maxSpeed = 1.0f;
     phase += travel * speedFac;
 
     collisions =
@@ -169,7 +170,7 @@ void Opponent::UpdateRig(float travel, float speed, bool colliding)
         collisions - 1;
     walkMagnitude =
         collisions > 0 && travel > 0.0f?
-        1.0f :
+        std::min(1.0f, speed/ maxSpeed):
         std::max(0.0f, walkMagnitude - walkdecay);
     float phaseA = phase;
     float phaseB = phase + 2 * acos(0);
