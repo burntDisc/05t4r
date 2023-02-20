@@ -20,4 +20,4 @@ https://gamedev.net/forums/topic/669405-creating-a-quaternion-from-a-direction/5
 
 Networking:
 
-To play PvP on a lan (or correctly set up connection) Change the IP on line 147 of NetworkHandler.cpp (subject to drift with edits)
+To play PvP on a lan (or configured WAN connection) Change the IP on line 147 of NetworkHandler.cpp (subject to drift with edits)
