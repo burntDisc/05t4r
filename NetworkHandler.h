@@ -32,24 +32,24 @@ public:
 	static void SetLocalGamestate(feild feild, void* value);
 
 	static void PushGamestate(double time);
-	static Gamestate GetRemoteGamestate(double time, Gamestate currentState);
+	static Gamestate GetRemoteGamestate(double desiredTime, Gamestate currentState);
 
 	static void Client();
     static void Server();
 
-	static std::queue<Gamestate> remoteStates;
+	static std::vector<Gamestate> remoteStates;
 	static std::queue<Gamestate> localStates;
 	static Gamestate localState;
 
 	static std::mutex remoteMutex;
 	static std::mutex localMutex;
+	static std::mutex runningMutex;
 
 	static bool running;
-	static std::mutex runningMutex;
 
 private:
 	static Gamestate GetLerpedState(Gamestate oldState, Gamestate newState, double time);
-	static const size_t maxSize = 10;
+	static const size_t maxSize = 100;
 	std::thread* client = nullptr;
     std::thread* server = nullptr;
 };

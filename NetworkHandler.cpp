@@ -13,23 +13,24 @@ enum { max_length = 1024 };
 
 NetworkHandler::Gamestate NetworkHandler::localState;
 std::queue<NetworkHandler::Gamestate> NetworkHandler::localStates;
-std::queue<NetworkHandler::Gamestate> NetworkHandler::remoteStates;
+std::vector<NetworkHandler::Gamestate> NetworkHandler::remoteStates;
 std::mutex NetworkHandler::remoteMutex;
 std::mutex NetworkHandler::localMutex;
+std::mutex NetworkHandler::runningMutex;
 
 bool NetworkHandler::running;
-std::mutex NetworkHandler::runningMutex;
 
 NetworkHandler::NetworkHandler(int tmp)
 {
     Gamestate startState = {
         .translation = glm::vec3(10.0f,10.0f,10.0f),
         .orientation = glm::vec3(0.0f,0.0f,1.0f),
+        .time = 0.0,
         .firingIntensity = 0.0f,
         .firing = false,
         .valid = true
     };
-    remoteStates.push(startState);
+    remoteStates.push_back(startState);
     std::cout << "Starting network threads..." << std::endl;
     running = false;
     client = new std::thread(Client);
@@ -55,26 +56,46 @@ void NetworkHandler::PushGamestate(double time)
     localMutex.unlock();
 }
 
-NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double time, Gamestate currentState)
+NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double desiredTime, Gamestate currentState)
 {
+
+    double time = desiredTime;// std::min(desiredTime, tmpNetTime);
+    double minDiff = 999999999999.9999;
+    const int maxStates = 1000;
+
     remoteMutex.lock();
     size_t states = remoteStates.size();
     remoteMutex.unlock();
-
-    for (int i = 0; i < states; ++i)
+    if (states > maxStates)
     {
         remoteMutex.lock();
-        if (remoteStates.front().time < time)
+        remoteStates = std::vector<Gamestate>(remoteStates.end() - 100, remoteStates.end());
+        remoteMutex.unlock();
+        states = maxStates;
+    }
+
+    for (int i = 0; i < states; ++i) 
+    {
+        remoteMutex.lock();
+        Gamestate state = remoteStates[i];
+        remoteMutex.unlock();
+
+        double timeDiff = state.time - time;
+        if (timeDiff < 0.0)
         {
-            remoteStates.pop();
+            remoteMutex.lock();
+            remoteStates.erase(remoteStates.begin() + i);
             remoteMutex.unlock();
+            --i;
+            --states;
         }
         else
         {
-            Gamestate rawState = remoteStates.front();
-            remoteMutex.unlock();
-            currentState = GetLerpedState(currentState, rawState, time);
-            break;
+            if (timeDiff < minDiff)
+            {
+                minDiff = timeDiff;
+                currentState = GetLerpedState(currentState, state, time);
+            }
         }
     }
     return currentState;
@@ -151,11 +172,10 @@ void NetworkHandler::Client()
             udp::endpoint sender_endpoint;
             size_t reply_length = sock.receive_from(boost::asio::buffer(&in_state, maxSize * sizeof(Gamestate)), sender_endpoint);
 
-
             for (int i = 0; i < reply_length / sizeof(Gamestate); ++i)
             {
                 remoteMutex.lock();
-                remoteStates.push(in_state[i]);
+                remoteStates.push_back(in_state[i]);
                 remoteMutex.unlock();
             }
             
@@ -203,8 +223,10 @@ void NetworkHandler::Server()
                 localStates.pop();
                 localMutex.unlock();
             }
-
-            sock.send_to(boost::asio::buffer(out_state, maxSize * sizeof(Gamestate)), sender_endpoint);
+            if (statesToSend > 0)
+            {
+                sock.send_to(boost::asio::buffer(out_state, statesToSend * sizeof(Gamestate)), sender_endpoint);
+            }
 
             runningMutex.lock();
         }
