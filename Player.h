@@ -91,7 +91,7 @@ private:
 	const float energyRegen = 0.002f;
 	const float firingEnergy = 0.003f;
 
-	const float maxLookSensitivity = 15.0f;
+	const float maxLookSensitivity = 10.0f;
 	const float minLookSensitivity = 2.0f;
 	const float lockedLookSensitivity = 5.0f;
 	const float lockAngle = acos(0) / 10;

@@ -62,6 +62,7 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double desiredTime,
     double time = desiredTime;// std::min(desiredTime, tmpNetTime);
     double minDiff = 999999999999.9999;
     const int maxStates = 1000;
+    const int minStates = 30;
 
     remoteMutex.lock();
     size_t states = remoteStates.size();
@@ -73,8 +74,12 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double desiredTime,
         remoteMutex.unlock();
         states = maxStates;
     }
+    else if (states < minStates)
+    {
+        time = desiredTime - 0.01;
+    }
 
-    for (int i = 0; i < states; ++i) 
+    for (int i = 0; i < states; ++i)
     {
         remoteMutex.lock();
         Gamestate state = remoteStates[i];
