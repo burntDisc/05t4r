@@ -107,7 +107,10 @@ void Opponent::Update(double time)
     state = NetworkHandler::GetRemoteGamestate(state.time + loopTime, state);
 
     rotation = LookRotation(state.orientation) * modelRotation;
-    float distanceTraveled = glm::length((state.translation - state.translation.y) - (translation - translation.y));
+    float distance = glm::length((state.translation - state.translation.y) - (translation - translation.y)); 
+    float travel = (distance + prevDistance + prevPrevDistance) / 3.0f; 
+    prevPrevDistance = prevDistance;
+    prevDistance = distance;
     translation = state.translation;
 
     if (state.firing)
@@ -116,7 +119,7 @@ void Opponent::Update(double time)
     }
     glm::vec3 xzVelocity = state.velocity - glm::vec3(0.0f, state.velocity.z, 0.0f);
     
-    UpdateRig(distanceTraveled, glm::length(xzVelocity), state.colliding);
+    UpdateRig(travel, glm::length(xzVelocity), state.colliding);
 }
 
 void Opponent::DummyUpdate(double time, Player& player)
@@ -152,7 +155,7 @@ glm::vec3 Opponent::GetPosition()
 void Opponent::UpdateRig(float travel, float speed, bool colliding)
 {
     const float zOffsetAngle = 0.02f;
-    const float speedFac = 0.2f;
+    const float speedFac = 0.4f;
     const float legHeight = -0.7f;
     const float armHeight = 1.0f;
     const float legLength = 1.0f;
