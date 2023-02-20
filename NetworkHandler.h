@@ -32,7 +32,7 @@ public:
 	static void SetLocalGamestate(feild feild, void* value);
 
 	static void PushGamestate(double time);
-	static Gamestate GetRemoteGamestate(double desiredTime, Gamestate currentState);
+	static Gamestate GetRemoteGamestate(double delta, Gamestate currentState);
 
 	static void Client();
     static void Server();

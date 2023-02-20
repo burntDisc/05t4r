@@ -30,9 +30,15 @@ private:
 	float prevDistance, prevPrevDistance;
 	float walkMagnitude = 0.0f;
 	void UpdateRig(float travel, float speed, bool colliding);
-	NetworkHandler::Gamestate state;
+	NetworkHandler::Gamestate state = {
+		.translation = glm::vec3(10.0f,10.0f,10.0f),
+		.orientation = glm::vec3(0.0f,0.0f,1.0f),
+		.time = 0.0,
+		.firingIntensity = 0.0f,
+		.firing = false,
+		.valid = true
+	};;
 	double prevStateTime;
-	double loopTime;
 	glm::quat LookRotation(glm::vec3 orientation);
 	glm::quat modelRotation;
 	ProjectileStream& projectileStream;

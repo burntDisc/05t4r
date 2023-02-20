@@ -25,7 +25,7 @@ NetworkHandler::NetworkHandler(int tmp)
     Gamestate startState = {
         .translation = glm::vec3(10.0f,10.0f,10.0f),
         .orientation = glm::vec3(0.0f,0.0f,1.0f),
-        .time = 0.0,
+        .time = 1.0,
         .firingIntensity = 0.0f,
         .firing = false,
         .valid = true
@@ -56,13 +56,12 @@ void NetworkHandler::PushGamestate(double time)
     localMutex.unlock();
 }
 
-NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double desiredTime, Gamestate currentState)
+NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double delta, Gamestate currentState)
 {
-
-    double time = desiredTime;// std::min(desiredTime, tmpNetTime);
+    double time = currentState.time ;
     double minDiff = 999999999999.9999;
     const int maxStates = 1000;
-    const int minStates = 30;
+    const int minStates = 5;
 
     remoteMutex.lock();
     size_t states = remoteStates.size();
@@ -70,13 +69,13 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double desiredTime,
     if (states > maxStates)
     {
         remoteMutex.lock();
-        remoteStates = std::vector<Gamestate>(remoteStates.end() - 100, remoteStates.end());
+        remoteStates = std::vector<Gamestate>(remoteStates.end() - maxStates, remoteStates.end());
         remoteMutex.unlock();
         states = maxStates;
     }
-    else if (states < minStates)
+    else if (states > minStates)
     {
-        time = desiredTime - 0.01;
+        time += delta;
     }
 
     for (int i = 0; i < states; ++i)
@@ -86,7 +85,7 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double desiredTime,
         remoteMutex.unlock();
 
         double timeDiff = state.time - time;
-        if (timeDiff < 0.0)
+        if (timeDiff < 0.0 && states > 1)
         {
             remoteMutex.lock();
             remoteStates.erase(remoteStates.begin() + i);
@@ -247,7 +246,10 @@ void NetworkHandler::Server()
 NetworkHandler::Gamestate NetworkHandler::GetLerpedState(Gamestate oldState, Gamestate newState, double time)
 {
     Gamestate lerpedState = newState;
-
+    if (newState.time == oldState.time)
+    {
+        return lerpedState;
+    }
     double timeFactor = (time - oldState.time) / (newState.time - oldState.time);
 
     lerpedState.translation.x = std::lerp(oldState.translation.x, newState.translation.x, timeFactor);
