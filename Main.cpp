@@ -28,9 +28,19 @@ namespace fs = std::experimental::filesystem;
 #include "ReticleOverlay.h"
 #include "Camera.h"
 #include "Rig.h"
+#include "Audio.h"
+#include <thread>
+
+void Play()
+{
+	Audio audio = Audio();
+	AudioFile file = audio.loadFile("C:/Users/ellis/source/repos/05t4r/Photon.wav");
+	audio.playFile(&file);
+}
 
 int main()
 {
+	std::thread audioHandler(Play);
 	// Set up window-----------------------------------------------------------
 	// initilize glfw to handle input and window
 	glfwInit();
@@ -418,6 +428,7 @@ int main()
 		shaders[i].Delete();
 
 	}
+	audioHandler.join();
 	glfwDestroyWindow(window);
 
 	glfwTerminate();
