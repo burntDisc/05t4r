@@ -8,6 +8,7 @@
 
 #include "MotionHandler.h"
 #include "NetworkHandler.h"
+#include "AudioHandler.h"
 
 Player::Player(glm::vec3 startPosition, Opponent& opponent) :
 	spawnPoint(startPosition),
@@ -17,18 +18,20 @@ Player::Player(glm::vec3 startPosition, Opponent& opponent) :
 
 void Player::FireProjectile(float* intensity, ProjectileStream& projectileStream)
 {
+	bool firing;
 	if (currentTime - prevFireTime > fireInterval && *intensity > -0.99f)
 	{
+		Audio::Play(shoot);
 		energy -= firingEnergy;
-		bool firing = true;
+		firing = true;
 		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &firing);
 		NetworkHandler::SetLocalGamestate(NetworkHandler::firingIntensity, intensity);
 		projectileStream.Fire(translation, orientation, intensity);
 	}
 	else
 	{
-		bool notFiring = false;
-		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &notFiring);
+		firing = false;
+		NetworkHandler::SetLocalGamestate(NetworkHandler::firing, &firing);
 	}
 }
 
@@ -57,6 +60,7 @@ void Player::DirectionalDash(glm::vec3 direction, bool& ready)
 {
 	if (ready)
 	{
+		Audio::Play(dash);
 		if (energy >= energyInitDash)
 		{
 			energy -= energyInitDash;

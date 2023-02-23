@@ -1,10 +1,14 @@
 #include "AudioHandler.h"
 
 std::vector<std::thread*> Audio::audioThreads;
-AudioFile Audio::file;
+std::vector<AudioFile> Audio::sounds;
+std::mutex Audio::completionsMutex;
+std::vector<bool> Audio::completions;
 
 Audio::Audio() {
-    file = loadFile("C:/Users/ellis/source/repos/05t4r/Waiting.wav");
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Waiting.wav"));        // mainTheme
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_shoot.wav"));   // shoot
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_dash.wav"));    // dash
 }
 
 Audio::~Audio() {
@@ -55,12 +59,40 @@ static int patestCallback(const void* inputBuffer, void* outputBuffer,
     else return paComplete;
 }
 
-void Audio::Play()
+void Audio::Play(sound sound)
 {
-    audioThreads.push_back(new std::thread(PlayFile));
+
+    completionsMutex.lock();
+    int numThreads = completions.size();
+    completionsMutex.unlock();
+
+    for (int i = 0; i < numThreads; ++i)
+    {
+        completionsMutex.lock();
+        bool complete = completions[i];
+        completionsMutex.unlock();
+        if (complete)
+        {
+            audioThreads[i]->join();
+            delete audioThreads[i];
+
+            completionsMutex.lock();
+            completions[i] = false;
+            completionsMutex.unlock();
+
+            audioThreads[i] = new std::thread(PlayFile, sounds[sound], i);
+            return;
+
+        }
+    }
+    completionsMutex.lock();
+    completions.push_back(false);
+    completionsMutex.unlock();
+    audioThreads.push_back(new std::thread(PlayFile, sounds[sound], numThreads));
 }
 
-void Audio::PlayFile() {
+void Audio::PlayFile(AudioFile file, int threadIndex) 
+{
     PaError err = Pa_Initialize();
     if (err != paNoError) std::cerr << "Initialization Error: " << err << std::endl;
 
@@ -90,7 +122,6 @@ void Audio::PlayFile() {
     if (err != paNoError)
         std::cerr << "PAError 4: " << Pa_GetErrorText(err) << std::endl;
 
-    std::cout << "playing" << std::endl;
     /// wait until file finishes playing
     while (file.count > 0) {}
 
@@ -104,4 +135,9 @@ void Audio::PlayFile() {
 
     err = Pa_Terminate();
     if (err != paNoError) std::cerr << "Termination Errror: " << err << std::endl;
+
+    completionsMutex.lock();
+    completions[threadIndex] = true;
+    completionsMutex.unlock();
+
 }

@@ -6,6 +6,9 @@
 #include <libsndfile/sndfile.hh>
 #include <thread>
 #include <vector>
+#include <mutex>
+
+enum sound {mainTheme, shoot, dash};
 
 struct AudioFile {
 	SNDFILE* file = nullptr;
@@ -28,10 +31,12 @@ public:
 	/// Load an audio file
 	static AudioFile loadFile(const char* path);
 	/// Play an audio file
-	static void PlayFile();
+	static void PlayFile(AudioFile file, int threadIndex);
 
-	static void Play();
+	static void Play(sound sound);
 private:
 	static std::vector<std::thread*> audioThreads;
-	static AudioFile file;
+	static std::vector<AudioFile> sounds;
+	static std::mutex completionsMutex;
+	static std::vector<bool> completions;
 };
