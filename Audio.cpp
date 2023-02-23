@@ -1,11 +1,16 @@
 #include "Audio.h"
 
 Audio::Audio() {
-    PaError err = Pa_Initialize();
-    if (err != paNoError) std::cerr << "Initialization Error: " << err << std::endl;
+    //PaError err = Pa_Initialize();
+    //if (err != paNoError) std::cerr << "Initialization Error: " << err << std::endl;
 }
 
 Audio::~Audio() {
+    if (audioThread != nullptr)
+    {
+        audioThread->join();
+        delete audioThread;
+    }
     PaError err = Pa_Terminate();
     if (err != paNoError) std::cerr << "Termination Errror: " << err << std::endl;
 }
@@ -47,26 +52,34 @@ static int patestCallback(const void* inputBuffer, void* outputBuffer,
     else return paComplete;
 }
 
-void Audio::playFile(AudioFile* file) {
+void Audio::Play()
+{
+    audioThread = new std::thread(&Audio::playFile, this);
+}
+
+void Audio::playFile() {
+    PaError err = Pa_Initialize();
+    file = loadFile("C:/Users/ellis/source/repos/05t4r/Waiting.wav");
+    if (err != paNoError) std::cerr << "Initialization Error: " << err << std::endl;
     PaStream* stream = nullptr;
     PaStreamParameters params;
     params.device = Pa_GetDefaultOutputDevice();
-    params.channelCount = file->info.channels;
+    params.channelCount = file.info.channels;
     params.sampleFormat = paFloat32;
     params.suggestedLatency =
         Pa_GetDeviceInfo(params.device)->defaultLowOutputLatency;
     params.hostApiSpecificStreamInfo = nullptr;
 
     /// Check if params work
-    PaError err = Pa_IsFormatSupported(nullptr, &params, 48000);// file->info.samplerate);
+    err = Pa_IsFormatSupported(nullptr, &params, 48000);// file->info.samplerate);
     if (err != paFormatIsSupported) {
         std::cerr << "PAError 2: " << Pa_GetErrorText(err) << std::endl;
         return;
     }
 
     err = Pa_OpenStream(&stream, nullptr, &params, 48000,//file->info.samplerate,
-        file->buffer_size , paClipOff,
-        &patestCallback, file);
+        file.buffer_size , paClipOff,
+        &patestCallback, &file);
 
     if (err != paNoError) std::cerr << "PAError 3: " << Pa_GetErrorText(err) << std::endl;
 
@@ -76,7 +89,7 @@ void Audio::playFile(AudioFile* file) {
 
     std::cout << "playing" << std::endl;
     /// wait until file finishes playing
-    while (file->count > 0) {}
+    while (file.count > 0) {}
 
     err = Pa_StopStream(stream);
     if (err != paNoError)
@@ -86,4 +99,6 @@ void Audio::playFile(AudioFile* file) {
     if (err != paNoError)
         std::cerr << "PAError 6: " << Pa_GetErrorText(err) << std::endl;
 
+    err = Pa_Terminate();
+    if (err != paNoError) std::cerr << "Termination Errror: " << err << std::endl;
 }

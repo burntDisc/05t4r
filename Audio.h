@@ -4,6 +4,7 @@
 #include "portaudio.h"
 #include <iostream>
 #include <libsndfile/sndfile.hh>
+#include <thread>
 
 struct AudioFile {
 	SNDFILE* file = nullptr;
@@ -26,5 +27,10 @@ public:
 	/// Load an audio file
 	AudioFile loadFile(const char* path);
 	/// Play an audio file
-	void playFile(AudioFile* file);
+	void playFile();
+
+	void Play();
+private:
+	std::thread* audioThread = nullptr;
+	AudioFile file;
 };
