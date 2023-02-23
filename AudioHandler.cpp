@@ -1,13 +1,16 @@
-#include "Audio.h"
+#include "AudioHandler.h"
+
+std::vector<std::thread*> Audio::audioThreads;
+AudioFile Audio::file;
 
 Audio::Audio() {
-    //PaError err = Pa_Initialize();
-    //if (err != paNoError) std::cerr << "Initialization Error: " << err << std::endl;
+    file = loadFile("C:/Users/ellis/source/repos/05t4r/Waiting.wav");
 }
 
 Audio::~Audio() {
-    if (audioThread != nullptr)
+    for (int i = 0; i < audioThreads.size(); ++i) 
     {
+        std::thread* audioThread = audioThreads[i];
         audioThread->join();
         delete audioThread;
     }
@@ -39,8 +42,8 @@ static int patestCallback(const void* inputBuffer, void* outputBuffer,
     sf_seek(file->file, file->readHead, SF_SEEK_SET);
 
     auto data = std::make_unique<float[]>(framesPerBuffer * file->info.channels);
-    file->count = sf_read_float(file->file, data.get(), 
-                                framesPerBuffer * file->info.channels);
+    file->count = sf_read_float(file->file, data.get(),
+        framesPerBuffer * file->info.channels);
 
     for (int i = 0; i < framesPerBuffer * file->info.channels; i++) {
         *out++ = data[i];
@@ -54,13 +57,13 @@ static int patestCallback(const void* inputBuffer, void* outputBuffer,
 
 void Audio::Play()
 {
-    audioThread = new std::thread(&Audio::playFile, this);
+    audioThreads.push_back(new std::thread(PlayFile));
 }
 
-void Audio::playFile() {
+void Audio::PlayFile() {
     PaError err = Pa_Initialize();
-    file = loadFile("C:/Users/ellis/source/repos/05t4r/Waiting.wav");
     if (err != paNoError) std::cerr << "Initialization Error: " << err << std::endl;
+
     PaStream* stream = nullptr;
     PaStreamParameters params;
     params.device = Pa_GetDefaultOutputDevice();
@@ -78,7 +81,7 @@ void Audio::playFile() {
     }
 
     err = Pa_OpenStream(&stream, nullptr, &params, 48000,//file->info.samplerate,
-        file.buffer_size , paClipOff,
+        file.buffer_size, paClipOff,
         &patestCallback, &file);
 
     if (err != paNoError) std::cerr << "PAError 3: " << Pa_GetErrorText(err) << std::endl;

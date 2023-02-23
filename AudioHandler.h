@@ -5,6 +5,7 @@
 #include <iostream>
 #include <libsndfile/sndfile.hh>
 #include <thread>
+#include <vector>
 
 struct AudioFile {
 	SNDFILE* file = nullptr;
@@ -25,12 +26,12 @@ public:
 	/// Destructor
 	~Audio();
 	/// Load an audio file
-	AudioFile loadFile(const char* path);
+	static AudioFile loadFile(const char* path);
 	/// Play an audio file
-	void playFile();
+	static void PlayFile();
 
-	void Play();
+	static void Play();
 private:
-	std::thread* audioThread = nullptr;
-	AudioFile file;
+	static std::vector<std::thread*> audioThreads;
+	static AudioFile file;
 };

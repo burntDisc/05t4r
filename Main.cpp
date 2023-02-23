@@ -28,13 +28,13 @@ namespace fs = std::experimental::filesystem;
 #include "ReticleOverlay.h"
 #include "Camera.h"
 #include "Rig.h"
-#include "Audio.h"
+#include "AudioHandler.h"
 
 
 int main()
 {
 	Audio audio;
-	audio.Play();
+	Audio::Play();
 	// Set up window-----------------------------------------------------------
 	// initilize glfw to handle input and window
 	glfwInit();

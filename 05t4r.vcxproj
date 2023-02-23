@@ -180,7 +180,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Audio.h" />
+    <ClInclude Include="AudioHandler.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="portaudio.h" />
     <ClInclude Include="Rig.h" />
@@ -210,8 +210,7 @@
     <ClInclude Include="VertexBufferObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Audio.cpp" />
-    <ClCompile Include="AudioTest.cpp" />
+    <ClCompile Include="AudioHandler.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Rig.cpp" />
     <ClCompile Include="HealthBarOverlay.cpp" />

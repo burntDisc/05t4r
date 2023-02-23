@@ -4,7 +4,6 @@
 
 #include <cmath>
 #include <algorithm>
-#include <windows.h> // TODO this is for Sleep() (needs to be cross platform)
 //****************************************
 // TODO should be lock_guard not mutex
 //***************************************
