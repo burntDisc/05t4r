@@ -6,6 +6,7 @@ std::mutex Audio::completionsMutex;
 std::vector<bool> Audio::completions;
 
 Audio::Audio() {
+    // TODO: should be portable path
     sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Waiting.wav"));        // mainTheme
     sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_shoot.wav"));   // shoot
     sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_dash.wav"));    // dash
