@@ -89,7 +89,7 @@ void Audio::Play(sound sound)
     completionsMutex.lock();
     completions.push_back(false);
     completionsMutex.unlock();
-    audioThreads.push_back(new std::thread(PlayFile, sounds[sound], numThreads));
+    audioThreads.push_back(new std::thread(PlayFile, AudioFile(sounds[sound]), numThreads));
 }
 
 void Audio::PlayFile(AudioFile file, int threadIndex) 
