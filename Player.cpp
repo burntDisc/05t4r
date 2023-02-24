@@ -126,6 +126,7 @@ void Player::DashRight()
 
 void Player::Break()
 {
+	Audio::Play(breaking);
 	velocity -= velocity / 2.0f;
 }
 
@@ -184,6 +185,10 @@ void Player::Update(double time)
 	
 	if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
 	{
+		if (!flatNav)
+		{
+			Audio::Play(collision);
+		}
 		flatNav = true;
 		float dot = glm::dot(velocity, surfaceNormal);
 		// confirm velocity is towards surface

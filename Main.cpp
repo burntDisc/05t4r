@@ -34,7 +34,7 @@ namespace fs = std::experimental::filesystem;
 int main()
 {
 	Audio audio;
-	Audio::Play(mainTheme);
+	Audio::PlayTheme(mainTheme);
 	// Set up window-----------------------------------------------------------
 	// initilize glfw to handle input and window
 	glfwInit();

@@ -8,7 +8,7 @@
 #include <vector>
 #include <mutex>
 
-enum sound {mainTheme, shoot, dash};
+enum sound {mainTheme, shoot, dash, breaking, collision};
 
 struct AudioFile {
 	SNDFILE* file = nullptr;
@@ -31,10 +31,16 @@ public:
 	/// Load an audio file
 	static AudioFile loadFile(const char* path);
 	/// Play an audio file
+	static void LoopFile(AudioFile file);
 	static void PlayFile(AudioFile file, int threadIndex);
 
+	static void PlayTheme(sound sound);
 	static void Play(sound sound);
 private:
+	static std::mutex themeResetMutex;
+	static bool themeReset;
+	static std::thread* themeThread;
+
 	static std::vector<std::thread*> audioThreads;
 	static std::vector<AudioFile> sounds;
 	static std::mutex completionsMutex;
