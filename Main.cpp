@@ -314,6 +314,9 @@ int main()
 
 	int hits = 0;
 	double GameLoopInterval = 1.00/30.00;  // seconds
+	std::deque<double> framerates;
+	int sampleFrames = 100;
+
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -328,15 +331,26 @@ int main()
 		if (deltaTime >= GameLoopInterval)
 		{
 			// Creates new title
-			std::string FPS = std::to_string((1.0 / deltaTime) * counter);
-			std::string ms = std::to_string((deltaTime / counter) * 1000);
+			double fps = (1.0 / deltaTime) * counter;
+			framerates.push_front(fps);
+			double sum = 0.0;
+			for (int i = 0; i < framerates.size(); ++i)
+			{
+				sum += framerates[i];
+			}
+			double avgFps = sum / framerates.size();
+			if (framerates.size() > sampleFrames) {
+				framerates.pop_back();
+			}
+			std::string sampleSize = std::to_string(sampleFrames);
+			std::string FPS = std::to_string(avgFps);
 			std::string xO = std::to_string(player.orientation.x);
 			std::string yO = std::to_string(player.orientation.y);
 			std::string zO = std::to_string(player.orientation.z);
 			std::string xP = std::to_string(player.translation.x);
 			std::string yP = std::to_string(player.translation.y);
 			std::string zP = std::to_string(player.translation.z);
-			std::string newTitle = "05t4r " + FPS + "FPS / " + ms + "ms Orientation: x: " + xO + " y: " + yO + " z: " + zO + "  Position: x: " + xP + " y: " + yP + " z: " + zP;
+			std::string newTitle = "Avg FPS(" + sampleSize + "frames): " + FPS + " | Orientation: x: " + xO + " y: " + yO + " z: " + zO + " | Position: x: " + xP + " y: " + yP + " z: " + zP;
 			glfwSetWindowTitle(window, newTitle.c_str());
 
 			// Resets times and counter
