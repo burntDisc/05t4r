@@ -7,27 +7,30 @@
 Model::Model(const char* file, glm::vec3 modelOffset):
 	baseTranslation(modelOffset)
 {
-	std::string text;
-	// Make a gtlfJSON object
-	try
+	if (file != nullptr)
 	{
-		text = FileLoader::GetFileContents(file);
-	}
-	catch(...)
-	{
-		std::cout << "Model failed to load" << std::endl;
+		std::string text;
+		// Make a gtlfJSON object
+		try
+		{
+			text = FileLoader::GetFileContents(file);
+		}
+		catch (...)
+		{
+			std::cout << "Model failed to load" << std::endl;
 			std::cout << "File: " << file << std::endl;
+		}
+
+
+		gtlfJSON = json::parse(text);
+
+		// Get the binary data
+		Model::file = file;
+		bin = LoadBin();
+
+		// Traverse all nodes
+		TraverseNode(0);
 	}
-
-
-	gtlfJSON = json::parse(text);
-
-	// Get the binary data
-	Model::file = file;
-	bin = LoadBin();
-
-	// Traverse all nodes
-	TraverseNode(0);
 }
 
 void Model::Draw(Shader& shader, glm::vec3 translation, glm::quat rotation, glm::vec3 scale, glm::mat4 objectTransform)

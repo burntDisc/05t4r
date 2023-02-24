@@ -1,5 +1,15 @@
 #include "ExplodingObject.h"
 
+ExplodingObject::ExplodingObject(const char* modelFile, glm::vec3 initTranslation, glm::vec3 initScale, glm::quat initRotation, glm::vec3 modelOffset):
+	GameObject(
+		modelFile,
+		initTranslation,
+		initScale,
+		initRotation, 
+		modelOffset) 
+{
+}
+
 void ExplodingObject::Update(double time)
 {
 	phase = (float)time;

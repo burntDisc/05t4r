@@ -97,9 +97,11 @@ int main()
 	Shader HUDShader("2D.vert", "HUD.frag");
 	Shader standardShader("standard.vert", "standard.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
+	Shader explosionShader("explosion.vert", "explosion.geo", "explosion.frag");
 	shaders.push_back(HUDShader);
 	shaders.push_back(standardShader);
 	shaders.push_back(skyboxShader);
+	shaders.push_back(explosionShader);
 
 	// Set Lighting------------------------------------------------------------
 	glm::vec4 lightColor = glm::vec4(1.2f, 1.2f, 1.2f, 1.2f);
@@ -136,9 +138,10 @@ int main()
 	std::string goodProjectilePath = parentDir + "/models/goodProjectile/scene.gltf";
 	// Create projectile object
 	ProjectileStream goodProjectiles = ProjectileStream(
-		goodProjectilePath.c_str(),
+		badProjectilePath.c_str(),
 		projectileScale,
-		projectileOrientation
+		projectileOrientation,
+		goodProjectilePath.c_str()
 	);
 
 	// Create Opponent object
@@ -401,7 +404,7 @@ int main()
 		}
 
 		// Draw
-		goodProjectiles.Draw(standardShader);
+		goodProjectiles.Draw(explosionShader, standardShader);
 		badProjectiles.Draw(standardShader);
 		floor.Draw(standardShader);
 		wall.Draw(standardShader);

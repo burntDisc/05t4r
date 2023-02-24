@@ -4,16 +4,19 @@
 #include <glm/gtx/projection.hpp>
 
 
+
 ProjectileStream::ProjectileStream(
-	const char* modelFile,
-	glm::vec3 initScale,
-	glm::vec3 initModelOrientation
-):
+	const char* modelFile, 
+	glm::vec3 initScale, 
+	glm::vec3 initModelOrientation, 
+	const char* secondModelFile ):
+
 	modelOrientation(initModelOrientation),
-	GameObject(
+	ExplodingObject(
 		modelFile,
 		glm::vec3(-9999.0f, -9999.0f, -9999.0f), // TODO: setting offscreen position... likely more elegant solution involving modifying Gameobject 
-		initScale)
+		initScale),
+	secondModel(secondModelFile)
 {
 }
 
@@ -78,8 +81,27 @@ bool ProjectileStream::CheckCollision(glm::vec3 position)
 	return false;
 }
 
+void ProjectileStream::Draw(Shader shader, Shader secondShader)
+{
+	shader.Activate();
+	glUniform1fv(glGetUniformLocation(shader.ID, "phase"), 1, &phase);
+	glUniform1fv(glGetUniformLocation(shader.ID, "amplitude"), 1, &amplitude);
+	glUniform1fv(glGetUniformLocation(shader.ID, "speed"), 1, &speed);
+	glUniform1i(glGetUniformLocation(shader.ID, "explode"), true);
+	for (int i = 0; i < projectiles.size(); ++i)
+	{
+		model.Draw(shader, projectiles[i].translation, projectiles[i].rotation, scale);
+		secondModel.Draw(secondShader, projectiles[i].translation, projectiles[i].rotation, scale);
+	}
+}
+
 void ProjectileStream::Draw(Shader shader)
 {
+	shader.Activate();
+	glUniform1fv(glGetUniformLocation(shader.ID, "phase"), 1, &phase);
+	glUniform1fv(glGetUniformLocation(shader.ID, "amplitude"), 1, &amplitude);
+	glUniform1fv(glGetUniformLocation(shader.ID, "speed"), 1, &speed);
+	glUniform1i(glGetUniformLocation(shader.ID, "explode"), true);
 	for (int i = 0; i < projectiles.size(); ++i)
 	{
 		model.Draw(shader, projectiles[i].translation, projectiles[i].rotation, scale);
@@ -92,4 +114,5 @@ void ProjectileStream::Update(float time)
 	{
 		projectiles[i].translation += projectiles[i].orientation * speed * (projectiles[i].intensity + 1.0f);
 	}
+	ExplodingObject::Update(time);
 }

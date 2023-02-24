@@ -1,25 +1,30 @@
 #pragma once
-#include "GameObject.h"
+#include "ExplodingObject.h"
 
 #include <deque>
 
 class ProjectileStream:
-    public GameObject
+    public ExplodingObject
 {
 public:
 	ProjectileStream(
 		const char* modelFile,
 		glm::vec3 initScale,
-		glm::vec3 initModelOrientation);
+		glm::vec3 initModelOrientation,
+		const char* secondModelFile = nullptr);
 	
 	void Update(float time);
 	void Draw(Shader shader);
+	void Draw(Shader shader, Shader secondShader);
 
 	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity);
 
 	bool CheckCollision(glm::vec3 position);
 
 private:
+
+	Model secondModel;
+
 	float contactThreshold = 5.0f;
 
 	struct Projectile
@@ -38,7 +43,5 @@ private:
 	const float minLaunchOffset = 8.0f;
 	const float speed = 30.0f;
 	const int maxProjectiles = 10;
-
-
 };
 
