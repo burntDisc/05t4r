@@ -29,7 +29,7 @@ namespace fs = std::experimental::filesystem;
 #include "Camera.h"
 #include "Rig.h"
 #include "AudioHandler.h"
-
+#include "Title.h"
 
 int main()
 {
@@ -85,18 +85,8 @@ int main()
 	Shader shader2D("2D.vert", "2D.frag");
 	shaders.push_back(shader2D);
 
-	std::vector<Vertex2D> overlayVertices;
-	overlayVertices.push_back(Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 0.0f)));
-	overlayVertices.push_back(Vertex2D(glm::vec2(0.0f, -0.25f), glm::vec3(0.0f, 0.0f, 0.0f)));
-	overlayVertices.push_back(Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 0.0f)));
 
-	std::vector<GLuint> overlayIndices;
-	overlayIndices.push_back(0);
-	overlayIndices.push_back(1);
-	overlayIndices.push_back(2);
-
-
-	Overlay loadingScreen = Overlay(overlayVertices, overlayIndices);
+	Title loadingScreen = Title();
 
 	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

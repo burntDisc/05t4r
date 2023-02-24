@@ -99,7 +99,10 @@
     <ClInclude Include="portaudio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Audio.h">
+    <ClInclude Include="AudioHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -191,10 +194,10 @@
     <ClCompile Include="Rig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Audio.cpp">
+    <ClCompile Include="AudioHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AudioTest.cpp">
+    <ClCompile Include="Title.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

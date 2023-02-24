@@ -60,13 +60,13 @@ void Player::DirectionalDash(glm::vec3 direction, bool& ready)
 {
 	if (ready)
 	{
-		Audio::Play(dash);
 		if (energy >= energyInitDash)
 		{
 			energy -= energyInitDash;
 		}
 		if (energy > energyInitDash)
 		{
+			Audio::Play(dash);
 			ready = false;
 			velocity = glm::dot(direction, velocity) > 0.0f ?
 				glm::proj(velocity, direction) + dashInitVelocity * direction :
