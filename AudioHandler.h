@@ -25,7 +25,7 @@ class Audio {
 protected:
 public:
 	/// Constructor
-	Audio();
+	Audio(bool mute = false);
 	/// Destructor
 	~Audio();
 	/// Load an audio file
@@ -39,6 +39,7 @@ public:
 private:
 	static std::mutex themeResetMutex;
 	static bool themeReset;
+	static bool mute;
 	static std::thread* themeThread;
 
 	static std::vector<std::thread*> audioThreads;

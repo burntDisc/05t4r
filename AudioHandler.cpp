@@ -6,16 +6,19 @@ std::mutex Audio::completionsMutex;
 std::vector<bool> Audio::completions;
 
 bool Audio::themeReset;
+bool Audio::mute;
 std::thread* Audio::themeThread;
 std::mutex Audio::themeResetMutex;
 
-Audio::Audio() {
+Audio::Audio(bool mute){
+
+    Audio::mute = mute;
     // TODO: should be portable path
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Waiting_old.wav"));         // mainTheme
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_shoot.wav"));    // shoot
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_dash.wav"));     // dash
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_break.wav"));    // breaking
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_collision.wav"));// collision
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Waiting_old.wav"));        // mainTheme
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_shoot.wav"));       // shoot
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_dash.wav"));        // dash
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_break.wav"));       // breaking
+    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_collision.wav"));   // collision
 }
 
 Audio::~Audio() {
@@ -68,53 +71,58 @@ static int patestCallback(const void* inputBuffer, void* outputBuffer,
 
 void Audio::PlayTheme(sound sound)
 {
-    if (themeThread != nullptr)
+    if (!mute)
     {
+        if (themeThread != nullptr)
+        {
+            themeResetMutex.lock();
+            themeReset = true;
+            themeResetMutex.unlock();
+
+            themeThread->join();
+            delete themeThread;
+        }
+
         themeResetMutex.lock();
-        themeReset = true;
+        themeReset = false;
         themeResetMutex.unlock();
 
-        themeThread->join();
-        delete themeThread;
+        themeThread = new std::thread(LoopFile, sounds[sound]);
     }
-
-    themeResetMutex.lock();
-    themeReset = false;
-    themeResetMutex.unlock();
-
-    themeThread = new std::thread(LoopFile, sounds[sound]);
 }
 
 void Audio::Play(sound sound)
 {
-
-    completionsMutex.lock();
-    int numThreads = completions.size();
-    completionsMutex.unlock();
-
-    for (int i = 0; i < numThreads; ++i)
+    if (!mute)
     {
         completionsMutex.lock();
-        bool complete = completions[i];
+        int numThreads = completions.size();
         completionsMutex.unlock();
-        if (complete)
+
+        for (int i = 0; i < numThreads; ++i)
         {
-            audioThreads[i]->join();
-            delete audioThreads[i];
-
             completionsMutex.lock();
-            completions[i] = false;
+            bool complete = completions[i];
             completionsMutex.unlock();
+            if (complete)
+            {
+                audioThreads[i]->join();
+                delete audioThreads[i];
 
-            audioThreads[i] = new std::thread(PlayFile, sounds[sound], i);
-            return;
+                completionsMutex.lock();
+                completions[i] = false;
+                completionsMutex.unlock();
 
+                audioThreads[i] = new std::thread(PlayFile, sounds[sound], i);
+                return;
+
+            }
         }
+        completionsMutex.lock();
+        completions.push_back(false);
+        completionsMutex.unlock();
+        audioThreads.push_back(new std::thread(PlayFile, AudioFile(sounds[sound]), numThreads));
     }
-    completionsMutex.lock();
-    completions.push_back(false);
-    completionsMutex.unlock();
-    audioThreads.push_back(new std::thread(PlayFile, AudioFile(sounds[sound]), numThreads));
 }
 
 void Audio::LoopFile(AudioFile file)
@@ -155,7 +163,6 @@ void Audio::PlayFile(AudioFile file, int threadIndex)
         &patestCallback, &file);
 
     if (err != paNoError) std::cerr << "PAError 3: " << Pa_GetErrorText(err) << std::endl;
-
     err = Pa_StartStream(stream);
     if (err != paNoError)
         std::cerr << "PAError 4: " << Pa_GetErrorText(err) << std::endl;
@@ -168,7 +175,7 @@ void Audio::PlayFile(AudioFile file, int threadIndex)
     else
     {
         bool reset = false;
-        while (file.count > 0 && !reset) 
+        while (file.count > 0 && !reset)
         {
             themeResetMutex.lock();
             reset = themeReset;

@@ -33,7 +33,8 @@ namespace fs = std::experimental::filesystem;
 
 int main()
 {
-	Audio audio;
+	Audio audio = Audio();
+
 	Audio::PlayTheme(mainTheme);
 	// Set up window-----------------------------------------------------------
 	// initilize glfw to handle input and window
@@ -186,7 +187,7 @@ int main()
 	// TODO pass by reference in GameObject contructors
 	
 	// Create wall object
-	std::string wallModelPath = parentDir + "/models/test0/scene.gltf";
+	std::string wallModelPath = parentDir + "/models/wall/scene.gltf";
 	glm::vec3 wallTranslation(0.0f, 0.0f, 0.1f);
 	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
