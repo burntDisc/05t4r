@@ -59,6 +59,7 @@ public:
 	float zoom;
 	float feildOfView = 45.0f;
 	bool flatNav = false;
+	// TODO auto-zoom
 private:
 	void Reset();
 	glm::vec3 spawnPoint;
@@ -81,7 +82,7 @@ private:
 
 	const float jumpAcceleration = 7.00f;
 	const float dashAcceleration = 2.00f;
-	const float dashInitVelocity = 10.0f;
+	const float dashInitVelocity = 7.0f;
 	const float maxSpeed = 5.0;
 	const float gravity = 0.25f;
 	const float repulsionFac = 1.5f;
@@ -91,7 +92,7 @@ private:
 	const float energyRegen = 0.002f;
 	const float firingEnergy = 0.003f;
 
-	const float maxLookSensitivity = 25.0f;
+	const float maxLookSensitivity = 15.0f;
 	const float minLookSensitivity = 2.0f;
 	const float lockedLookSensitivity = 5.0f;
 	const float lockAngle = acos(0) / 10;
