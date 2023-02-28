@@ -55,7 +55,6 @@ public:
 
 	float energy = 1.0f;
 	float health = 100.0f;
-	bool targetLocked = false;
 	float zoom;
 	float feildOfView = 45.0f;
 	bool flatNav = false;

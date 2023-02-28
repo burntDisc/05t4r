@@ -139,20 +139,6 @@ void Player::ZoomAndLock(float* triggerValue)
 {
 	zoom = *triggerValue;
 	feildOfView = ((2.0f - *triggerValue) / 2.0f) * 35.0f + 10.0f;
-	if (*triggerValue == 1.0f)
-	{
-		glm::vec3 target = opponent.GetPosition();
-		glm::vec3 targetDirection = normalize(target - translation);
-		if (glm::angle(targetDirection, orientation) < lockAngle)
-		{
-			targetLocked = true;
-			orientation = targetDirection;
-		}
-	}
-	else
-	{
-		targetLocked = false;
-	}
 }
 
 void Player::Back()
@@ -163,6 +149,11 @@ void Player::Back()
 
 void Player::Update(double time)
 {
+
+	float zoomFac = (1 + zoom) / 2;
+	glm::vec3 oppDirection = glm::normalize(opponent.translation - translation);
+	orientation = normalize(orientation + zoomFac * oppDirection);
+
 	currentTime = time;
 	if (energy <= 1.0f - energyRegen) {
 		energy += energyRegen;
@@ -207,11 +198,6 @@ void Player::Update(double time)
 		friction = airFriction;
 	}
 	translation = newTranslation;
-	if (targetLocked)
-	{
-		glm::vec3 target = opponent.GetPosition();
-		glm::vec3 orientation = normalize(target - translation);
-	}
 
 	NetworkHandler::SetLocalGamestate(NetworkHandler::translation, &translation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
@@ -269,15 +255,12 @@ void Player::AdjustVelocity(float* axes)
 
 void Player::AdjustOrientation(float* axes)
 {
-	float zoomFac = (1 - zoom) / 2;
-	float lookSensitivity = minLookSensitivity + (maxLookSensitivity - minLookSensitivity) * zoomFac;
+	float zoomFac = (1 + zoom) / 2;
 
-	float rotX = targetLocked? 
-		lockedLookSensitivity * axes[1] : 
-		lookSensitivity * axes[1];
-	float rotY = targetLocked ? 
-		lockedLookSensitivity * axes[0] : 
-		lookSensitivity * axes[0];
+	float lookSensitivity = std::lerp(maxLookSensitivity, minLookSensitivity, zoomFac);
+
+	float rotX = lookSensitivity * axes[1];
+	float rotY = lookSensitivity * axes[0];
 
 	// Calculates upcoming vertical change in the orientation
 	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
