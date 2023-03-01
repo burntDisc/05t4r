@@ -152,7 +152,7 @@ void Player::Update(double time)
 
 	float zoomFac = (1 + zoom) / 2;
 	glm::vec3 oppDirection = glm::normalize(opponent.translation - translation);
-	orientation = normalize(orientation + zoomFac * oppDirection);
+	orientation = normalize(orientation + zoomFac * zoomFac * oppDirection);
 
 	currentTime = time;
 	if (energy <= 1.0f - energyRegen) {
