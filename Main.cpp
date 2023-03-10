@@ -33,7 +33,11 @@ namespace fs = std::experimental::filesystem;
 
 int main()
 {
-	Audio audio = Audio();
+	// get current directory
+	std::string parentDir = fs::current_path().string();
+
+	// start audio
+	Audio audio = Audio(parentDir);
 
 	Audio::PlayTheme(mainTheme);
 	// Set up window-----------------------------------------------------------
@@ -53,10 +57,10 @@ int main()
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
 	// Set Screen and Size
-	int width = 1500; //mode->width;//1500;
-	int height = 900; //mode->height;//900;
-	GLFWwindow* window = glfwCreateWindow(width, height, "5t4r", NULL, NULL);
-	//GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
+	int width = mode->width;//1500;
+	int height = mode->height;//900;
+	//GLFWwindow* window = glfwCreateWindow(width, height, "5t4r", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
 
 	if (window == NULL)
 	{
@@ -83,7 +87,7 @@ int main()
 	//glFrontFace(GL_CCW);
 	// Loading Overlay Logic
 	std::vector<Shader> shaders;
-	Shader shader2D("2D.vert", "2D.frag");
+	Shader shader2D("shaders/2D.vert", "shaders/2D.frag");
 	shaders.push_back(shader2D);
 
 
@@ -95,10 +99,10 @@ int main()
 	glfwSwapBuffers(window);
 
 	// Generate Shader objects-------------------------------------------------
-	Shader HUDShader("2D.vert", "HUD.frag");
-	Shader standardShader("standard.vert", "standard.frag");
-	Shader skyboxShader("skybox.vert", "skybox.frag");
-	Shader explosionShader("explosion.vert", "explosion.geo", "explosion.frag");
+	Shader HUDShader("shaders/2D.vert", "shaders/HUD.frag");
+	Shader standardShader("shaders/standard.vert", "shaders/standard.frag");
+	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
+	Shader explosionShader("shaders/explosion.vert", "shaders/explosion.geo", "shaders/explosion.frag");
 	shaders.push_back(HUDShader);
 	shaders.push_back(standardShader);
 	shaders.push_back(skyboxShader);
@@ -122,8 +126,6 @@ int main()
 	}
 
 	// Create Game objects ----------------------------------------------------------
-	// get current directory
-	std::string parentDir = fs::current_path().string();
 
 	// Create projectile object
 	std::string badProjectilePath = parentDir + "/models/badProjectile/scene.gltf";

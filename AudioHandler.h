@@ -25,11 +25,11 @@ class Audio {
 protected:
 public:
 	/// Constructor
-	Audio(bool mute = false);
+	Audio(std::string parentDir, bool mute = false);
 	/// Destructor
 	~Audio();
 	/// Load an audio file
-	static AudioFile loadFile(const char* path);
+	static AudioFile loadFile(std::string path);
 	/// Play an audio file
 	static void LoopFile(AudioFile file);
 	static void PlayFile(AudioFile file, int threadIndex);

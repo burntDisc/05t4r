@@ -55,7 +55,7 @@ public:
 
 	float energy = 1.0f;
 	float health = 100.0f;
-	float zoom;
+	float zoom = -1.0;
 	float feildOfView = 45.0f;
 	bool flatNav = false;
 	// TODO auto-zoom

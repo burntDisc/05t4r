@@ -202,44 +202,46 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="standard.frag">
+    <None Include="shaders\2d.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="standard.vert">
+    <None Include="shaders\2d.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="skybox.frag">
+    <None Include="shaders\explosion.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="skybox.vert">
+    <None Include="shaders\explosion.geo">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="explosion.frag">
+    <None Include="shaders\explosion.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="explosion.geo">
+    <None Include="shaders\glitch.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="explosion.vert">
+    <None Include="shaders\glitch.geo">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="packages.config" />
-    <None Include="glitch.frag">
+    <None Include="shaders\glitch.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="glitch.geo">
+    <None Include="shaders\HUD.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="glitch.vert">
+    <None Include="packages.config">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="2d.frag">
+    <None Include="shaders\skybox.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="2d.vert">
+    <None Include="shaders\skybox.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="HUD.frag">
+    <None Include="shaders\standard.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\standard.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

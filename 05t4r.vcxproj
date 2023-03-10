@@ -141,6 +141,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\libraries\lib;$(SolutionDir)\libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +154,20 @@
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>
+      </TreatOutputAsContent>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -164,6 +179,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\libraries\lib;$(SolutionDir)\libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -178,6 +194,20 @@
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>
+      </TreatOutputAsContent>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AudioHandler.h" />
@@ -244,20 +274,20 @@
     <ClCompile Include="VertexBufferObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="2d.frag" />
-    <None Include="2d.vert" />
-    <None Include="glitch.frag" />
-    <None Include="glitch.geo" />
-    <None Include="glitch.vert" />
-    <None Include="HUD.frag" />
     <None Include="packages.config" />
-    <None Include="standard.frag" />
-    <None Include="standard.vert" />
-    <None Include="skybox.frag" />
-    <None Include="skybox.vert" />
-    <None Include="explosion.frag" />
-    <None Include="explosion.geo" />
-    <None Include="explosion.vert" />
+    <None Include="shaders\2d.frag" />
+    <None Include="shaders\2d.vert" />
+    <None Include="shaders\explosion.frag" />
+    <None Include="shaders\explosion.geo" />
+    <None Include="shaders\explosion.vert" />
+    <None Include="shaders\glitch.frag" />
+    <None Include="shaders\glitch.geo" />
+    <None Include="shaders\glitch.vert" />
+    <None Include="shaders\HUD.frag" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
+    <None Include="shaders\standard.frag" />
+    <None Include="shaders\standard.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

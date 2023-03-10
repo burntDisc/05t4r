@@ -10,15 +10,15 @@ bool Audio::mute;
 std::thread* Audio::themeThread;
 std::mutex Audio::themeResetMutex;
 
-Audio::Audio(bool mute){
+Audio::Audio(std::string parentDir, bool mute){
 
     Audio::mute = mute;
     // TODO: should be portable path
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Waiting_old.wav"));        // mainTheme
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_shoot.wav"));       // shoot
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_dash.wav"));        // dash
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_break.wav"));       // breaking
-    sounds.push_back(loadFile("C:/Users/ellis/source/repos/05t4r/Glitch_collision.wav"));   // collision
+    sounds.push_back(loadFile(parentDir + "/sounds/Waiting_old.wav"));        // mainTheme
+    sounds.push_back(loadFile(parentDir + "/sounds/Glitch_shoot.wav"));       // shoot
+    sounds.push_back(loadFile(parentDir + "/sounds/Glitch_dash.wav"));        // dash
+    sounds.push_back(loadFile(parentDir + "/sounds/Glitch_break.wav"));       // breaking
+    sounds.push_back(loadFile(parentDir + "/sounds/Glitch_collision.wav"));   // collision
 }
 
 Audio::~Audio() {
@@ -33,7 +33,8 @@ Audio::~Audio() {
 }
 
 /* Loads an audiofile */
-AudioFile Audio::loadFile(const char* path) {
+AudioFile Audio::loadFile(std::string pathString) {
+    const char* path = pathString.c_str();
     AudioFile file;
     ::memset(&file.info, 0, sizeof(file.info));
     file.file = sf_open(path, SFM_READ, &file.info);
