@@ -1,9 +1,12 @@
 #pragma once
-#include "Overlay.h"
-class Title :
-    public Overlay
+#include "Text.h"
+
+class Title
 {
 public:
     Title();
+    void Draw(Shader shader);
+private:
+    Text text;
 };
 

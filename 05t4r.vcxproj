@@ -212,6 +212,7 @@
   <ItemGroup>
     <ClInclude Include="AudioHandler.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Char.h" />
     <ClInclude Include="portaudio.h" />
     <ClInclude Include="Rig.h" />
     <ClInclude Include="HealthBarOverlay.h" />
@@ -235,6 +236,7 @@
     <ClInclude Include="ReticleOverlay.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="VertexArrayObject.h" />
@@ -243,6 +245,7 @@
   <ItemGroup>
     <ClCompile Include="AudioHandler.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Char.cpp" />
     <ClCompile Include="Rig.cpp" />
     <ClCompile Include="HealthBarOverlay.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -268,6 +271,7 @@
     <ClCompile Include="ReticleOverlay.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="VertexArrayObject.cpp" />
