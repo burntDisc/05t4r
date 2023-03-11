@@ -26,7 +26,7 @@ public:
 
 	//TODO: manage data to prevent cheating
 	// TODO: without tmp constructor is optomized out O.O (likely non issue now)
-	NetworkHandler(int tmp);
+	NetworkHandler(std::string ip);
 	~NetworkHandler();
 
 	static void SetLocalGamestate(feild feild, void* value);
@@ -48,6 +48,7 @@ public:
 	static bool running;
 
 private:
+	static std::string oppIp;
 	static Gamestate GetLerpedState(Gamestate oldState, Gamestate newState, double time);
 	static const size_t maxSize = 100;
 	std::thread* client = nullptr;

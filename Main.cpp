@@ -304,7 +304,7 @@ int main()
 		});
 
 	//Connect to network
-	NetworkHandler NH(0);
+	NetworkHandler NH("192.168.42.108");
 
 	// Camera
 	Camera camera(width, height, &player.translation, &player.orientation, &player.feildOfView);

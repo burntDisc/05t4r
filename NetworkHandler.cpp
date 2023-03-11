@@ -16,11 +16,13 @@ std::vector<NetworkHandler::Gamestate> NetworkHandler::remoteStates;
 std::mutex NetworkHandler::remoteMutex;
 std::mutex NetworkHandler::localMutex;
 std::mutex NetworkHandler::runningMutex;
+std::string NetworkHandler::oppIp;
 
 bool NetworkHandler::running;
 
-NetworkHandler::NetworkHandler(int tmp)
+NetworkHandler::NetworkHandler(std::string ip)
 {
+    oppIp = ip;
     Gamestate startState = {
         .translation = glm::vec3(10.0f,10.0f,10.0f),
         .orientation = glm::vec3(0.0f,0.0f,1.0f),
@@ -142,7 +144,6 @@ void NetworkHandler::Client()
     std::cout << "Starting Web Client..." << std::endl;
     try
     {
-        std::string host = "192.168.42.108";
         std::string port = "4000";
 
         boost::asio::io_context io_context;
@@ -150,7 +151,7 @@ void NetworkHandler::Client()
         udp::socket sock(io_context, udp::endpoint(udp::v4(), 0));
 
         udp::resolver resolver(io_context);
-        udp::resolver::results_type endpoints = resolver.resolve(udp::v4(), host, port);
+        udp::resolver::results_type endpoints = resolver.resolve(udp::v4(), oppIp, port);
 
         // TODO FUTURE: there is where to do hole punching
         char initData[] = "start";

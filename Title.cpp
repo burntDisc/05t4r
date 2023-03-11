@@ -1,11 +1,11 @@
 #include "Title.h"
 
 Title::Title() :
-	text(std::string("05t4r"), glm::vec2(-1.0, 0.0), 0.09)
+	ipSelector(glm::vec2(-0.5f, 0.0f), 0.05f)
 {
 }
 
 void Title::Draw(Shader shader)
 {
-	text.Draw(shader);
+	ipSelector.Draw(shader);
 }

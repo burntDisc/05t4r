@@ -7,12 +7,9 @@ Text::Text(std::string rawText, glm::vec2 origin, float size)
 	for (int i = 0; i < rawText.size(); ++i)
 	{
 		char value = rawText.at(i);
-
-		charOrigin.x += size;
-
 		Char nextChar = Char(value, charOrigin, size);
-
 		chars.push_back(nextChar);
+		charOrigin.x += size;
 	}
 }
 

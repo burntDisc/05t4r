@@ -58,7 +58,6 @@ HealthBarOverlay::HealthBarOverlay(Player& player) :
 	// right bottom
 	vertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
 
-
 	SetVertices();
 }
 
