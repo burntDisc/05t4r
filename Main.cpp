@@ -162,7 +162,8 @@ int main()
 	// Creates /player object
 	Player player( 
 		glm::vec3(3.0f, 10.0f, 40.0f),
-		opp);
+		opp,
+		goodProjectiles);
 	// Create HUD
 	HealthBarOverlay healthBar = HealthBarOverlay(player);
 	EnergyBarOverlay energyBar = EnergyBarOverlay(player);
@@ -218,93 +219,8 @@ int main()
 
 	MotionHandler::AddSolidObject(&floor);
 
-	//Setup input handler------------------------------------------------------
-	InputHandler::SetWindow(window);
-	InputHandler::Subscribe(
-		InputHandler::trigger,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_AXIS_LEFT_TRIGGER,
-		[&player](float* input) -> void {
-			player.ZoomAndLock(input);
-		});
-	InputHandler::Subscribe(
-		InputHandler::trigger,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER,
-		[&goodProjectiles, &player](float* input) -> void {
-			player.FireProjectile(input, goodProjectiles);
-		});
-	InputHandler::Subscribe(
-		InputHandler::joystick,
-		GLFW_JOYSTICK_1,
-		0,
-		[&player](float* input) -> void {
-			player.AdjustVelocity(input);
-		});
-	InputHandler::Subscribe(
-		InputHandler::joystick,
-		GLFW_JOYSTICK_1,
-		1,
-		[&player](float* input) -> void {
-			player.AdjustOrientation(input);
-		});
-	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_A,
-		[&player]() -> void {
-			player.Jump();
-		});
-	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_LEFT_BUMPER,
-		[&player]() -> void {
-			player.DashLeft();
-		},
-		[&player]() -> void {
-			player.ReadyDashLeft();
-		});
-	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER,
-		[&player]() -> void {
-			player.DashRight();
-		},
-		[&player]() -> void {
-			player.ReadyDashRight();
-		});
-	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_Y,
-		[&player]() -> void {
-			player.DashForward();
-		},
-		[&player]() -> void {
-			player.ReadyDashForward();
-		});
-	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_X,
-		[&player]() -> void {
-			player.DashBack();
-		},
-		[&player]() -> void {
-			player.ReadyDashBack();
-		});
-	InputHandler::Subscribe(
-		InputHandler::button,
-		GLFW_JOYSTICK_1,
-		GLFW_GAMEPAD_BUTTON_B,
-		[&player]() -> void {
-			player.Break();
-		});
-
 	//Connect to network
-	NetworkHandler NH("192.168.42.108");
+	//NetworkHandler NH("192.168.42.108");
 
 	// Camera
 	Camera camera(width, height, &player.translation, &player.orientation, &player.feildOfView);
@@ -371,7 +287,7 @@ int main()
 			energyBar.Update();
 			reticle.Update();
 			// Handles Inputs and downstream effects
-			InputHandler::ProcessInput();
+			InputHandler::UpdateGamepad();
 
 			if (badProjectiles.CheckCollision(player.translation))
 			{

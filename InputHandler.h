@@ -7,43 +7,10 @@
 class InputHandler
 {
 public:
-	enum InputType {mouse, keyboard, joystick, button , trigger};
-
-	struct EventSubscription {
-		InputType type;
-		int input;
-		int event;
-		std::function<void()> pressCallback;
-		std::function<void()> releaseCallback;
-
-	};
-	struct InputSubscription {
-		InputType type;
-		int input;
-		int index;
-		std::function<void(float*)> callback;
-
-	};
-
-	static void SetWindow(GLFWwindow* window);
-	static void Subscribe(
-		InputType type, 
-		int inputSpecifier, 
-		int event,
-		std::function<void()> pressCallback,
-		std::function<void()> releaseCallback = []()->void {});
-
-	static void Subscribe(
-		InputType type, 
-		int inputSpecifier, 
-		int index, 
-		std::function<void(float*)> callback);
-
-	static void ProcessInput();
+	static void UpdateGamepad();
+	static GLFWgamepadstate state;
+	static void ScaleAxis(float& xAxis, float& yAxis);
 private:
-	static std::vector<EventSubscription> eventSubscriptions;
-	static std::vector<InputSubscription> inputSubscriptions;
-	static GLFWwindow* window;
 };
 
 

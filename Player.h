@@ -21,18 +21,14 @@ public:
 	GLFWwindow* window; //***********************************
 	//*******************************************************
 
-	Player(glm::vec3 startPosition, Opponent& opponent);
+	Player(glm::vec3 startPosition, Opponent& opponent, ProjectileStream& projectileStream);
 
 
 	void Update(double time);
 
 	// input movement
-	void ZoomAndLock(float* triggerValue);
+	void ZoomAndLock(float triggerValue);
 
-	void Forward();
-	void TranslateLeft();
-	void Back();
-	void TranslateRight();
 	void Jump();
 
 	void DashForward();
@@ -47,12 +43,11 @@ public:
 
 	void Break();
 
-	void FireProjectile(float* intensity, ProjectileStream& projectileStream);
+	void FireProjectile(float intensity);
 
 	void TakeDamage(float damage);
-	void AdjustVelocity(float* axes);
-	void AdjustOrientation(float* axes);
-
+	void AdjustVelocity(float xAxis, float yAxis);
+	void AdjustOrientation(float xAxis, float yAxis);
 	float energy = 1.0f;
 	float health = 100.0f;
 	float zoom = -1.0;
@@ -60,6 +55,8 @@ public:
 	bool flatNav = false;
 	// TODO auto-zoom
 private:
+
+	ProjectileStream& projectileStream;
 	void Reset();
 	glm::vec3 spawnPoint;
 	float currentTime = 0;
