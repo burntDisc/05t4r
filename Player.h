@@ -65,7 +65,7 @@ private:
 	float delta = 0.0f;
 	const double fireInterval = 0.1;
 	double prevFireTime = 0;
-	const double jumpInterval = 0.01;
+	const double jumpInterval = 0.1;
 	double prevJumpTime = 0;
 
 	Opponent& opponent;
