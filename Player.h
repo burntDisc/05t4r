@@ -48,8 +48,8 @@ public:
 	void FireProjectile(float intensity);
 
 	void TakeDamage(float damage);
-	void AdjustVelocity(float xAxis, float yAxis, float delta);
-	void AdjustOrientation(float xAxis, float yAxis, float delta);
+	void AdjustVelocity(float xAxis, float yAxis);
+	void AdjustOrientation(float xAxis, float yAxis);
 	float energy = 1.0f;
 	float health = 100.0f;
 	float zoom = -1.0;
@@ -81,6 +81,7 @@ private:
 	const float airAcceleration = 1000.0f;
 	const float airFriction = 500.0f;
 
+	const float breakFactor = 10.0f;
 	const float jumpAcceleration = 350.00f;
 	const float dashAcceleration = 5000.00f;
 	const float dashInitVelocity = 175.0f;

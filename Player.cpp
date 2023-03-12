@@ -124,7 +124,7 @@ void Player::DashRight()
 void Player::Break()
 {
 	Audio::Play(breaking);
-	velocity -= velocity / 2.0f;
+	velocity -= velocity * breakFactor * delta;
 }
 
 void Player::ZoomAndLock(float triggerValue)
@@ -141,8 +141,8 @@ void Player::Update(double time)
 	// Process Inputs---------------------------------------------------------------------------------------------------------------	
 	ZoomAndLock(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
 	FireProjectile(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER]);
-	AdjustVelocity(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y], delta);
-	AdjustOrientation(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y], delta);
+	AdjustVelocity(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
+	AdjustOrientation(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_A]) Jump();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER]) DashLeft(); else ReadyDashLeft();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER]) DashRight(); else ReadyDashRight();
@@ -219,7 +219,7 @@ void Player::TakeDamage(float damage)
 	}
 }
 
-void Player::AdjustVelocity(float xAxis, float yAxis, float delta)
+void Player::AdjustVelocity(float xAxis, float yAxis)
 {
 	InputHandler::ScaleAxis(xAxis, yAxis);
 	
@@ -262,7 +262,7 @@ void Player::AdjustVelocity(float xAxis, float yAxis, float delta)
 	}
 }
 
-void Player::AdjustOrientation(float xAxis, float yAxis, float delta)
+void Player::AdjustOrientation(float xAxis, float yAxis)
 {
 	InputHandler::ScaleAxis(xAxis, yAxis);
 	float zoomFac = (1 + zoom) / 2;
