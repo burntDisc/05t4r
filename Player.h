@@ -65,6 +65,8 @@ private:
 	float delta = 0.0f;
 	const double fireInterval = 0.1;
 	double prevFireTime = 0;
+	const double jumpInterval = 0.01;
+	double prevJumpTime = 0;
 
 	Opponent& opponent;
 	float friction;
@@ -90,7 +92,7 @@ private:
 	const float energyInitDash = 0.09f;
 	const float energySustainDash = 0.01f;
 	const float energyRegenRate = 0.5f;
-	const float firingEnergy = 0.003f;
+	const float firingEnergy = 0.03f;
 
 	const float maxLookSensitivity = 150.0f;
 	const float minLookSensitivity = 20.0f;

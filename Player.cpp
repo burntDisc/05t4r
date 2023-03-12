@@ -23,7 +23,10 @@ Player::Player(glm::vec3 startPosition, Opponent& opponent, ProjectileStream& pr
 void Player::FireProjectile(float intensity)
 {
 	bool firing;
-	if (currentTime - prevFireTime > fireInterval && intensity > -0.99f)
+	if (
+		currentTime > prevFireTime + fireInterval && 
+		intensity > -0.99f && 
+		energy >= firingEnergy)
 	{
 		prevFireTime = currentTime;
 		Audio::Play(shoot);
@@ -42,8 +45,9 @@ void Player::FireProjectile(float intensity)
 
 void Player::Jump()
 {
-	if (flatNav)
+	if (flatNav && currentTime > prevJumpTime + jumpInterval)
 	{
+		prevJumpTime = currentTime;
 		velocity = jumpAcceleration * up + velocity;
 	}
 
@@ -151,7 +155,8 @@ void Player::Update(double time)
 	glm::vec3 oppDirection = glm::normalize(opponent.translation - translation);
 	orientation = normalize(orientation + zoomFac * zoomFac * oppDirection);
 
-	float energyDelta = energyRegenRate * delta;
+	float energyDelta = energyRegenRate * delta * (energy + 0.1);
+
 	if (energy <= 1.0f - energyDelta) {
 		energy += energyDelta;
 	}
