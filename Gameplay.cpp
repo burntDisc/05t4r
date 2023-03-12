@@ -109,16 +109,6 @@ Gameplay::Gameplay(float width, float height) :
 
 	updatables.push_back(player);
 
-	// Create HUD---------------------------------------------------------------------
-	HealthBarOverlay* healthBar = new HealthBarOverlay(HUDShader, *player);
-	updatables.push_back(healthBar);
-	drawables.push_back(healthBar);
-	EnergyBarOverlay* energyBar = new EnergyBarOverlay(HUDShader, *player);
-	updatables.push_back(energyBar);
-	drawables.push_back(energyBar);
-	ReticleOverlay* reticle = new ReticleOverlay(HUDShader, *player, width, height);
-	updatables.push_back(reticle);
-	drawables.push_back(reticle);
 
 	drawables.push_back(opp);
 	// Create wall object-------------------------------------------------------------
@@ -159,6 +149,17 @@ Gameplay::Gameplay(float width, float height) :
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
 	Skybox* skybox = new Skybox(skyboxShader, skyboxFacesDirectory);
 	drawables.push_back(skybox);
+
+	// Create HUD---------------------------------------------------------------------
+	HealthBarOverlay* healthBar = new HealthBarOverlay(HUDShader, *player);
+	updatables.push_back(healthBar);
+	drawables.push_back(healthBar);
+	EnergyBarOverlay* energyBar = new EnergyBarOverlay(HUDShader, *player);
+	updatables.push_back(energyBar);
+	drawables.push_back(energyBar);
+	ReticleOverlay* reticle = new ReticleOverlay(HUDShader, *player, width, height);
+	updatables.push_back(reticle);
+	drawables.push_back(reticle);
 
 	// Camera
 	camera.Bind(& player->translation, & player->orientation, & player->feildOfView);

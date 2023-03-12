@@ -26,13 +26,13 @@ HealthBarOverlay::HealthBarOverlay(Shader shader, Player& player) :
 		float barYMin = yMin + barOffset * i;
 		float barYMax = barYMin + barOffset - barBuffer;
 		// left top
-		vertices.push_back(Vertex2D(glm::vec2(xMin, barYMax), glm::vec3(0.5f, 0.0f, 1.0f)));
+		vertices.push_back(Vertex2D(glm::vec2(xMin, barYMax), color0));
 		// left bottom
-		vertices.push_back(Vertex2D(glm::vec2(xMin, barYMin), glm::vec3(0.5f, 0.0f, 1.0f)));
+		vertices.push_back(Vertex2D(glm::vec2(xMin, barYMin), color0));
 		// right top
-		vertices.push_back(Vertex2D(glm::vec2(xMax, barYMax), glm::vec3(1.0f, 0.7f, 0.7f)));
+		vertices.push_back(Vertex2D(glm::vec2(xMax, barYMax), color1));
 		// right bottom
-		vertices.push_back(Vertex2D(glm::vec2(xMax, barYMin), glm::vec3(1.0f, 0.7f, 0.7f)));
+		vertices.push_back(Vertex2D(glm::vec2(xMax, barYMin), color1));
 
 		// rectangle indices
 		// first bar triangle
@@ -50,13 +50,13 @@ HealthBarOverlay::HealthBarOverlay(Shader shader, Player& player) :
 	// add background vertices
 
 	// left top
-	vertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMax + borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
+	vertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMax + borderWidth), color2));
 	// left bottom
-	vertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMin - borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(glm::vec2(xMin - borderWidth, yMin - borderWidth), color1));
 	// right top
-	vertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMax + borderWidth), glm::vec3(0.7f, 1.0f, 0.7f)));
+	vertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMax + borderWidth), color2));
 	// right bottom
-	vertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), glm::vec3(1.0f, 0.7f, 0.7f)));
+	vertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), color1));
 
 	SetVertices();
 }

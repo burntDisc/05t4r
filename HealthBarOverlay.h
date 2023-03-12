@@ -19,5 +19,8 @@ private:
     const float xMin = -0.96f;
     const float yMax = 0.96f;
     const float yMin = -0.96f;
+    const glm::vec3 color0 = glm::vec3(0.5f, 0.0f, 1.0f);
+    const glm::vec3 color1 = glm::vec3(1.0f, 0.7f, 0.7f);
+    const glm::vec3 color2 = glm::vec3(0.7f, 1.0f, 0.7f);
 };
 
