@@ -151,8 +151,9 @@ void Player::Update(double time)
 	glm::vec3 oppDirection = glm::normalize(opponent.translation - translation);
 	orientation = normalize(orientation + zoomFac * zoomFac * oppDirection);
 
-	if (energy <= 1.0f - energyRegen) {
-		energy += energyRegen;
+	float energyDelta = energyRegenRate * delta;
+	if (energy <= 1.0f - energyDelta) {
+		energy += energyDelta;
 	}
 
 	// Translate player----------------------------------------------------------------------------------
