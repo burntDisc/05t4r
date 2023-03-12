@@ -18,12 +18,13 @@ Scene::~Scene()
 	}
 }
 
-void Scene::Update(double time)
+Scene* Scene::Update(double time)
 {
 	for (int i = 0; i < updatables.size(); ++i)
 	{
 		updatables[i]->Update(time);
 	}
+	return nextScene;
 }
 
 void Scene::Draw()

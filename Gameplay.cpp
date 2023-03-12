@@ -165,7 +165,7 @@ Gameplay::Gameplay(float width, float height) :
 	camera.Bind(& player->translation, & player->orientation, & player->feildOfView);
 }
 
-void Gameplay::Update(double time)
+Scene* Gameplay::Update(double time)
 {
 
 	// Updates shader camera matrices
@@ -184,5 +184,5 @@ void Gameplay::Update(double time)
 		}
 	}
 
-	Scene::Update(time);
+	return Scene::Update(time);
 }

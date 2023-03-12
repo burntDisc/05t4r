@@ -7,7 +7,7 @@ class Gameplay :
 {
 public:
     Gameplay(float with, float height);
-    void Update(double time);
+    Scene* Update(double time);
 private:
     NetworkHandler networkHandler;
     Camera camera;

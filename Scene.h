@@ -3,14 +3,14 @@
 #include "Drawable.h"
 #include <vector>
 
-class Scene :
-	public Updatable
+class Scene
 {
 public:
 	~Scene();
-	void Update(double time);
-	void Draw();
+	virtual Scene* Update(double time);
+	virtual void Draw();
 protected:
+	Scene* nextScene = nullptr;
 	std::vector<Updatable*> updatables;
 	std::vector<Drawable*> drawables;
 	std::vector<Shader> shaders;

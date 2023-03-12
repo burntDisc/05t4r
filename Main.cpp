@@ -97,7 +97,7 @@ int main()
 
 	// Load Game Scene
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
-	Gameplay gameplay(width, height);
+	Scene* scene = new Gameplay(width, height);
 
 	// Main Render loop--------------------------------------------------------
 	// 
@@ -146,7 +146,12 @@ int main()
 			// Resets times and counter
 			lastTime = time;
 			counter = 0;
-			gameplay.Update(time);
+			Scene* newScene = scene->Update(time);
+			if (newScene != nullptr)
+			{
+				delete scene;
+				scene = newScene;
+			}
 			InputHandler::UpdateGamepad();
 
 			if (lastCycle == counter)
@@ -164,7 +169,7 @@ int main()
 
 
 		// Draw
-		gameplay.Draw();
+		scene->Draw();
 
 
 		// Swap back with front buffer
@@ -174,6 +179,7 @@ int main()
 		glfwPollEvents();
 	}
 
+	delete scene;
 	// Delete and clean up
 	glfwDestroyWindow(window);
 
