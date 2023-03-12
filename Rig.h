@@ -1,8 +1,10 @@
 #pragma once
 #include "Model.h"
 #include "Shader.h"
+#include "Drawable.h"
 
-class Rig
+class Rig:
+	public Drawable
 {
 public:
 	struct RiggedModel
@@ -13,11 +15,11 @@ public:
 		glm::vec3 scale;
 	};
 
-	Rig(glm::vec3 initTranslation, glm::quat initRotation, glm::vec3 initScale);
+	Rig(Shader shader, glm::vec3 initTranslation, glm::quat initRotation, glm::vec3 initScale);
 
 	void AddModel(RiggedModel model);
 
-	void Draw(Shader& shader);
+	void Draw();
 
 	glm::vec3 translation;
 	glm::quat rotation;

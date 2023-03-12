@@ -6,6 +6,7 @@
 
 Opponent::Opponent
 (
+    Shader shader,
     const char* modelFile,
     ProjectileStream& projectileStream,
     glm::vec3 initTranslation,
@@ -13,7 +14,8 @@ Opponent::Opponent
     glm::quat initRotation,
     glm::vec3 modelOffset
 ) :
-    Rig(initTranslation,
+    Rig(shader,
+        initTranslation,
         initRotation,
         initScale),
     projectileStream(projectileStream),

@@ -213,6 +213,8 @@
     <ClInclude Include="AudioHandler.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Char.h" />
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="Gameplay.h" />
     <ClInclude Include="IPSelector.h" />
     <ClInclude Include="portaudio.h" />
     <ClInclude Include="Rig.h" />
@@ -235,11 +237,13 @@
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="ProjectileStream.h" />
     <ClInclude Include="ReticleOverlay.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Updatable.h" />
     <ClInclude Include="VertexArrayObject.h" />
     <ClInclude Include="VertexBufferObject.h" />
   </ItemGroup>
@@ -247,6 +251,8 @@
     <ClCompile Include="AudioHandler.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Char.cpp" />
+    <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="Gameplay.cpp" />
     <ClCompile Include="IPSelector.cpp" />
     <ClCompile Include="Rig.cpp" />
     <ClCompile Include="HealthBarOverlay.cpp" />
@@ -271,6 +277,7 @@
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="ProjectileStream.cpp" />
     <ClCompile Include="ReticleOverlay.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Text.cpp" />

@@ -6,11 +6,15 @@
 
 
 ProjectileStream::ProjectileStream(
+	Shader shader,
+	Shader secondShader,
 	const char* modelFile, 
 	glm::vec3 initScale, 
 	glm::vec3 initModelOrientation, 
-	const char* secondModelFile ):
+	const char* secondModelFile ) :
 
+	Drawable(shader),
+	secondShader(secondShader),
 	modelOrientation(initModelOrientation),
 	ExplodingObject(
 		modelFile,
@@ -81,7 +85,7 @@ bool ProjectileStream::CheckCollision(glm::vec3 position)
 	return false;
 }
 
-void ProjectileStream::Draw(Shader shader, Shader secondShader)
+void ProjectileStream::Draw()
 {
 	shader.Activate();
 	glUniform1fv(glGetUniformLocation(shader.ID, "phase"), 1, &phase);
@@ -95,20 +99,7 @@ void ProjectileStream::Draw(Shader shader, Shader secondShader)
 	}
 }
 
-void ProjectileStream::Draw(Shader shader)
-{
-	shader.Activate();
-	glUniform1fv(glGetUniformLocation(shader.ID, "phase"), 1, &phase);
-	glUniform1fv(glGetUniformLocation(shader.ID, "amplitude"), 1, &amplitude);
-	glUniform1fv(glGetUniformLocation(shader.ID, "speed"), 1, &speed);
-	glUniform1i(glGetUniformLocation(shader.ID, "explode"), true);
-	for (int i = 0; i < projectiles.size(); ++i)
-	{
-		model.Draw(shader, projectiles[i].translation, projectiles[i].rotation, scale);
-	}
-}
-
-void ProjectileStream::Update(float time)
+void ProjectileStream::Update(double time)
 {
 	for (int i = 0; i < projectiles.size(); ++i)
 	{

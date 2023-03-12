@@ -1,8 +1,9 @@
 #include "IPSelector.h"
 
-IPSelector::IPSelector(glm::vec2 origin, float size):
+IPSelector::IPSelector(Shader shader, glm::vec2 origin, float size) :
+	Overlay(shader),
 	ip("000.000.000.000"),
-	text("000.000.000.000", glm::vec2(-0.5f, 0.0f), 0.05f)
+	text(shader, "000.000.000.000", glm::vec2(-0.5f, 0.0f), 0.05f)
 {
 	float height = size;
 	float width = ip.size() * size;
@@ -29,8 +30,8 @@ void IPSelector::Update(double time)
 
 }
 
-void IPSelector::Draw(Shader shader)
+void IPSelector::Draw()
 {
-	text.Draw(shader);
-	Overlay::Draw(shader);
+	text.Draw();
+	Overlay::Draw();
 }

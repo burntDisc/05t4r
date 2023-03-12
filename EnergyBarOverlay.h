@@ -7,8 +7,8 @@ class EnergyBarOverlay :
     public Overlay
 {
 public:
-    EnergyBarOverlay(Player& player);
-    void Update();
+    EnergyBarOverlay(Shader shader, Player& player);
+    void Update(double time);
 private:
     Player& player;
     const float xMax = 0.60f;

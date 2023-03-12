@@ -6,8 +6,8 @@ class Text :
     public Overlay
 {
 public:
-    Text(std::string rawText, glm::vec2 origin, float size);
-    void Draw(Shader shader);
+    Text(Shader shader, std::string rawText, glm::vec2 origin, float size);
+    void Draw();
 private:
     std::vector<Char> chars;
 };

@@ -25,7 +25,7 @@ class Audio {
 protected:
 public:
 	/// Constructor
-	Audio(std::string parentDir, bool mute = false);
+	Audio(bool mute = false);
 	/// Destructor
 	~Audio();
 	/// Load an audio file

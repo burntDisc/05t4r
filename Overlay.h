@@ -1,14 +1,18 @@
 #pragma once
+#include "Updatable.h"
+#include "Drawable.h"
 #include "Shader.h"
 #include <glm/glm.hpp>
 #include "VertexArrayObject.h"
-class Overlay
+class Overlay:
+	public Updatable,
+	public Drawable
 {
 public:
-	Overlay(std::vector<Vertex2D> vertices, std::vector<GLuint> indices);
-	Overlay();
-
-	void Draw(Shader shader);
+	Overlay(Shader shader, std::vector<Vertex2D> vertices, std::vector<GLuint> indices);
+	Overlay(Shader shader);
+	void Update(double time);
+	void Draw();
 protected:
 	GLuint VBO_ID = 0;
 	void SetVertices();

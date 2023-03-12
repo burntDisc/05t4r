@@ -7,8 +7,8 @@ class HealthBarOverlay :
     public Overlay
 {
 public:
-    HealthBarOverlay(Player& player);
-    void Update();
+    HealthBarOverlay(Shader shader, Player& player);
+    void Update(double time);
 private:
     void UpdateIndices(int bars);
     Player& player;

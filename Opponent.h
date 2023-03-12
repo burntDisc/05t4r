@@ -3,16 +3,19 @@
 #include "Rig.h"
 #include "ProjectileStream.h"
 #include "NetworkHandler.h"
+#include "Updatable.h"
 
 
 // TODO: for dummy update.. remove
 class Player;
 
 class Opponent :
-	public Rig
+	public Rig,
+	public Updatable
 {
 public:
 	Opponent(
+		Shader shader,
 		const char* modelFile,
 		ProjectileStream& projectileStream,
 		glm::vec3 initTranslation = glm::vec3(0.0f, 0.0f, 0.0f),

@@ -3,25 +3,29 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Player.h"
+#include "Drawable.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 class GeneratedWalls :
-    public GameObject
+    public GameObject,
+	public Updatable,
+	public Drawable
 {
 public:
 	//TODO use player to dynamically generate colliion objects like floor
 	GeneratedWalls(
+		Shader shader,
 		Player& player,
 		const char* modelFile,
 		glm::vec3 initTranslation,
 		glm::vec3 initScale,
 		glm::quat initRotation);
 
-	void Draw(Shader& shader);
+	void Draw();
 
-	void Update();
+	void Update(double time);
 private:
 	const glm::vec3 clusterDimensions = glm::vec3(10.0f, 10.0f, 10.0f);
 

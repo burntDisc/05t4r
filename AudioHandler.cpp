@@ -1,5 +1,11 @@
 #include "AudioHandler.h"
 
+// TODO update filesystem include here----------------------
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+//----------------------------------------------------------
+
 std::vector<std::thread*> Audio::audioThreads;
 std::vector<AudioFile> Audio::sounds;
 std::mutex Audio::completionsMutex;
@@ -10,7 +16,9 @@ bool Audio::mute;
 std::thread* Audio::themeThread;
 std::mutex Audio::themeResetMutex;
 
-Audio::Audio(std::string parentDir, bool mute){
+Audio::Audio(bool mute)
+{
+    std::string parentDir = fs::current_path().string();
 
     Audio::mute = mute;
     // TODO: should be portable path

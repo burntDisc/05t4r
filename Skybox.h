@@ -2,13 +2,15 @@
 
 #include <string>
 
+#include "Drawable.h"
 #include "Shader.h"
 
-class Skybox
+class Skybox:
+	public Drawable
 {
 public:
-	Skybox(std::string facesDirectory);
-	void Draw(Shader skyboxShader);
+	Skybox(Shader shader, std::string facesDirectory);
+	void Draw();
 private:
 	float skyboxVertices[24];
 	unsigned int skyboxIndices[36];

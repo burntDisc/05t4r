@@ -6,8 +6,8 @@ class ReticleOverlay :
     public Overlay
 {
 public:
-    ReticleOverlay(Player& player, int windowWidth, int windowHeight);
-    void Update();
+    ReticleOverlay(Shader shader, Player& player, int windowWidth, int windowHeight);
+    void Update(double time);
 private:
     float windowWidth, windowHeight;
     void UpdateVertices();

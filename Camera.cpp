@@ -3,13 +3,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Camera::Camera(int windowWidth, int windowHeight, glm::vec3* translation, glm::vec3* orientation, float* feildOfView):
+Camera::Camera(int windowWidth, int windowHeight) :
 	windowWidth(windowWidth), 
-	windowHeight(windowHeight),
-	translation(translation),
-	orientation(orientation),
-	feildOfView(feildOfView)
+	windowHeight(windowHeight)
 {
+}
+
+void Camera::Bind(glm::vec3* newTranslation, glm::vec3* newOrientation, float* newFeildOfView)
+{
+	translation = newTranslation;
+	orientation = newOrientation;
+	feildOfView = newFeildOfView;
 }
 
 void Camera::SetCameraUniforms(Shader& shader)

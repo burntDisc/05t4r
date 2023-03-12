@@ -1,9 +1,9 @@
 #include "HealthBarOverlay.h"
 
 //TODO: MAKE IT WORK USING TEMPLATE BELOW
-HealthBarOverlay::HealthBarOverlay(Player& player) :
+HealthBarOverlay::HealthBarOverlay(Shader shader, Player& player) :
 	player(player),
-	Overlay::Overlay()
+	Overlay::Overlay(shader)
 {
 	float barOffset = (yMax - yMin) / numBars;
 
@@ -95,7 +95,7 @@ void HealthBarOverlay::UpdateIndices(int bars)
 	SetVertices();
 }
 
-void HealthBarOverlay::Update()
+void HealthBarOverlay::Update(double time)
 {
 	indices.clear();
 	int bars = (int)(player.health / 100.0f * numBars);

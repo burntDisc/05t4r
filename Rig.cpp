@@ -2,10 +2,12 @@
 
 Rig::Rig
 (
+	Shader shader,
 	glm::vec3 initTranslation,
 	glm::quat initRotation, 
 	glm::vec3 initScale
 ):
+	Drawable(shader),
 	translation(initTranslation),
 	rotation(initRotation),
 	scale(initScale)
@@ -17,7 +19,7 @@ void Rig::AddModel(RiggedModel model)
 }
 
 //TODO - mesh warp?
-void Rig::Draw(Shader& shader)
+void Rig::Draw()
 {
 	for (int i = 0; i < riggedModels.size(); ++i)
 	{

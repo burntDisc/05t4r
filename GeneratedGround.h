@@ -9,19 +9,22 @@
 #include "GameObject.h"
 
 class GeneratedGround :
-	public GameObject
+	public GameObject,
+	public Updatable,
+	public Drawable
 {
 public:
 	GeneratedGround(
+		Shader shader,
 		Player& player,
 		const char* modelFile,
 		glm::vec3 initTranslation = glm::vec3(0),
 		glm::vec3 initScale = glm::vec3(0),
 		glm::quat initRotation = glm::quat(0.0, 0.0, 0.0, 0.0));
 
-	void Draw(Shader& shader);
+	void Draw();
 
-	void Update();
+	void Update(double time);
 
 	void IntializePanelDimensions();
 

@@ -3,9 +3,18 @@
 #include "ElementBufferObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-Overlay::Overlay(){}
+Overlay::Overlay(Shader shader) : Drawable(shader)
+{
 
-Overlay::Overlay(std::vector<Vertex2D> vertices, std::vector<GLuint> indices) :
+}
+
+void Overlay::Update(double time)
+{
+	//implemented in subclasses
+}
+
+Overlay::Overlay(Shader shader, std::vector<Vertex2D> vertices, std::vector<GLuint> indices) :
+	Drawable(shader),
 	vertices(vertices),
 	indices(indices)
 {
@@ -30,7 +39,7 @@ void Overlay::SetVertices()
 	EBO.Unbind();
 }
 
-void Overlay::Draw(Shader shader)
+void Overlay::Draw()
 {
 	// Bind shader to be set uniforms
 	shader.Activate();

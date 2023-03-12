@@ -1,8 +1,8 @@
 #include "EnergyBarOverlay.h"
 
-EnergyBarOverlay::EnergyBarOverlay(Player& player):
+EnergyBarOverlay::EnergyBarOverlay(Shader shader, Player& player):
 	player(player),
-	Overlay::Overlay()
+	Overlay::Overlay(shader)
 {
 	std::vector<Vertex2D> barVertices;
 
@@ -49,7 +49,7 @@ EnergyBarOverlay::EnergyBarOverlay(Player& player):
 	SetVertices();
 }
 
-void EnergyBarOverlay::Update()
+void EnergyBarOverlay::Update(double time)
 {
 	float rightCornerX = player.energy * (xMax - xMin) + xMin;
 

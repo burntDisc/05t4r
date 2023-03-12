@@ -2,11 +2,13 @@
 
 #include "Shader.h"
 #include "Opponent.h"
+#include "Updatable.h"
 
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
-class Player
+class Player:
+	public Updatable
 {
 public:
 	// Camera description Vectors

@@ -3,7 +3,7 @@
 //TODO: Batch Draw Chars
 
 //TODO: fix weird scaling from center (height of 2)
-Char::Char(char character, glm::vec2 origin, float size)
+Char::Char(Shader shader, char character, glm::vec2 origin, float size) : Overlay(shader)
 {
 	//build character
     switch (character) 

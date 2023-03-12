@@ -3,11 +3,14 @@
 #include <iostream>
 
 GeneratedWalls::GeneratedWalls(
+	Shader shader,
 	Player& player,
 	const char* modelFile,
 	glm::vec3 initTranslation,
 	glm::vec3 initScale,
 	glm::quat initRotation) :
+
+	Drawable(shader),
 	player(player),
 	GameObject(
 		modelFile,
@@ -19,7 +22,7 @@ GeneratedWalls::GeneratedWalls(
 	UpdateWorldVertices();
 }
 
-void GeneratedWalls::Draw(Shader& shader)
+void GeneratedWalls::Draw()
 {
 	glDepthFunc(GL_LESS);
 
@@ -49,7 +52,7 @@ void GeneratedWalls::Draw(Shader& shader)
 	}
 }
 
-void GeneratedWalls::Update()
+void GeneratedWalls::Update(double time)
 {
 	// TODO:	ADD 3d cluster extension for solid and visible walls here
 	//			can be copied from GeneratedGround

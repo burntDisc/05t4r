@@ -11,6 +11,7 @@
 namespace fs = std::experimental::filesystem;
 //----------------------------------------------------------
 
+#include "Gameplay.h"
 #include "Shader.h"
 #include "GameObject.h"
 #include "Player.h"
@@ -34,12 +35,12 @@ namespace fs = std::experimental::filesystem;
 int main()
 {
 	// get current directory
-	std::string parentDir = fs::current_path().string();
 
 	// start audio
-	Audio audio = Audio(parentDir);
+	Audio audio = Audio();
 
 	Audio::PlayTheme(mainTheme);
+
 	// Set up window-----------------------------------------------------------
 	// initilize glfw to handle input and window
 	glfwInit();
@@ -86,144 +87,17 @@ int main()
 	// Uses counter clock-wise standard
 	//glFrontFace(GL_CCW);
 	// Loading Overlay Logic
-	std::vector<Shader> shaders;
-	Shader shader2D("shaders/2D.vert", "shaders/2D.frag");
-	shaders.push_back(shader2D);
 
-
+	// Preload Title Screen---------------------------------------------------
 	Title loadingScreen = Title();
-
 	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	loadingScreen.Draw(shader2D);
+	loadingScreen.Draw();
 	glfwSwapBuffers(window);
 
-	// Generate Shader objects-------------------------------------------------
-	Shader HUDShader("shaders/2D.vert", "shaders/HUD.frag");
-	Shader standardShader("shaders/standard.vert", "shaders/standard.frag");
+	// Load Game Scene
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
-	Shader explosionShader("shaders/explosion.vert", "shaders/explosion.geo", "shaders/explosion.frag");
-	shaders.push_back(HUDShader);
-	shaders.push_back(standardShader);
-	shaders.push_back(skyboxShader);
-	shaders.push_back(explosionShader);
-
-	// Set Lighting------------------------------------------------------------
-	glm::vec4 lightColor = glm::vec4(1.2f, 1.2f, 1.2f, 1.2f);
-	glm::vec3 lightPos = glm::vec3(20.0f, 20.0f, 20.0f);
-
-	for (int i = 0; i < shaders.size(); ++i)
-	{
-		Shader& shader = shaders[i];
-		if (shader.ID != skyboxShader.ID)
-		{
-			shader.Activate();
-			glUniform4f(glGetUniformLocation(shader.ID, "lightColor"),
-				lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-			glUniform3f(glGetUniformLocation(shader.ID, "lightPos"),
-				lightPos.x, lightPos.y, lightPos.z);
-		}
-	}
-
-	// Create Game objects ----------------------------------------------------------
-
-	// Create projectile object
-	std::string badProjectilePath = parentDir + "/models/badProjectile/scene.gltf";
-	glm::vec3 projectileScale(0.5f, 0.5f, 0.5f);
-	glm::vec3 projectileOrientation(0.0f, 0.0f, -1.0f);
-	glm::vec3 projectileTranslationAdjustment(0.0f, 0.0f, 0.0f);
-	ProjectileStream badProjectiles(
-		badProjectilePath.c_str(),
-		projectileScale,
-		projectileOrientation
-	);
-
-	std::string goodProjectilePath = parentDir + "/models/goodProjectile/scene.gltf";
-	// Create projectile object
-	ProjectileStream goodProjectiles = ProjectileStream(
-		badProjectilePath.c_str(),
-		projectileScale,
-		projectileOrientation,
-		goodProjectilePath.c_str()
-	);
-
-	// Create Opponent object
-	std::string oppModelPath = parentDir + "/models/segment/scene.gltf";
-	glm::vec3 oppTranslation(0.0f, 0.0f, 0.0f);
-	glm::quat oppRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 oppScale(1.0f, 1.0f, 1.0f);
-	Opponent opp(
-		oppModelPath.c_str(),
-		badProjectiles,
-		oppTranslation,
-		oppScale,
-		oppRotation
-	);
-	// Creates /player object
-	Player player( 
-		glm::vec3(3.0f, 10.0f, 40.0f),
-		opp,
-		goodProjectiles);
-	// Create HUD
-	HealthBarOverlay healthBar = HealthBarOverlay(player);
-	EnergyBarOverlay energyBar = EnergyBarOverlay(player);
-	ReticleOverlay reticle = ReticleOverlay(player, width, height);
-
-	// Create SkyBox
-	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
-	Skybox skybox(skyboxFacesDirectory);
-
-	/*
-	// Create statue object
-	std::string statueModelPath = parentDir + "/models/statue/scene.gltf";
-	glm::vec3 statueTranslation(40.0f, 40.0f, 120.0f);
-	glm::quat statueRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 statueScale(10.0f, 10.0f, 10.0f);
-	GameObject statue(
-		statueModelPath.c_str(),
-		statueTranslation,
-		statueScale,
-		statueRotation
-	);
-	*/
-
-	// TODO pass by reference in GameObject contructors
-	
-	// Create wall object
-	std::string wallModelPath = parentDir + "/models/wall/scene.gltf";
-	glm::vec3 wallTranslation(0.0f, 0.0f, 0.1f);
-	glm::quat wallRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 wallScale(1.0f, 1.0f, 1.0f);
-	GeneratedWalls wall(
-		player,
-		wallModelPath.c_str(),
-		wallTranslation,
-		wallScale,
-		wallRotation
-	);
-
-	MotionHandler::AddSolidObject(&wall);
-
-	// Create floor object
-	std::string floorPath = parentDir + "/models/ground/scene.gltf";
-	glm::vec3 floorTranslation(0.0f, 0.0f, 0.0f);
-	glm::quat floorRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 floorScale(10.0f, 10.0f, 10.0f);
-	GeneratedGround floor(
-		player,
-		floorPath.c_str(),
-		floorTranslation,
-		floorScale,
-		floorRotation
-	);
-
-	MotionHandler::AddSolidObject(&floor);
-
-	//Connect to network
-	//NetworkHandler NH("192.168.42.108");
-
-	// Camera
-	Camera camera(width, height, &player.translation, &player.orientation, &player.feildOfView);
+	Gameplay gameplay(width, height);
 
 	// Main Render loop--------------------------------------------------------
 	// 
@@ -266,35 +140,15 @@ int main()
 			}
 			std::string sampleSize = std::to_string(sampleFrames);
 			std::string FPS = std::to_string(avgFps);
-			std::string xO = std::to_string(player.orientation.x);
-			std::string yO = std::to_string(player.orientation.y);
-			std::string zO = std::to_string(player.orientation.z);
-			std::string xP = std::to_string(player.translation.x);
-			std::string yP = std::to_string(player.translation.y);
-			std::string zP = std::to_string(player.translation.z);
-			std::string newTitle = "Avg FPS(" + sampleSize + "frames): " + FPS + " | Orientation: x: " + xO + " y: " + yO + " z: " + zO + " | Position: x: " + xP + " y: " + yP + " z: " + zP;
+			std::string newTitle = "-------Avg FPS(" + sampleSize + "frames): " + FPS;
 			glfwSetWindowTitle(window, newTitle.c_str());
 
 			// Resets times and counter
 			lastTime = time;
 			counter = 0;
-			floor.Update();
-			player.Update(time);
-			badProjectiles.Update((float)time);
-			goodProjectiles.Update((float)time);
-			opp.Update(time);
-			healthBar.Update();
-			energyBar.Update();
-			reticle.Update();
-			// Handles Inputs and downstream effects
+			gameplay.Update(time);
 			InputHandler::UpdateGamepad();
 
-			if (badProjectiles.CheckCollision(player.translation))
-			{
-				player.TakeDamage(1.0f);
-				std::cout << "Hits Taken: " << hits++ << std::endl;
-			}
-			//projectile.Update();
 			if (lastCycle == counter)
 			{
 				std::cout << "-CPU OVERLOAD-" << std::endl;
@@ -308,31 +162,9 @@ int main()
 		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Updates shader camera matrices
-		for (int i = 0; i < shaders.size(); ++i)
-		{
-			Shader& shader = shaders[i];
-			if (shader.ID == skyboxShader.ID)
-			{
-				camera.SetSkyboxUniforms(shader);
-			}
-			else
-			{
-				camera.SetCameraUniforms(shader);
-			}
-		}
 
 		// Draw
-		goodProjectiles.Draw(explosionShader, standardShader);
-		badProjectiles.Draw(standardShader);
-		floor.Draw(standardShader);
-		wall.Draw(standardShader);
-		skybox.Draw(skyboxShader);
-		opp.Draw(standardShader);
-		healthBar.Draw(HUDShader);
-		energyBar.Draw(HUDShader);
-		reticle.Draw(shader2D);
-		//statue.Draw(standardShader);
+		gameplay.Draw();
 
 
 		// Swap back with front buffer
@@ -343,11 +175,6 @@ int main()
 	}
 
 	// Delete and clean up
-	for (int i = 0; i < shaders.size(); ++i)
-	{
-		shaders[i].Delete();
-
-	}
 	glfwDestroyWindow(window);
 
 	glfwTerminate();

@@ -7,8 +7,8 @@ class IPSelector :
     public Overlay
 {
 public:
-    IPSelector(glm::vec2 origin, float size);
-    void Draw(Shader shader);
+    IPSelector(Shader shader, glm::vec2 origin, float size);
+    void Draw();
     void Update(double time);
 private:
     Text text;

@@ -1,28 +1,33 @@
 #pragma once
 #include "ExplodingObject.h"
+#include "Updatable.h"
+#include "Drawable.h"
 
 #include <deque>
 
 class ProjectileStream:
-    public ExplodingObject
+    public ExplodingObject,
+	public Updatable,
+	public Drawable
 {
 public:
 	ProjectileStream(
+		Shader shader,
+		Shader secondShader,
 		const char* modelFile,
 		glm::vec3 initScale,
 		glm::vec3 initModelOrientation,
 		const char* secondModelFile = nullptr);
 	
-	void Update(float time);
-	void Draw(Shader shader);
-	void Draw(Shader shader, Shader secondShader);
+	void Update(double time);
+	void Draw();
 
 	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity);
 
 	bool CheckCollision(glm::vec3 position);
 
 private:
-
+	Shader secondShader;
 	Model secondModel;
 
 	float contactThreshold = 5.0f;

@@ -1,11 +1,14 @@
 #include "GeneratedGround.h"
 
 GeneratedGround::GeneratedGround(
+	Shader shader,
 	Player& player,
 	const char* modelFile,
 	glm::vec3 initTranslation,
 	glm::vec3 initScale,
 	glm::quat initRotation) :
+
+	Drawable(shader),
 	player(player),
 	panelLength(0.0f),
 	panelWidth(0.0f),
@@ -21,7 +24,7 @@ GeneratedGround::GeneratedGround(
 	UpdateWorldVertices();
 }
 
-void GeneratedGround::Update()
+void GeneratedGround::Update(double time)
 {
 	// TODO maybe this should be built arouns square or this should be max (not width)
 	visiblePanelsToEdge = (int)(player.translation.y / panelWidth  + 2)*4 -1;
@@ -71,7 +74,7 @@ glm::vec3 GeneratedGround::GetPanelTranslation(int panelIndex, int numToEdge)
 	return translation - glm::vec3(translationOffsetX, 0.0f, translationOffsetZ);
 
 }
-void GeneratedGround::Draw(Shader& shader)
+void GeneratedGround::Draw()
 {
 	int sidePanels = (visiblePanelsToEdge * 2 + 1);
 	glDepthFunc(GL_LESS);

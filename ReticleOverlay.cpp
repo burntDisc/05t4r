@@ -5,11 +5,11 @@
 
 // TODO: MAKE IT WORK!!
 // TEMPLATED ON ENERGY BAR
-ReticleOverlay::ReticleOverlay(Player& player, int windowWidth, int windowHeight) :
+ReticleOverlay::ReticleOverlay(Shader shader, Player& player, int windowWidth, int windowHeight) :
 	windowWidth((float)windowWidth),
 	windowHeight((float)windowHeight),
 	player(player),
-	Overlay::Overlay()
+	Overlay::Overlay(shader)
 {
 	//All triangle vertices are unique and there are 9
 	for (int i = 0; i < 9; ++i)
@@ -20,7 +20,7 @@ ReticleOverlay::ReticleOverlay(Player& player, int windowWidth, int windowHeight
 	SetVertices();
 }
 
-void ReticleOverlay::Update()
+void ReticleOverlay::Update(double time)
 {
 	UpdateVertices();
 

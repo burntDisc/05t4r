@@ -4,7 +4,8 @@
 #include <glad/glad.h>
 #include <iostream>
 
-Skybox::Skybox(std::string facesDirectory):
+Skybox::Skybox(Shader shader, std::string facesDirectory):
+	Drawable(shader),
 	skyboxVertices{
 	//   Coordinates
 	  -1.0f,-1.0f, 1.0f,//        7--------6
@@ -108,14 +109,14 @@ Skybox::Skybox(std::string facesDirectory):
 }
 
 // Draw skybox last to optimize fragment pass
-void Skybox::Draw(Shader skyboxShader)
+void Skybox::Draw()
 {
 
 	// Setup and Draw skybox--------------------------
 	// set constant depth for skybox
-	skyboxShader.Activate();
+	shader.Activate();
 	//Uniform for texture access format (see shader)
-	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
+	glUniform1i(glGetUniformLocation(shader.ID, "skybox"), 0);
 
 	glDepthFunc(GL_LEQUAL);
 	glBindVertexArray(skyboxVAO);

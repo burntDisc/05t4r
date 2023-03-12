@@ -4,7 +4,7 @@ class Char :
     public Overlay
 {
 public:
-    Char(char character, glm::vec2 origin, float size);
+    Char(Shader shader, char character, glm::vec2 origin, float size);
 private:
     void Init_dot();
     void Init_0();
