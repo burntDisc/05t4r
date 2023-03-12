@@ -37,7 +37,7 @@ int main()
 	// get current directory
 
 	// start audio
-	Audio audio = Audio();
+	Audio audio = Audio(true);
 
 	Audio::PlayTheme(mainTheme);
 
@@ -109,7 +109,8 @@ int main()
 	unsigned int lastCycle = 0;
 
 	int hits = 0;
-	double GameLoopInterval = 1.00/30.00;  // seconds
+	// TODO update to match frame-rate
+	double GameLoopInterval = 1.00/480.00;  // seconds
 	std::deque<double> framerates;
 	int sampleFrames = 100;
 

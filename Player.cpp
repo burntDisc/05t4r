@@ -25,6 +25,7 @@ void Player::FireProjectile(float intensity)
 	bool firing;
 	if (currentTime - prevFireTime > fireInterval && intensity > -0.99f)
 	{
+		prevFireTime = currentTime;
 		Audio::Play(shoot);
 		energy -= firingEnergy;
 		firing = true;
@@ -74,7 +75,7 @@ void Player::DirectionalDash(glm::vec3 direction, bool& ready)
 
 		if (energy > energySustainDash)
 		{
-			velocity += dashAcceleration * direction;
+			velocity += dashAcceleration * direction * delta;
 		}
 	}
 }
@@ -130,11 +131,14 @@ void Player::ZoomAndLock(float triggerValue)
 
 void Player::Update(double time)
 {
-	// Process Inputs	
+	delta = time - currentTime;
+	currentTime = time;
+
+	// Process Inputs---------------------------------------------------------------------------------------------------------------	
 	ZoomAndLock(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
 	FireProjectile(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER]);
-	AdjustVelocity(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
-	AdjustOrientation(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
+	AdjustVelocity(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y], delta);
+	AdjustOrientation(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], InputHandler::state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y], delta);
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_A]) Jump();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER]) DashLeft(); else ReadyDashLeft();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER]) DashRight(); else ReadyDashRight();
@@ -142,27 +146,27 @@ void Player::Update(double time)
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_X]) DashBack(); else ReadyDashBack();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_B]) Break();
 
-	// process other stuff
+	// process other stuff----------------------------------------------------------------------------------
 	float zoomFac = (1 + zoom) / 2;
 	glm::vec3 oppDirection = glm::normalize(opponent.translation - translation);
 	orientation = normalize(orientation + zoomFac * zoomFac * oppDirection);
 
-	currentTime = time;
 	if (energy <= 1.0f - energyRegen) {
 		energy += energyRegen;
 	}
 
+	// Translate player----------------------------------------------------------------------------------
 	glm::vec3 newTranslation = translation;
-	if (glm::length(velocity) > friction)
+	if (glm::length(velocity) > delta * friction)
 	{
-		velocity = velocity - friction * glm::normalize(velocity);
-		newTranslation = MotionHandler::CollideAndSlide(translation, velocity, surfaceNormal);
+		velocity = velocity - delta * friction * glm::normalize(velocity);
+		newTranslation = MotionHandler::CollideAndSlide(translation, velocity * delta, surfaceNormal);
 	}
 	else
 	{
 		if (surfaceNormal == glm::vec3(0.0, 0.0, 0.0))
 		{
-			newTranslation = MotionHandler::CollideAndSlide(translation, velocity, surfaceNormal);
+			newTranslation = MotionHandler::CollideAndSlide(translation, velocity * delta, surfaceNormal);
 		}
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
@@ -186,7 +190,7 @@ void Player::Update(double time)
 	}
 	else
 	{
-		velocity.y -= gravity;
+		velocity.y -= gravity * delta;
 		flatNav = false;
 		friction = airFriction;
 	}
@@ -209,7 +213,7 @@ void Player::TakeDamage(float damage)
 	}
 }
 
-void Player::AdjustVelocity(float xAxis, float yAxis)
+void Player::AdjustVelocity(float xAxis, float yAxis, float delta)
 {
 	InputHandler::ScaleAxis(xAxis, yAxis);
 	
@@ -232,8 +236,8 @@ void Player::AdjustVelocity(float xAxis, float yAxis)
 		// apply change from input
 		glm::vec3 newVelocity =
 			flatNav ?
-			collisionAcceleration * stickDirection + velocity :
-			airAcceleration * stickDirection + velocity;
+			collisionAcceleration * delta * stickDirection + velocity :
+			airAcceleration * delta * stickDirection + velocity;
 
 		//removing y component to ignore gravity
 		glm::vec3 newHorizontalVelocity = glm::vec3(newVelocity.x, 0.0, newVelocity.z);
@@ -252,15 +256,15 @@ void Player::AdjustVelocity(float xAxis, float yAxis)
 	}
 }
 
-void Player::AdjustOrientation(float xAxis, float yAxis)
+void Player::AdjustOrientation(float xAxis, float yAxis, float delta)
 {
 	InputHandler::ScaleAxis(xAxis, yAxis);
 	float zoomFac = (1 + zoom) / 2;
 
 	float lookSensitivity = std::lerp(maxLookSensitivity, minLookSensitivity, zoomFac);
 
-	float rotX = lookSensitivity * xAxis;
-	float rotY = lookSensitivity * yAxis;
+	float rotX = lookSensitivity * xAxis * delta;
+	float rotY = lookSensitivity * yAxis * delta;
 
 	// Calculates upcoming vertical change in the orientation
 	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotY), glm::normalize(glm::cross(orientation, up)));

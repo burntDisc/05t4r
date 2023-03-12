@@ -48,8 +48,8 @@ public:
 	void FireProjectile(float intensity);
 
 	void TakeDamage(float damage);
-	void AdjustVelocity(float xAxis, float yAxis);
-	void AdjustOrientation(float xAxis, float yAxis);
+	void AdjustVelocity(float xAxis, float yAxis, float delta);
+	void AdjustOrientation(float xAxis, float yAxis, float delta);
 	float energy = 1.0f;
 	float health = 100.0f;
 	float zoom = -1.0;
@@ -61,9 +61,10 @@ private:
 	ProjectileStream& projectileStream;
 	void Reset();
 	glm::vec3 spawnPoint;
-	float currentTime = 0;
-	const float fireInterval = 0.1f;
-	float prevFireTime = 0;
+	float currentTime = 0.0f;
+	float delta = 0.0f;
+	const double fireInterval = 0.1;
+	double prevFireTime = 0;
 
 	Opponent& opponent;
 	float friction;
@@ -72,26 +73,26 @@ private:
 	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady = true;
 	void DirectionalDash(glm::vec3 direction, bool& ready);
 
-	const float collisionAcceleration = 4.0f;
-	const float collisionFriction = 2.0f;
+	const float collisionAcceleration = 2000.0f;
+	const float collisionFriction = 1800.0f;
 
-	const float airAcceleration = 0.8f;
-	const float airFriction = 0.1f;
+	const float airAcceleration = 1000.0f;
+	const float airFriction = 500.0f;
 
-	const float jumpAcceleration = 7.00f;
-	const float dashAcceleration = 2.00f;
-	const float dashInitVelocity = 7.0f;
-	const float maxSpeed = 5.0;
-	const float gravity = 0.25f;
-	const float repulsionFac = 1.5f;
+	const float jumpAcceleration = 350.00f;
+	const float dashAcceleration = 7000.00f;
+	const float dashInitVelocity = 175.0f;
+	const float maxSpeed = 175.0f;
+	const float gravity = 800.0f;
+	const float repulsionFac = 1.1f;
 
 	const float energyInitDash = 0.09f;
 	const float energySustainDash = 0.01f;
 	const float energyRegen = 0.002f;
 	const float firingEnergy = 0.003f;
 
-	const float maxLookSensitivity = 15.0f;
-	const float minLookSensitivity = 2.0f;
-	const float lockedLookSensitivity = 5.0f;
+	const float maxLookSensitivity = 150.0f;
+	const float minLookSensitivity = 20.0f;
+	const float lockedLookSensitivity = 50.0f;
 	const float lockAngle = acos(0) / 10;
 };

@@ -26,7 +26,7 @@ public:
 
 	//TODO: manage data to prevent cheating
 	// TODO: without tmp constructor is optomized out O.O (likely non issue now)
-	NetworkHandler(std::string ip);
+	NetworkHandler(std::string ip, bool enabled = true);
 	~NetworkHandler();
 
 	static void SetLocalGamestate(feild feild, void* value);

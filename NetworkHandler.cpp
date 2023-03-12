@@ -20,22 +20,25 @@ std::string NetworkHandler::oppIp;
 
 bool NetworkHandler::running;
 
-NetworkHandler::NetworkHandler(std::string ip)
+NetworkHandler::NetworkHandler(std::string ip, bool enabled)
 {
-    oppIp = ip;
-    Gamestate startState = {
-        .translation = glm::vec3(10.0f,10.0f,10.0f),
-        .orientation = glm::vec3(0.0f,0.0f,1.0f),
-        .time = 1.0,
-        .firingIntensity = 0.0f,
-        .firing = false,
-        .valid = true
-    };
-    remoteStates.push_back(startState);
-    std::cout << "Starting network threads..." << std::endl;
-    running = false;
-    client = new std::thread(Client);
-    server = new std::thread(Server);
+    if (enabled)
+    {
+        oppIp = ip;
+        Gamestate startState = {
+            .translation = glm::vec3(10.0f,10.0f,10.0f),
+            .orientation = glm::vec3(0.0f,0.0f,1.0f),
+            .time = 1.0,
+            .firingIntensity = 0.0f,
+            .firing = false,
+            .valid = true
+        };
+        remoteStates.push_back(startState);
+        std::cout << "Starting network threads..." << std::endl;
+        running = false;
+        client = new std::thread(Client);
+        server = new std::thread(Server);
+    }
 }
 
 NetworkHandler::~NetworkHandler()
