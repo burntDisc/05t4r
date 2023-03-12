@@ -3,8 +3,6 @@
 #include <iostream>
 #include <glm/gtx/projection.hpp>
 
-
-
 ProjectileStream::ProjectileStream(
 	Shader shader,
 	Shader secondShader,
@@ -101,9 +99,11 @@ void ProjectileStream::Draw()
 
 void ProjectileStream::Update(double time)
 {
+	float delta = time - prevTime;
+	prevTime = time;
 	for (int i = 0; i < projectiles.size(); ++i)
 	{
-		projectiles[i].translation += projectiles[i].orientation * speed * (projectiles[i].intensity + 1.0f);
+		projectiles[i].translation += projectiles[i].orientation * speed * (projectiles[i].intensity + 1.0f) * delta;
 	}
 	ExplodingObject::Update(time);
 }
