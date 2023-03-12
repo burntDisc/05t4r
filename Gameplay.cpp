@@ -109,8 +109,6 @@ Gameplay::Gameplay(float width, float height) :
 
 	updatables.push_back(player);
 
-
-	drawables.push_back(opp);
 	// Create wall object-------------------------------------------------------------
 	std::string wallModelPath = parentDir + "/models/wall/scene.gltf";
 	glm::vec3 wallTranslation(0.0f, 0.0f, 0.1f);

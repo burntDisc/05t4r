@@ -60,6 +60,10 @@ private:
 
 	ProjectileStream& projectileStream;
 	void Reset();
+
+	bool lockPressed = false;
+	bool locked = false;
+
 	glm::vec3 spawnPoint;
 	float currentTime = 0.0f;
 	float delta = 0.0f;
@@ -95,8 +99,7 @@ private:
 	const float energyRegenRate = 0.5f;
 	const float firingEnergy = 0.03f;
 
-	const float maxLookSensitivity = 150.0f;
-	const float minLookSensitivity = 20.0f;
-	const float lockedLookSensitivity = 50.0f;
+	const float maxLookSensitivity = 300.0f;
+	const float minLookSensitivity = 40.0f;
 	const float lockAngle = acos(0) / 10;
 };

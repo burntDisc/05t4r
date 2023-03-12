@@ -149,12 +149,28 @@ void Player::Update(double time)
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_Y]) DashForward(); else ReadyDashForward();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_X]) DashBack(); else ReadyDashBack();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_B]) Break();
+	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB])
+	{
+		if (!lockPressed)
+		{
+			lockPressed = true;
+			locked = !locked;
+		}
+	}
+	else
+	{
+		lockPressed = false;
+	}
 
-	// process other stuff----------------------------------------------------------------------------------
+	// process target lock----------------------------------------------------------------------------------
 	float zoomFac = (1 + zoom) / 2;
 	glm::vec3 oppDirection = glm::normalize(opponent.translation - translation);
-	orientation = normalize(orientation + zoomFac * zoomFac * oppDirection);
+	if (locked)
+	{
+		orientation = normalize(orientation + zoomFac * zoomFac * oppDirection);
+	}
 
+	// regen energy--------------------------------------------------------------------------------------------
 	float energyDelta = energyRegenRate * delta * (energy + 0.1);
 
 	if (energy <= 1.0f - energyDelta) {
