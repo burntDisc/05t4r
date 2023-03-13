@@ -1,10 +1,11 @@
 #include "InputHandler.h"
 
 GLFWgamepadstate InputHandler::state;
+bool InputHandler::connected;
 
 void InputHandler::UpdateGamepad()
 {
-	glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+	connected = glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 }
 
 void InputHandler::ScaleAxis(float& xAxis, float& yAxis)

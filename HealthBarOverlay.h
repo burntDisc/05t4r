@@ -1,14 +1,18 @@
 #pragma once
 #include "Overlay.h"
+#include "Updatable.h"
 #include "Player.h"
 
 
 class HealthBarOverlay :
-    public Overlay
+    public Overlay,
+    public Updatable,
+    public Deletable
 {
 public:
     HealthBarOverlay(Shader shader, Player& player);
     void Update(double time);
+    void Delete();
 private:
     void UpdateIndices(int bars);
     Player& player;

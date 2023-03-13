@@ -2,11 +2,11 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "NetworkHandler.h"
-class Gameplay :
+class GamePlay :
     public Scene
 {
 public:
-    Gameplay(float with, float height);
+    GamePlay(float width, float height);
     Scene* Update(double time);
 private:
     NetworkHandler networkHandler;

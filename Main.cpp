@@ -89,15 +89,12 @@ int main()
 	// Loading Overlay Logic
 
 	// Preload Title Screen---------------------------------------------------
-	Title loadingScreen = Title();
-	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	loadingScreen.Draw();
+	Scene* scene = new Title(width, height);
+	scene->Draw();
 	glfwSwapBuffers(window);
 
 	// Load Game Scene
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
-	Scene* scene = new Gameplay(width, height);
 
 	// Main Render loop--------------------------------------------------------
 	// 

@@ -58,6 +58,11 @@ void GeneratedWalls::Update(double time)
 	//			can be copied from GeneratedGround
 }
 
+void GeneratedWalls::Delete()
+{
+	delete this;
+}
+
 void GeneratedWalls::SetWallDimensions()
 {
 

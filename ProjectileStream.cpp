@@ -83,6 +83,11 @@ bool ProjectileStream::CheckCollision(glm::vec3 position)
 	return false;
 }
 
+void ProjectileStream::Delete()
+{
+	delete this;
+}
+
 void ProjectileStream::Draw()
 {
 	shader.Activate();
@@ -99,11 +104,10 @@ void ProjectileStream::Draw()
 
 void ProjectileStream::Update(double time)
 {
-	float delta = time - prevTime;
-	prevTime = time;
+	Updatable::Update(time);
 	for (int i = 0; i < projectiles.size(); ++i)
 	{
-		projectiles[i].translation += projectiles[i].orientation * speed * (projectiles[i].intensity + 1.0f) * delta;
+		projectiles[i].translation += projectiles[i].orientation * speed * (projectiles[i].intensity + 1.0f) * (float)timeDelta;
 	}
 	ExplodingObject::Update(time);
 }

@@ -2,15 +2,18 @@
 #include "Scene.h"
 #include "Text.h"
 #include "IPSelector.h"
+#include "GamePlay.h"
 
 class Title:
     public Scene
 {
 public:
-    Title();
+    Title(int width, int height);
+    Scene* Update(double time);
     void Draw();
 private:
-    Shader shader2D = Shader("shaders/2D.vert", "shaders/2D.frag");
-    IPSelector ipSelector;
+    IPSelector* ipSelector = nullptr;
+    GamePlay* preLoadedGame = nullptr;
+    Shader shader2D = Shader("shaders/2D.vert", "shaders/HUD.frag");
 };
 

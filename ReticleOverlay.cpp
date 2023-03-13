@@ -22,9 +22,8 @@ ReticleOverlay::ReticleOverlay(Shader shader, Player& player, int windowWidth, i
 
 void ReticleOverlay::Update(double time)
 {
-	float delta = time - prevTime;
-	prevTime = time;
-	UpdateVertices(delta);
+	Updatable::Update(time);
+	UpdateVertices(timeDelta);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
 	//reset vertex positions
@@ -34,7 +33,12 @@ void ReticleOverlay::Update(double time)
 	}
 }
 
-void ReticleOverlay::UpdateVertices(float delta)
+void ReticleOverlay::Delete()
+{
+	delete this;
+}
+
+void ReticleOverlay::UpdateVertices(double delta)
 {
 	vertices.clear();
 	float zoomIncrement = delta * zoomSpeed;

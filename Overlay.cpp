@@ -8,11 +8,6 @@ Overlay::Overlay(Shader shader) : Drawable(shader)
 
 }
 
-void Overlay::Update(double time)
-{
-	//implemented in subclasses
-}
-
 Overlay::Overlay(Shader shader, std::vector<Vertex2D> vertices, std::vector<GLuint> indices) :
 	Drawable(shader),
 	vertices(vertices),

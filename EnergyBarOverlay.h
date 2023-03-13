@@ -4,11 +4,14 @@
 #include "Player.h"
 
 class EnergyBarOverlay :
-    public Overlay
+    public Overlay,
+    public Updatable,
+    public Deletable
 {
 public:
     EnergyBarOverlay(Shader shader, Player& player);
     void Update(double time);
+    void Delete();
 private:
     Player& player;
     const float xMax = 0.60f;

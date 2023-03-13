@@ -1,20 +1,21 @@
 #include "Scene.h"
 
+Scene::Scene(int width, int height):
+	windowWidth(width), windowHeight(height)
+{
+}
+
 Scene::~Scene()
 {
-
 	for (int i = 0; i < shaders.size(); ++i)
 	{
 		shaders[i].Delete();
 
 	}
-	for (int i = 0; i < updatables.size(); ++i)
+
+	for (int i = 0; i < deletables.size(); ++i)
 	{
-		delete updatables[i];
-	}
-	for (int i = 0; i < drawables.size(); ++i)
-	{
-		delete drawables[i];
+		deletables[i]->Delete();
 	}
 }
 

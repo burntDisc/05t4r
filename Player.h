@@ -8,7 +8,8 @@
 #include <GLFW/glfw3.h>
 
 class Player:
-	public Updatable
+	public Updatable,
+	public Deletable
 {
 public:
 	// Camera description Vectors
@@ -24,9 +25,8 @@ public:
 	//*******************************************************
 
 	Player(glm::vec3 startPosition, Opponent& opponent, ProjectileStream& projectileStream);
-
-
 	void Update(double time);
+	void Delete();
 
 	// input movement
 	void ZoomAndLock(float triggerValue);
@@ -65,8 +65,6 @@ private:
 	bool locked = false;
 
 	glm::vec3 spawnPoint;
-	float currentTime = 0.0f;
-	float delta = 0.0f;
 	const double fireInterval = 0.1;
 	double prevFireTime = 0;
 	const double jumpInterval = 0.1;
@@ -91,7 +89,7 @@ private:
 	const float dashInitVelocity = 175.0f;
 	const float maxSpeed = 175.0f;
 	const float gravity = 800.0f;
-	const float repulsionFac = 1.1f;
+	const float repulsionFac = 1.5f;
 
 	const float lowEnergyThreshold = 0.1;
 	const float energyInitDash = 0.09f;

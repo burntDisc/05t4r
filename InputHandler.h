@@ -8,8 +8,10 @@ class InputHandler
 {
 public:
 	static void UpdateGamepad();
-	static GLFWgamepadstate state;
 	static void ScaleAxis(float& xAxis, float& yAxis);
+
+	static GLFWgamepadstate state;
+	static bool connected;
 private:
 };
 

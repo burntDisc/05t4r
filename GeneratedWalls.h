@@ -11,7 +11,8 @@
 class GeneratedWalls :
     public GameObject,
 	public Updatable,
-	public Drawable
+	public Drawable,
+	public Deletable
 {
 public:
 	//TODO use player to dynamically generate colliion objects like floor
@@ -24,8 +25,8 @@ public:
 		glm::quat initRotation);
 
 	void Draw();
-
 	void Update(double time);
+	void Delete();
 private:
 	const glm::vec3 clusterDimensions = glm::vec3(10.0f, 10.0f, 10.0f);
 

@@ -213,8 +213,9 @@
     <ClInclude Include="AudioHandler.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Char.h" />
+    <ClInclude Include="Deletable.h" />
     <ClInclude Include="Drawable.h" />
-    <ClInclude Include="Gameplay.h" />
+    <ClInclude Include="GamePlay.h" />
     <ClInclude Include="IPSelector.h" />
     <ClInclude Include="portaudio.h" />
     <ClInclude Include="Rig.h" />
@@ -251,8 +252,8 @@
     <ClCompile Include="AudioHandler.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Char.cpp" />
-    <ClCompile Include="Drawable.cpp" />
-    <ClCompile Include="Gameplay.cpp" />
+    <ClCompile Include="Deletable.cpp" />
+    <ClCompile Include="GamePlay.cpp" />
     <ClCompile Include="IPSelector.cpp" />
     <ClCompile Include="Rig.cpp" />
     <ClCompile Include="HealthBarOverlay.cpp" />

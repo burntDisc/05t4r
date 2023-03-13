@@ -4,8 +4,9 @@
 class Drawable
 {
 public:
-	Drawable(Shader shader);
+	Drawable(Shader shader) : shader(shader)  {};
 	virtual void Draw() = 0;
+
 protected:
 	Shader shader;
 };

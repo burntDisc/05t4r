@@ -2,13 +2,15 @@
 #include "ExplodingObject.h"
 #include "Updatable.h"
 #include "Drawable.h"
+#include "Deletable.h"
 
 #include <deque>
 
 class ProjectileStream:
     public ExplodingObject,
 	public Updatable,
-	public Drawable
+	public Drawable,
+	public Deletable
 {
 public:
 	ProjectileStream(
@@ -21,6 +23,7 @@ public:
 	
 	void Update(double time);
 	void Draw();
+	void Delete();
 
 	void Fire(glm::vec3 newTranslation, glm::vec3 newOrientation, float* intensity);
 

@@ -101,3 +101,8 @@ void HealthBarOverlay::Update(double time)
 	int bars = (int)(player.health / 100.0f * numBars);
 	UpdateIndices(bars);
 }
+
+void HealthBarOverlay::Delete()
+{
+	delete this;
+}

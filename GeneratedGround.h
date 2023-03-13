@@ -11,7 +11,8 @@
 class GeneratedGround :
 	public GameObject,
 	public Updatable,
-	public Drawable
+	public Drawable,
+	public Deletable
 {
 public:
 	GeneratedGround(
@@ -23,8 +24,8 @@ public:
 		glm::quat initRotation = glm::quat(0.0, 0.0, 0.0, 0.0));
 
 	void Draw();
-
 	void Update(double time);
+	void Delete();
 
 	void IntializePanelDimensions();
 

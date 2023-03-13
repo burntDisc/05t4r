@@ -125,3 +125,8 @@ void Skybox::Draw()
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
+
+void Skybox::Delete()
+{
+	delete this;
+}

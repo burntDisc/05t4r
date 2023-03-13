@@ -51,6 +51,11 @@ void GeneratedGround::Update(double time)
 	}
 }
 
+void GeneratedGround::Delete()
+{
+	delete this;
+}
+
 glm::vec3 GeneratedGround::GetPanelScale(int panelIndex, int numToEdge)
 {
 	int sidePanels = (numToEdge * 2 + 1);

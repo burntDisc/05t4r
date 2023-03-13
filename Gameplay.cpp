@@ -1,4 +1,4 @@
-#include "Gameplay.h"
+#include "GamePlay.h"
 
 #include <glm/glm.hpp>
 #include <string>
@@ -21,7 +21,8 @@
 namespace fs = std::experimental::filesystem;
 //----------------------------------------------------------
 
-Gameplay::Gameplay(float width, float height) : 
+GamePlay::GamePlay(float width, float height) : 
+	Scene(width, height),
 	camera(width, height),
 	networkHandler("192.168.42.108", false)
 {
@@ -71,6 +72,7 @@ Gameplay::Gameplay(float width, float height) :
 	);
 	updatables.push_back(badProjectiles);
 	drawables.push_back(badProjectiles);
+	deletables.push_back(badProjectiles);
 
 	// Create player projectile object-------------------------------------------
 	std::string goodProjectilePath = parentDir + "/models/goodProjectile/scene.gltf";
@@ -84,6 +86,7 @@ Gameplay::Gameplay(float width, float height) :
 	);
 	updatables.push_back(goodProjectiles);
 	drawables.push_back(goodProjectiles);
+	deletables.push_back(goodProjectiles);
 
 	// Create Opponent object---------------------------------------------------------
 	std::string oppModelPath = parentDir + "/models/segment/scene.gltf";
@@ -100,6 +103,7 @@ Gameplay::Gameplay(float width, float height) :
 	);
 	updatables.push_back(opp);
 	drawables.push_back(opp);
+	deletables.push_back(opp);
 
 	// Creates player object----------------------------------------------------------
 	Player* player = new Player(
@@ -108,6 +112,7 @@ Gameplay::Gameplay(float width, float height) :
 		*goodProjectiles);
 
 	updatables.push_back(player);
+	deletables.push_back(player);
 
 	// Create wall object-------------------------------------------------------------
 	std::string wallModelPath = parentDir + "/models/wall/scene.gltf";
@@ -125,6 +130,7 @@ Gameplay::Gameplay(float width, float height) :
 	MotionHandler::AddSolidObject(wall);
 	updatables.push_back(wall);
 	drawables.push_back(wall);
+	deletables.push_back(wall);
 
 	// Create floor object-----------------------------------------------------------
 	std::string floorPath = parentDir + "/models/ground/scene.gltf";
@@ -142,28 +148,33 @@ Gameplay::Gameplay(float width, float height) :
 	MotionHandler::AddSolidObject(floor);
 	updatables.push_back(floor);
 	drawables.push_back(floor);
+	deletables.push_back(floor);
 
 	// Create SkyBox----------------------------------------------------------------------
 	std::string skyboxFacesDirectory = parentDir + "/models/skybox/";
 	Skybox* skybox = new Skybox(skyboxShader, skyboxFacesDirectory);
 	drawables.push_back(skybox);
+	deletables.push_back(skybox);
 
 	// Create HUD---------------------------------------------------------------------
 	HealthBarOverlay* healthBar = new HealthBarOverlay(HUDShader, *player);
 	updatables.push_back(healthBar);
 	drawables.push_back(healthBar);
+	deletables.push_back(healthBar);
 	EnergyBarOverlay* energyBar = new EnergyBarOverlay(HUDShader, *player);
 	updatables.push_back(energyBar);
 	drawables.push_back(energyBar);
+	deletables.push_back(energyBar);
 	ReticleOverlay* reticle = new ReticleOverlay(HUDShader, *player, width, height);
 	updatables.push_back(reticle);
 	drawables.push_back(reticle);
+	deletables.push_back(reticle);
 
 	// Camera
 	camera.Bind(& player->translation, & player->orientation, & player->feildOfView);
 }
 
-Scene* Gameplay::Update(double time)
+Scene* GamePlay::Update(double time)
 {
 
 	// Updates shader camera matrices

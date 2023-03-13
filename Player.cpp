@@ -79,7 +79,7 @@ void Player::DirectionalDash(glm::vec3 direction, bool& ready)
 
 		if (energy > energySustainDash)
 		{
-			velocity += dashAcceleration * direction * delta;
+			velocity += dashAcceleration * direction * (float)timeDelta;
 		}
 	}
 }
@@ -124,7 +124,7 @@ void Player::DashRight()
 void Player::Break()
 {
 	Audio::Play(breaking);
-	velocity -= velocity * breakFactor * delta;
+	velocity -= velocity * breakFactor * (float)timeDelta;
 }
 
 void Player::ZoomAndLock(float triggerValue)
@@ -135,8 +135,7 @@ void Player::ZoomAndLock(float triggerValue)
 
 void Player::Update(double time)
 {
-	delta = time - currentTime;
-	currentTime = time;
+	Updatable::Update(time);
 
 	// Process Inputs---------------------------------------------------------------------------------------------------------------	
 	ZoomAndLock(InputHandler::state.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
@@ -171,7 +170,7 @@ void Player::Update(double time)
 	}
 
 	// regen energy--------------------------------------------------------------------------------------------
-	float energyDelta = energyRegenRate * delta * (energy + 0.1);
+	float energyDelta = energyRegenRate * timeDelta * (energy + 0.1);
 
 	if (energy <= 1.0f - energyDelta) {
 		energy += energyDelta;
@@ -179,16 +178,16 @@ void Player::Update(double time)
 
 	// Translate player----------------------------------------------------------------------------------
 	glm::vec3 newTranslation = translation;
-	if (glm::length(velocity) > delta * friction)
+	if (glm::length(velocity) > timeDelta * friction)
 	{
-		velocity = velocity - delta * friction * glm::normalize(velocity);
-		newTranslation = MotionHandler::CollideAndSlide(translation, velocity * delta, surfaceNormal);
+		velocity = velocity - (float)timeDelta * friction * glm::normalize(velocity);
+		newTranslation = MotionHandler::CollideAndSlide(translation, velocity * (float)timeDelta, surfaceNormal);
 	}
 	else
 	{
 		if (surfaceNormal == glm::vec3(0.0, 0.0, 0.0))
 		{
-			newTranslation = MotionHandler::CollideAndSlide(translation, velocity * delta, surfaceNormal);
+			newTranslation = MotionHandler::CollideAndSlide(translation, velocity * (float)timeDelta, surfaceNormal);
 		}
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
@@ -212,7 +211,7 @@ void Player::Update(double time)
 	}
 	else
 	{
-		velocity.y -= gravity * delta;
+		velocity.y -= gravity * (float)timeDelta;
 		flatNav = false;
 		friction = airFriction;
 	}
@@ -224,6 +223,11 @@ void Player::Update(double time)
 	bool colliding = surfaceNormal != glm::vec3(0.0, 0.0, 0.0);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::colliding, &colliding);
 	NetworkHandler::PushGamestate(time);
+}
+
+void Player::Delete()
+{
+	delete this;
 }
 
 void Player::TakeDamage(float damage)
@@ -258,8 +262,8 @@ void Player::AdjustVelocity(float xAxis, float yAxis)
 		// apply change from input
 		glm::vec3 newVelocity =
 			flatNav ?
-			collisionAcceleration * delta * stickDirection + velocity :
-			airAcceleration * delta * stickDirection + velocity;
+			collisionAcceleration * (float)timeDelta * stickDirection + velocity :
+			airAcceleration * (float)timeDelta * stickDirection + velocity;
 
 		//removing y component to ignore gravity
 		glm::vec3 newHorizontalVelocity = glm::vec3(newVelocity.x, 0.0, newVelocity.z);
@@ -285,8 +289,8 @@ void Player::AdjustOrientation(float xAxis, float yAxis)
 
 	float lookSensitivity = std::lerp(maxLookSensitivity, minLookSensitivity, zoomFac);
 
-	float rotX = lookSensitivity * xAxis * delta;
-	float rotY = lookSensitivity * yAxis * delta;
+	float rotX = lookSensitivity * xAxis * (float)timeDelta;
+	float rotY = lookSensitivity * yAxis * (float)timeDelta;
 
 	// Calculates upcoming vertical change in the orientation
 	glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotY), glm::normalize(glm::cross(orientation, up)));

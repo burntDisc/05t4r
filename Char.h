@@ -5,7 +5,13 @@ class Char :
 {
 public:
     Char(Shader shader, char character, glm::vec2 origin, float size);
+    void Change(char newCharacter);
+    void Delete();
 private:
+    glm::vec2 origin;
+    float size;
+    void SetCharPosition();
+    void InitVertices(char character);
     void Init_dot();
     void Init_0();
     void Init_1();
@@ -18,7 +24,11 @@ private:
     void Init_8();
     void Init_9();
 
+    void Init_a();
+    void Init_e();
+    void Init_p();
     void Init_r();
+    void Init_s();
     void Init_t();
 };
 

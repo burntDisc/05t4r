@@ -1,17 +1,21 @@
 #pragma once
 #include "Overlay.h"
+#include "Updatable.h"
 #include "Player.h"
 
 class ReticleOverlay :
-    public Overlay
+    public Updatable,
+    public Overlay,
+    public Deletable
 {
 public:
     ReticleOverlay(Shader shader, Player& player, int windowWidth, int windowHeight);
     void Update(double time);
+    void Delete();
 private:
     float prevTime = 0.0f;
     float windowWidth, windowHeight;
-    void UpdateVertices(float delta);
+    void UpdateVertices(double delta);
     float zoomFac;
     const float zoomSpeed = 0.1f;
     const float maxRadius = 0.30;

@@ -11,7 +11,8 @@ class Player;
 
 class Opponent :
 	public Rig,
-	public Updatable
+	public Updatable,
+	public Deletable
 {
 public:
 	Opponent(
@@ -24,6 +25,7 @@ public:
 		glm::vec3 modelOffset = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	void Update(double time);
+	void Delete();
 	void DummyUpdate(double time, Player& player);
 	glm::vec3 GetPosition();
 private:

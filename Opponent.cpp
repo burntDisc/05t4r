@@ -101,12 +101,11 @@ glm::quat Opponent::LookRotation(glm::vec3 orientation)
 
 void Opponent::Update(double time)
 {
-    double loopTime = time - prevStateTime;
-    prevStateTime = time;
+    Updatable::Update(time);
 
     glm::vec3 rotationAdjustment(0.0f, 0.0f, 0.0f);
 
-    state = NetworkHandler::GetRemoteGamestate(loopTime, state);
+    state = NetworkHandler::GetRemoteGamestate(timeDelta, state);
 
     rotation = LookRotation(state.orientation) * modelRotation;
     float distance = glm::length((state.translation - state.translation.y) - (translation - translation.y)); 
@@ -122,6 +121,11 @@ void Opponent::Update(double time)
     glm::vec3 xzVelocity = state.velocity - glm::vec3(0.0f, state.velocity.z, 0.0f);
     
     UpdateRig(travel, glm::length(xzVelocity), state.colliding);
+}
+
+void Opponent::Delete()
+{
+    delete this;
 }
 
 void Opponent::DummyUpdate(double time, Player& player)

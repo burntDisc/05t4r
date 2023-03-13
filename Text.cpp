@@ -20,3 +20,13 @@ void Text::Draw()
 		chars[i].Draw();
 	}
 }
+
+void Text::ChangeChar(int index, char value)
+{
+	chars[index].Change(value);
+}
+
+void Text::Delete()
+{
+	delete this;
+}
