@@ -252,7 +252,6 @@
     <ClCompile Include="AudioHandler.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Char.cpp" />
-    <ClCompile Include="Deletable.cpp" />
     <ClCompile Include="GamePlay.cpp" />
     <ClCompile Include="IPSelector.cpp" />
     <ClCompile Include="Rig.cpp" />
