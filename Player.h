@@ -89,7 +89,7 @@ private:
 	const float dashInitVelocity = 175.0f;
 	const float maxSpeed = 175.0f;
 	const float gravity = 800.0f;
-	const float repulsionFac = 1.5f;
+	const float repulsionFac = 1.1;
 
 	const float lowEnergyThreshold = 0.1;
 	const float energyInitDash = 0.09f;

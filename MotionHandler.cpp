@@ -362,13 +362,11 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 glm::vec3 MotionHandler::CollideWithWorld(const glm::vec3& pos, const glm::vec3& vel, glm::vec3& normal, int collisionRecursionDepth)
 {
 	CollisionPacket* collisionPackage = &packet;
-	const float unitsPerMeter = 100.0f;
-	// All hard-coded distances in this function is
-	// scaled to fit the setting above..
-	float unitScale = unitsPerMeter / 100.0f;
-	float veryCloseDistance = 0.005f * unitScale;
-	// do we need to worry?
-	if (collisionRecursionDepth > 2) // ----------------------------------------------------TODO: should be constant
+
+	const float veryCloseDistance = 0.0001;
+
+	// Give up on Resolution after checking too many times
+	if (collisionRecursionDepth > maxRecursionDepth) 
 		return pos;
 	// Ok, we need to worry:
 	collisionPackage->velocity = vel;

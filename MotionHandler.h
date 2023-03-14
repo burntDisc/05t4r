@@ -12,6 +12,7 @@ class MotionHandler
 public:
 	static void AddSolidObject(GameObject* object);
 private:
+	static const int maxRecursionDepth = 6;
 	static float SignOfQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d);
 	static std::vector<GameObject*> solidObjects;
 
