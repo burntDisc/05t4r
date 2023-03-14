@@ -363,6 +363,7 @@ glm::vec3 MotionHandler::CollideWithWorld(const glm::vec3& pos, const glm::vec3&
 {
 	CollisionPacket* collisionPackage = &packet;
 
+	//TODO: should be dependent on time delta (For variable computer cpu speed)
 	const float veryCloseDistance = 0.0001;
 
 	// Give up on Resolution after checking too many times
