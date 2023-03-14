@@ -141,6 +141,17 @@ void IPSelector::Update(double time)
 	// do select
 	activeDigit += digitSelectSpeed * timeDelta;
 
+	// loop digit values in bouonds
+	float stringSize = 12.0f;
+	if (activeDigit > stringSize)
+	{
+		activeDigit -= stringSize;
+	}
+	else if (activeDigit < 0.0f)
+	{
+		activeDigit += stringSize;
+	}
+
 	// update characterOffset on index change
 	int currentIndex = (int)activeDigit;
 	if (startingIndex != currentIndex)
@@ -155,16 +166,6 @@ void IPSelector::Update(double time)
 		ShiftDigit(currentIndex);
 	}
 
-	// loop digit values in bouonds
-	float stringSize = 12.0f;
-	if (activeDigit > stringSize)
-	{
-		activeDigit -= stringSize;
-	}
-	else if (activeDigit < 0.0f)
-	{
-		activeDigit += stringSize;
-	}
 	UpdateSelector();
 }
 
