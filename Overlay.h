@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include <glm/glm.hpp>
 #include "VertexArrayObject.h"
+#include "VertexBufferObject.h"
+#include "ElementBufferObject.h"
 
 class Overlay:
 	public Drawable
@@ -13,9 +15,11 @@ public:
 	void Draw();
 protected:
 	GLuint VBO_ID = 0;
-	void SetVertices();
+	void Refresh();
 	std::vector<Vertex2D> vertices;
 	std::vector<GLuint> indices;
 	VertexArrayObject VAO;
+	VertexBufferObject VBO;
+	ElementBufferObject EBO;
 };
 

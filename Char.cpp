@@ -9,11 +9,11 @@ Char::Char(Shader shader, char character, glm::vec2 origin, float size) :
 	//build character
 	InitVertices(character);
 	// adjust to screen position
-	SetCharPosition();
-	SetVertices();
+	Transform();
+	Refresh();
 }
 
-void Char::SetCharPosition() 
+void Char::Transform()
 {
 	for (int i = 0; i < vertices.size(); ++i)
 	{
@@ -86,8 +86,8 @@ void Char::Change(char newCharacter)
 	indices.clear();
 	vertices.clear();
 	InitVertices(newCharacter);
-	SetCharPosition();
-	SetVertices();
+	Transform();
+	Refresh();
 }
 
 void Char::Delete()

@@ -1,27 +1,28 @@
 #include"VertexBufferObject.h"
 
 // Constructor that generates a Vertex Buffer Object and links it to vertices
-VertexBufferObject::VertexBufferObject(std::vector<Vertex>& vertices)
+VertexBufferObject::VertexBufferObject()
 {
 	glGenBuffers(1, &ID);
+}
+
+void VertexBufferObject::Update(std::vector<Vertex>& vertices)
+{
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 }
 
-VertexBufferObject::VertexBufferObject(std::vector<Vertex2D>& vertices)
+void VertexBufferObject::Update(std::vector<Vertex2D>& vertices)
 {
-	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex2D), vertices.data(), GL_STATIC_DRAW);
 }
 
-VertexBufferObject::VertexBufferObject(std::vector<glm::mat4>& mat4s)
+void VertexBufferObject::Update(std::vector<glm::mat4>& vertices)
 {
-	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, mat4s.size() * sizeof(glm::mat4), mat4s.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::mat4), vertices.data(), GL_STATIC_DRAW);
 }
-
 // Binds the VertexBufferObject
 void VertexBufferObject::Bind()
 {

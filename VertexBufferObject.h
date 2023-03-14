@@ -26,9 +26,11 @@ public:
 	// Reference ID of the Vertex Buffer Object
 	GLuint ID;
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
-	VertexBufferObject(std::vector<Vertex>& vertices);
-	VertexBufferObject(std::vector<Vertex2D>& vertices);
-	VertexBufferObject(std::vector<glm::mat4>& mat4s);
+	VertexBufferObject();
+
+	void Update(std::vector<Vertex>& vertices);
+	void Update(std::vector<Vertex2D>& vertices);
+	void Update(std::vector<glm::mat4>& vertices);
 
 	// Binds the VertexBufferObject
 	void Bind();

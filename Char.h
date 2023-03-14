@@ -10,7 +10,7 @@ public:
 private:
     glm::vec2 origin;
     float size;
-    void SetCharPosition();
+    void Transform();
     void InitVertices(char character);
     void Init_dot();
     void Init_0();

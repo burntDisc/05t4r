@@ -1,6 +1,4 @@
 #include "Overlay.h"
-#include "VertexBufferObject.h"
-#include "ElementBufferObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 Overlay::Overlay(Shader shader) : Drawable(shader)
@@ -13,17 +11,18 @@ Overlay::Overlay(Shader shader, std::vector<Vertex2D> vertices, std::vector<GLui
 	vertices(vertices),
 	indices(indices)
 {
-	SetVertices();
+	Refresh();
 }
 
-void Overlay::SetVertices()
+void Overlay::Refresh()
 {
 	VAO.Bind();
-	VertexBufferObject VBO(vertices);
+	VBO.Update(vertices);
 	// Generates Element Buffer Object and links it to indices
-	ElementBufferObject EBO(indices);
+	EBO.Update(indices);
 
 	// Links VertexBufferObject attributes such as coordinates and colors to VertexArrayObject
+
 	VAO.LinkAttrib(VBO, 0, 2, GL_FLOAT, sizeof(Vertex2D), (void*)0);
 	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex2D), (void*)(2 * sizeof(float)));
 

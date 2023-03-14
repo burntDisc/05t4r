@@ -17,9 +17,11 @@ Mesh::Mesh
 	Mesh::textures = textures;
 
 	VAO.Bind();
-	VertexBufferObject VBO(vertices);
+	VertexBufferObject VBO;
+	VBO.Update(vertices);
 	// Generates Element Buffer Object and links it to indices
-	ElementBufferObject EBO(indices);
+	ElementBufferObject EBO;
+	EBO.Update(indices);
 	// Links VertexBufferObject attributes such as coordinates and colors to VertexArrayObject
 	VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
 	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));

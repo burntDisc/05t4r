@@ -46,7 +46,7 @@ EnergyBarOverlay::EnergyBarOverlay(Shader shader, Player& player):
 	vertices = barVertices;
 	indices = barIndices;
 
-	SetVertices();
+	Refresh();
 }
 
 void EnergyBarOverlay::Update(double time)
@@ -56,9 +56,7 @@ void EnergyBarOverlay::Update(double time)
 	vertices[0] = Vertex2D(glm::vec2(rightCornerX, yMax), glm::vec3(0.7f, 0.8f, 0.4f));
 	vertices[1] = Vertex2D(glm::vec2(rightCornerX, yMin), glm::vec3(0.7f, 0.8f, 0.4f));
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0,				   sizeof(glm::vec2), (void*)&vertices[0].position);
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(Vertex2D), sizeof(glm::vec2), (void*)&vertices[1].position);
+	Refresh();
 }
 
 void EnergyBarOverlay::Delete()

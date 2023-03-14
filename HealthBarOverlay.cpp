@@ -58,7 +58,7 @@ HealthBarOverlay::HealthBarOverlay(Shader shader, Player& player) :
 	// right bottom
 	vertices.push_back(Vertex2D(glm::vec2(xMax + borderWidth, yMin - borderWidth), color1));
 
-	SetVertices();
+	Refresh();
 }
 
 void HealthBarOverlay::UpdateIndices(int bars)
@@ -92,7 +92,7 @@ void HealthBarOverlay::UpdateIndices(int bars)
 		indices.push_back(i * 4 + 3);
 		indices.push_back(i * 4 + 1);
 	}
-	SetVertices();
+	Refresh();
 }
 
 void HealthBarOverlay::Update(double time)

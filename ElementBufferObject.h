@@ -8,7 +8,9 @@ class ElementBufferObject
 public:
 	GLuint ID;
 	// Constructor that generates a Elements Buffer Object and links it to indices
-	ElementBufferObject(std::vector<GLuint>& indices);
+	ElementBufferObject();
+
+	void Update(std::vector<GLuint>& indices);
 
 	// Binds the ElementBufferObject
 	void Bind();

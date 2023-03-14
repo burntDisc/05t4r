@@ -43,7 +43,7 @@ IPSelector::IPSelector(Shader shader, glm::vec2 origin, float size) :
 	vertices.push_back(Vertex2D(origin + glm::vec2(width, height), glm::vec3(1.0f, 0.7f, 0.7f))); 
 	vertices.push_back(Vertex2D(origin + glm::vec2(width, 0.0f),   glm::vec3(0.7f, 1.0f, 0.7f)));
 
-	SetVertices();
+	Refresh();
 }
 
 int IPSelector::GetStringOffset(int index)
@@ -78,7 +78,7 @@ void IPSelector::UpdateSelector()
 	vertices[2] = Vertex2D(origin + glm::vec2(size * (stringIndex + 1), size), selectorColor);
 	vertices[3] = Vertex2D(origin + glm::vec2(size * (stringIndex + 1), 0.0f), selectorColor);
 
-	SetVertices();
+	Refresh();
 }
 
 void IPSelector::Update(double time)
@@ -148,7 +148,7 @@ void IPSelector::Update(double time)
 		int stringIndex = GetStringOffset(currentIndex);
 		characterOffset = ip[stringIndex];
 	}
-	// Do shift 
+	// Do shift
 	else
 	{
 		characterOffset += digitShiftSpeed * timeDelta;

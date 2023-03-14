@@ -3,7 +3,6 @@
 #include "EnergyBarOverlay.h"
 
 
-// TODO: MAKE IT WORK!!
 // TEMPLATED ON ENERGY BAR
 ReticleOverlay::ReticleOverlay(Shader shader, Player& player, int windowWidth, int windowHeight) :
 	windowWidth((float)windowWidth),
@@ -17,20 +16,15 @@ ReticleOverlay::ReticleOverlay(Shader shader, Player& player, int windowWidth, i
 		indices.push_back(i);
 	}
 	UpdateVertices(0.0f);
-	SetVertices();
+	Refresh();
 }
 
 void ReticleOverlay::Update(double time)
 {
 	Updatable::Update(time);
 	UpdateVertices(timeDelta);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
-	//reset vertex positions
-	for (int i = 0; i < 9; ++i)
-	{
-		glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex2D), sizeof(Vertex2D), (void*)&vertices[i]);
-	}
+	Refresh();
+	
 }
 
 void ReticleOverlay::Delete()
