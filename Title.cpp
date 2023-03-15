@@ -6,7 +6,7 @@ Title::Title(int width, int height):
 {
 	shaders.push_back(shader2D);
 
-	IPSelector* ipSelector = new IPSelector(shader2D, glm::vec2(-0.5f, 0.5f), 0.05f);
+	ipSelector = new IPSelector(shader2D, glm::vec2(-0.5f, 0.5f), 0.05f);
 	updatables.push_back(ipSelector);
 	drawables.push_back(ipSelector);
 	deletables.push_back(ipSelector);
@@ -22,6 +22,7 @@ Scene* Title::Update(double time)
 {
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_START])
 	{
+		NetworkHandler::StartMatch(ipSelector->GetIP());
 		return preLoadedGame;
 	}
 	else

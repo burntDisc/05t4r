@@ -15,7 +15,10 @@ public:
     void Draw();
     void Update(double time);
     void Delete();
+
+    std::string GetIP();
     bool selected = false;
+    std::string ip;
 private:
     float size;
     glm::vec2 origin;
@@ -34,6 +37,5 @@ private:
 
     const glm::vec3 selectorColor = glm::vec3(0.5f, 0.5f, 1.0f);
     Text text;
-    std::string ip;
 };
 

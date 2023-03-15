@@ -13,35 +13,43 @@ enum { max_length = 1024 };
 NetworkHandler::Gamestate NetworkHandler::localState;
 std::queue<NetworkHandler::Gamestate> NetworkHandler::localStates;
 std::vector<NetworkHandler::Gamestate> NetworkHandler::remoteStates;
+
+
+std::thread* NetworkHandler::client;
+std::thread* NetworkHandler::server;
+
 std::mutex NetworkHandler::remoteMutex;
 std::mutex NetworkHandler::localMutex;
 std::mutex NetworkHandler::runningMutex;
+
 std::string NetworkHandler::oppIp;
 
 bool NetworkHandler::running;
 
-NetworkHandler::NetworkHandler(std::string ip, bool enabled)
+void NetworkHandler::GetClients(std::string ip)
 {
-    if (enabled)
-    {
-        oppIp = ip;
-        Gamestate startState = {
-            .translation = glm::vec3(10.0f,10.0f,10.0f),
-            .orientation = glm::vec3(0.0f,0.0f,1.0f),
-            .time = 1.0,
-            .firingIntensity = 0.0f,
-            .firing = false,
-            .valid = true
-        };
-        remoteStates.push_back(startState);
-        std::cout << "Starting network threads..." << std::endl;
-        running = false;
-        client = new std::thread(Client);
-        server = new std::thread(Server);
-    }
+        //TODO: implement server (UDP hole punching time oh yeah)
 }
 
-NetworkHandler::~NetworkHandler()
+void NetworkHandler::StartMatch(std::string ip)
+{
+    oppIp = ip;
+    Gamestate startState = {
+        .translation = glm::vec3(10.0f,10.0f,10.0f),
+        .orientation = glm::vec3(0.0f,0.0f,1.0f),
+        .time = 1.0,
+        .firingIntensity = 0.0f,
+        .firing = false,
+        .valid = true
+    };
+    remoteStates.push_back(startState);
+    std::cout << "Starting network threads..." << std::endl;
+    running = false;
+    client = new std::thread(Client);
+    server = new std::thread(Server);
+}
+
+void NetworkHandler::EndMatch()
 {
     runningMutex.lock();
     running = false;
@@ -109,6 +117,7 @@ NetworkHandler::Gamestate NetworkHandler::GetRemoteGamestate(double delta, Games
     return currentState;
 
 }
+
 
 void NetworkHandler::SetLocalGamestate(feild feild, void* value)
 {

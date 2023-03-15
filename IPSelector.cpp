@@ -8,8 +8,8 @@ IPSelector::IPSelector(Shader shader, glm::vec2 origin, float size) :
 	origin(origin),
 	size(size),
 	Overlay(shader),
-	ip("000.000.000.000"),
-	text(shader, "000.000.000.000", origin, size)
+	ip("192.168.001.108"),
+	text(shader, "192.168.001.108", origin, size)
 {
 	float height = size;
 	float width = ip.size() * size;
@@ -172,6 +172,21 @@ void IPSelector::Update(double time)
 void IPSelector::Delete()
 {
 	delete this;
+}
+
+std::string IPSelector::GetIP()
+{
+	// trim leading 0's
+	std::string parsedIP = ip;
+	for (int i = 0; i < parsedIP.size(); ++i)
+	{
+		if (parsedIP[i] == '.' && parsedIP[i + 1] == '0')
+		{
+			parsedIP.erase(parsedIP.begin() + i + 1);
+			--i;
+		}
+	}
+	return parsedIP;
 }
 
 void IPSelector::Draw()

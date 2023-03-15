@@ -23,8 +23,7 @@ namespace fs = std::experimental::filesystem;
 
 GamePlay::GamePlay(float width, float height) : 
 	Scene(width, height),
-	camera(width, height),
-	networkHandler("192.168.1.108", false)
+	camera(width, height)
 {
 	std::string parentDir = fs::current_path().string();
 	// Create Shaders

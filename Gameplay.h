@@ -9,7 +9,6 @@ public:
     GamePlay(float width, float height);
     Scene* Update(double time);
 private:
-    NetworkHandler networkHandler;
     Camera camera;
 };
 
