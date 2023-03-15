@@ -26,7 +26,7 @@ public:
 
 	//TODO: manage data to prevent cheating
 	// TODO: without tmp constructor is optomized out O.O (likely non issue now)
-	static void GetClients(std::string ip);
+	static std::vector<std::string> GetClients(std::string ip);
 	static void StartMatch(std::string ip);
 	static void EndMatch();
 

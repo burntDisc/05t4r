@@ -8,6 +8,7 @@
 // TODO should be lock_guard not mutex
 //***************************************
 using boost::asio::ip::udp;
+using boost::asio::ip::tcp;
 enum { max_length = 1024 };
 
 NetworkHandler::Gamestate NetworkHandler::localState;
@@ -26,9 +27,56 @@ std::string NetworkHandler::oppIp;
 
 bool NetworkHandler::running;
 
-void NetworkHandler::GetClients(std::string ip)
+
+std::vector<std::string> NetworkHandler::GetClients(std::string ip)
 {
-        //TODO: implement server (UDP hole punching time oh yeah)
+    std::vector<std::string> ips;
+    try
+    {
+        std::string port = "4001";
+
+        boost::asio::io_service io_service;
+
+        tcp::socket s(io_service);
+        tcp::resolver resolver(io_service);
+        boost::asio::connect(s, resolver.resolve({ ip, port }));
+
+        char request[max_length] = "UserA";
+
+        size_t request_length = std::strlen(request);
+        boost::asio::write(s, boost::asio::buffer(request, request_length));
+
+        char reply[max_length];
+
+        char listLength;
+        boost::asio::read(s, boost::asio::buffer(&listLength, sizeof(char)));
+
+        size_t recievedChars = 0;
+        while (recievedChars < listLength)
+        {
+            recievedChars += boost::asio::read(s, boost::asio::buffer(reply, listLength - recievedChars));
+        }
+
+        std::string ip;
+        for (int i = 0; i < listLength; ++i)
+        {
+            if (reply[i] != '\n')
+            {
+                ip += reply[i];
+            }
+            else
+            {
+                ips.push_back(ip);
+                ip.clear();
+            }
+        }
+
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << "\n";
+    }
+    return ips;
 }
 
 void NetworkHandler::StartMatch(std::string ip)
