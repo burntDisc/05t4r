@@ -28,9 +28,9 @@ std::string NetworkHandler::oppIp;
 bool NetworkHandler::running;
 
 
-std::vector<std::string> NetworkHandler::GetClients(std::string ip)
+std::vector<NetworkHandler::ClientEntry> NetworkHandler::GetClients(std::string ip, std::string alias)
 {
-    std::vector<std::string> ips;
+    std::vector<ClientEntry> clients;
     try
     {
         std::string port = "4001";
@@ -41,24 +41,26 @@ std::vector<std::string> NetworkHandler::GetClients(std::string ip)
         tcp::resolver resolver(io_service);
         boost::asio::connect(s, resolver.resolve({ ip, port }));
 
+        // Register as client
         char request[max_length] = "UserA";
-
         size_t request_length = std::strlen(request);
         boost::asio::write(s, boost::asio::buffer(request, request_length));
 
+        // Get ip list length
         char reply[max_length];
+        char ipListLength;
+        boost::asio::read(s, boost::asio::buffer(&ipListLength, sizeof(char)));
 
-        char listLength;
-        boost::asio::read(s, boost::asio::buffer(&listLength, sizeof(char)));
-
+        // Get ip list
         size_t recievedChars = 0;
-        while (recievedChars < listLength)
+        while (recievedChars < ipListLength)
         {
-            recievedChars += boost::asio::read(s, boost::asio::buffer(reply, listLength - recievedChars));
+            recievedChars += boost::asio::read(s, boost::asio::buffer(reply, ipListLength - recievedChars));
         }
 
+        // Parse ip list
         std::string ip;
-        for (int i = 0; i < listLength; ++i)
+        for (int i = 0; i < ipListLength; ++i)
         {
             if (reply[i] != '\n')
             {
@@ -66,8 +68,35 @@ std::vector<std::string> NetworkHandler::GetClients(std::string ip)
             }
             else
             {
-                ips.push_back(ip);
+                clients.push_back({ .ip = ip });
                 ip.clear();
+            }
+        }
+
+        // Get alias list length
+        char aliasListLength;
+        boost::asio::read(s, boost::asio::buffer(&aliasListLength, sizeof(char)));
+
+        // Get alias list
+        recievedChars = 0;
+        while (recievedChars < aliasListLength)
+        {
+            recievedChars += boost::asio::read(s, boost::asio::buffer(reply, aliasListLength - recievedChars));
+        }
+
+        //Parse client List
+        std::string alias;
+        size_t clientIndex = 0;
+        for (int i = 0; i < aliasListLength; ++i)
+        {
+            if (reply[i] != '\n')
+            {
+                alias += reply[i];
+            }
+            else
+            {
+                clients[clientIndex++].alias = alias;
+                alias.clear();
             }
         }
 
@@ -76,7 +105,7 @@ std::vector<std::string> NetworkHandler::GetClients(std::string ip)
     {
         std::cerr << "Exception: " << e.what() << "\n";
     }
-    return ips;
+    return clients;
 }
 
 void NetworkHandler::StartMatch(std::string ip)

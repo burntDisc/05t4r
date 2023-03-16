@@ -12,6 +12,12 @@ public:
 	enum feild { time, firingIntensity, firing, valid, translation, orientation , velocity, colliding};
 	// Structure to standardize the vertices used in the meshes
 	// should be max 508 bytes for UDP speed safety (no ip fragmentation)
+	struct ClientEntry
+	{
+		std::string ip;
+		std::string alias;
+	};
+
 	struct Gamestate
 	{
 		glm::vec3 velocity;
@@ -26,7 +32,7 @@ public:
 
 	//TODO: manage data to prevent cheating
 	// TODO: without tmp constructor is optomized out O.O (likely non issue now)
-	static std::vector<std::string> GetClients(std::string ip);
+	static std::vector<NetworkHandler::ClientEntry> GetClients(std::string ip, std::string alias);
 	static void StartMatch(std::string ip);
 	static void EndMatch();
 
