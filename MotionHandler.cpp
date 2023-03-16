@@ -343,7 +343,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 		// Set result:
 		if (foundCollison == true) {
 			// distance to collision: ’t’ is time of collision
-			float distToCollision = t * colPackage->velocity.length();
+			float distToCollision = t * (colPackage->velocity - colPackage->basePoint).length();
 			// Does this triangle qualify for the closest hit?
 			// it does if it’s the first hit or the closest
 			if (colPackage->foundCollision == false ||

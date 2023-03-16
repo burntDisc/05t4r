@@ -128,8 +128,19 @@ int main()
 			double fps = (1.0 / deltaTime) * counter;
 			framerates.push_front(fps);
 			double sum = 0.0;
+			double maxFrames = 0;
+			double minFrames = DBL_MAX;
+
 			for (int i = 0; i < framerates.size(); ++i)
 			{
+				if (maxFrames < framerates[i])
+				{
+					maxFrames = framerates[i];
+				}
+				if (minFrames > framerates[i])
+				{
+					minFrames = framerates[i];
+				}
 				sum += framerates[i];
 			}
 			double avgFps = sum / framerates.size();
@@ -137,8 +148,10 @@ int main()
 				framerates.pop_back();
 			}
 			std::string sampleSize = std::to_string(sampleFrames);
-			std::string FPS = std::to_string(avgFps);
-			std::string newTitle = "-------Avg FPS(" + sampleSize + "frames): " + FPS;
+			std::string FPS = std::to_string(avgFps); 
+			std::string  minFPS = std::to_string(minFrames);
+			std::string  maxFPS = std::to_string(maxFrames);
+			std::string newTitle = "-------Avg FPS(" + sampleSize + "frames): " + FPS + " min: " + minFPS + " max: " + maxFPS;
 			glfwSetWindowTitle(window, newTitle.c_str());
 
 			// Resets times and counter
