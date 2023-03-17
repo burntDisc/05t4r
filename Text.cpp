@@ -1,5 +1,4 @@
 #include "Text.h"
-#include <iostream> // TODO: REMOVE
 //TODO: Batch Draw Chars
 Text::Text(Shader shader, std::string rawText, glm::vec2 origin, float size) : Overlay(shader)
 {
@@ -42,7 +41,7 @@ std::string Text::GetText()
 	{
 		text += chars[i].value;
 	}
-	std::cout << chars.size() << std::endl;
+
 	return text;
 }
 
