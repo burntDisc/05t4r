@@ -7,6 +7,7 @@ public:
     Char(Shader shader, char character, glm::vec2 origin, float size);
     void Change(char newCharacter);
     void Delete();
+    char value;
 private:
     glm::vec2 origin;
     float size;

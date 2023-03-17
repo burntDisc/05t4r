@@ -129,6 +129,9 @@
     <ClInclude Include="Deletable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model.cpp">
@@ -237,6 +240,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GamePlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

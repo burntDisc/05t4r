@@ -34,8 +34,6 @@ namespace fs = std::experimental::filesystem;
 
 int main()
 {
-	// get current directory
-
 	// start audio
 	Audio audio = Audio(true);
 

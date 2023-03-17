@@ -4,7 +4,7 @@
 
 //TODO: fix weird scaling from center (height of 2)
 Char::Char(Shader shader, char character, glm::vec2 origin, float size) : 
-	Overlay(shader), origin(origin), size(size)
+	Overlay(shader), origin(origin), size(size), value(character)
 {
 	//build character
 	InitVertices(character);
@@ -83,6 +83,7 @@ void Char::InitVertices(char character)
 }
 void Char::Change(char newCharacter)
 {
+	value = newCharacter;
 	indices.clear();
 	vertices.clear();
 	InitVertices(newCharacter);
