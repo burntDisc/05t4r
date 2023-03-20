@@ -12,6 +12,11 @@
 #include "InputHandler.h"
 
 Player::Player(glm::vec3 startPosition, Opponent& opponent, ProjectileStream& projectileStream) :
+	JumpReady(true),
+	DashForwardReady(true),
+	DashBackReady(true), 
+	DashLeftReady(true), 
+	DashRightReady(true),
 	projectileStream(projectileStream),
 	spawnPoint(startPosition),
 	opponent(opponent),
@@ -45,10 +50,10 @@ void Player::FireProjectile(float intensity)
 
 void Player::Jump()
 {
-	if (flatNav && currentTime > prevJumpTime + jumpInterval)
+	if (surfaceNormal != glm::vec3(0.0f, 0.0f, 0.0f) && currentTime > prevJumpTime + jumpInterval)
 	{
 		prevJumpTime = currentTime;
-		velocity = jumpAcceleration * up + velocity;
+		velocity = jumpVelocity * up + velocity;
 	}
 
 }
@@ -176,51 +181,75 @@ void Player::Update(double time)
 		energy += energyDelta;
 	}
 
-	// Translate player----------------------------------------------------------------------------------
-	glm::vec3 newTranslation = translation;
-	if (glm::length(velocity) > timeDelta * friction)
+	// adjust velocity based on collision ------------------------------------------------------------------------
+	bool colliding = surfaceNormal != glm::vec3(0.0, 0.0, 0.0);
+
+	if (colliding)
 	{
-		velocity = velocity - (float)timeDelta * friction * glm::normalize(velocity);
-		newTranslation = MotionHandler::CollideAndSlide(translation, velocity * (float)timeDelta, surfaceNormal);
-	}
-	else
-	{
-		if (surfaceNormal == glm::vec3(0.0, 0.0, 0.0))
-		{
-			newTranslation = MotionHandler::CollideAndSlide(translation, velocity * (float)timeDelta, surfaceNormal);
-		}
-		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	}
-	
-	if (surfaceNormal != glm::vec3(0.0, 0.0, 0.0))
-	{
+		lastCollision = translation;
 		if (!flatNav)
 		{
+			flatNav = true;
 			Audio::Play(collision);
 		}
-		flatNav = true;
+
+		// newVelocity for bounce
 		float dot = glm::dot(velocity, surfaceNormal);
-		// confirm velocity is towards surface
 		if (dot < 0.0f)
-		{	
+		{
 			// remove towards-surface component
 			glm::vec3 proj = glm::proj(velocity, surfaceNormal);
-			velocity = velocity - repulsionFac*proj;
+			velocity = velocity - repulsionFac * proj;
 		}
-		friction = collisionFriction;
 	}
 	else
 	{
-		velocity.y -= gravity * (float)timeDelta;
-		flatNav = false;
-		friction = airFriction;
+		// apply gravity on Second update (captured by flatNav)
+		if (!flatNav)
+		{
+
+			if (glm::length(translation - lastCollision) > 0.01)
+			{
+				JumpReady = false;
+				velocity.y -= gravity * (float)timeDelta;
+			}
+			else
+			{
+
+				JumpReady = true;
+			}
+		}
+		else
+		{
+			flatNav = false;
+		}
 	}
-	translation = newTranslation;
+
+	//apply friction-----------------------------------------------------------------
+	if (velocity != glm::vec3(0.0f, 0.0f, 0.0f))
+		velocity -= normalize(velocity) * friction * (float)timeDelta;
+
+
+
+	// Translate player----------------------------------------------------------------------------------
+	if (length(velocity) > 0)
+	{
+		translation = MotionHandler::CollideAndSlide(translation, velocity, timeDelta, surfaceNormal);
+	}
+	//std::cout << "Velocity X: " << velocity.x << " Y: " << velocity.y << " Z: " << velocity.z;
+	//std::cout << " |" << colliding << "| Translation X : " << translation.x << " Y : " << translation.y << " Z : " << translation.z << std::endl;
+
+	// stop on ground
+	if (glm::length(velocity) < minGroundVelocity && surfaceNormal != glm::vec3(0.0f, 0.0f, 0.0f))
+	{
+		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	}
+	std::cout << (surfaceNormal != glm::vec3(0.0f, 0.0f, 0.0f)) << std::endl;
 
 	NetworkHandler::SetLocalGamestate(NetworkHandler::translation, &translation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::velocity, &velocity);
-	bool colliding = surfaceNormal != glm::vec3(0.0, 0.0, 0.0);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::colliding, &colliding);
 	NetworkHandler::PushGamestate(time);
 }

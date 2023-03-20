@@ -65,31 +65,31 @@ private:
 	bool locked = false;
 
 	glm::vec3 spawnPoint;
+	glm::vec3 lastCollision;
 	const double fireInterval = 0.1;
 	double prevFireTime = 0;
 	const double jumpInterval = 0.1;
 	double prevJumpTime = 0;
 
 	Opponent& opponent;
-	float friction;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
-	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady = true;
+	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady, JumpReady;
 	void DirectionalDash(glm::vec3 direction, bool& ready);
 
 	const float collisionAcceleration = 2000.0f;
-	const float collisionFriction = 1800.0f;
+	const float friction = 200.0f;
+	const float minGroundVelocity = 10.0f;
 
 	const float airAcceleration = 1000.0f;
-	const float airFriction = 500.0f;
 
 	const float breakFactor = 10.0f;
-	const float jumpAcceleration = 350.00f;
+	const float jumpVelocity = 350.00f;
 	const float dashAcceleration = 5000.00f;
 	const float dashInitVelocity = 175.0f;
-	const float maxSpeed = 175.0f;
+	const float maxSpeed = 175.0f; // for acceleraton only
 	const float gravity = 700.0f;
-	const float repulsionFac = 1.1;
+	const float repulsionFac = 1.2;
 
 	const float lowEnergyThreshold = 0.1;
 	const float energyInitDash = 0.09f;

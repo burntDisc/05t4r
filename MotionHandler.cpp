@@ -8,7 +8,22 @@
 // **************************************************************
 
 std::vector<GameObject*> MotionHandler::solidObjects;
-MotionHandler::CollisionPacket MotionHandler::packet = {};
+glm::vec3 MotionHandler::intersectionPoint;
+glm::vec3 MotionHandler::translation;
+glm::vec3 MotionHandler::travel;
+glm::vec3 MotionHandler::eTranslation;
+glm::vec3 MotionHandler::eTravel;
+float MotionHandler::nearestDistance;
+bool MotionHandler::colliding;
+
+const glm::vec3 MotionHandler::collisionEllipse(1.0f, 1.0f, 1.0f);
+const glm::mat3 MotionHandler::ellipseTransform =
+{
+	{1.0f / collisionEllipse.x, 0.0f, 0.0f},
+	{0.0f, 1.0f / collisionEllipse.y, 0.0f},
+	{0.0f, 0.0f, 1.0f / collisionEllipse.z}
+};
+
 
 void MotionHandler::AddSolidObject(GameObject* object)
 {
@@ -21,14 +36,8 @@ float MotionHandler::SignOfQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3
 }
 
 //adjusts destination to avoid passing through triangles
-glm::vec3 MotionHandler::CheckCollision(MotionHandler::CollisionPacket* collisionPackage, glm::vec3& normal)
+void MotionHandler::CheckCollision(glm::vec3& normal)
 {
-	glm::mat3 ellipse_Transform =
-	{
-		{1.0f / collisionPackage->eRadius.x, 0.0f, 0.0f},
-		{0.0f, 1.0f / collisionPackage->eRadius.y, 0.0f},
-		{0.0f, 0.0f, 1.0f / collisionPackage->eRadius.z}
-	};
 
 	for (int objectIndex = 0; objectIndex < solidObjects.size(); ++objectIndex)
 	{
@@ -40,19 +49,18 @@ glm::vec3 MotionHandler::CheckCollision(MotionHandler::CollisionPacket* collisio
 		for (int triangleIndex = 0; triangleIndex < objectTrianglePositions.size(); triangleIndex += 3)
 		{
 			// here I adjust the recognized triangle position outward to along normals avoid clipping
-			glm::vec3 modelVertexPositionA = ellipse_Transform * objectTrianglePositions[triangleIndex + 0];
-			glm::vec3 modelVertexPositionB = ellipse_Transform * objectTrianglePositions[triangleIndex + 1];
-			glm::vec3 modelVertexPositionC = ellipse_Transform * objectTrianglePositions[triangleIndex + 2];
+			glm::vec3 modelVertexPositionA = ellipseTransform * objectTrianglePositions[triangleIndex + 0];
+			glm::vec3 modelVertexPositionB = ellipseTransform * objectTrianglePositions[triangleIndex + 1];
+			glm::vec3 modelVertexPositionC = ellipseTransform * objectTrianglePositions[triangleIndex + 2];
 
-			glm::vec3 modelVertexNormalA =	 ellipse_Transform * objectTriangleNormals	[triangleIndex + 0];
-			glm::vec3 modelVertexNormalB =	 ellipse_Transform * objectTriangleNormals	[triangleIndex + 1];
-			glm::vec3 modelVertexNormalC =	 ellipse_Transform * objectTriangleNormals	[triangleIndex + 2];
+			glm::vec3 modelVertexNormalA =	 ellipseTransform * objectTriangleNormals	[triangleIndex + 0];
+			glm::vec3 modelVertexNormalB =	 ellipseTransform * objectTriangleNormals	[triangleIndex + 1];
+			glm::vec3 modelVertexNormalC =	 ellipseTransform * objectTriangleNormals	[triangleIndex + 2];
 
 			glm::vec3 triNormal = normalize((modelVertexNormalA + modelVertexNormalB + modelVertexNormalC) / 3.0f);
-			CheckTriangle(collisionPackage, modelVertexPositionA, modelVertexPositionB, modelVertexPositionC, triNormal, normal);
+			CheckTriangle(modelVertexPositionA, modelVertexPositionB, modelVertexPositionC, triNormal, normal);
 		}
 	}
-	return glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 //----------------------------------------------------------------------------------
@@ -147,26 +155,26 @@ float SquaredLength(glm::vec3 vector)
 	return length * length;
 }
 
-void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
-	const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& triNormal, glm::vec3& normal)
+void MotionHandler::CheckTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& triNormal, glm::vec3& normal)
 {
 	// Make the plane containing this triangle.
 	PLANE trianglePlane(p1, p2, p3, triNormal);
 	// Is triangle front-facing to the velocity vector?
 	// We only check front-facing triangles
 	// (your choice of course)
-	if (trianglePlane.isFrontFacingTo(
-		colPackage->normalizedVelocity)) {
+	if (trianglePlane.isFrontFacingTo(normalize(eTravel)))
+	{
 		// Get interval of plane intersection:
 		float t0, t1;
 		bool embeddedInPlane = false;
 		// Calculate the signed distance from sphere
 		// position to triangle plane
 		float signedDistToTrianglePlane =
-			trianglePlane.SignedDistanceTo(colPackage->basePoint);
+			trianglePlane.SignedDistanceTo(eTranslation);
 		// cache this as we’re going to use it a few times below:
 		float normalDotVelocity =
-			glm::dot(trianglePlane.normal, colPackage->velocity);
+			glm::dot(trianglePlane.normal, eTravel);
+
 		// if sphere is travelling parrallel to the plane:
 		if (normalDotVelocity == 0.0f) {
 			if (fabs(signedDistToTrianglePlane) >= 1.0f) {
@@ -218,8 +226,8 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 		// the sphere is not embedded in the triangle plane.
 		if (!embeddedInPlane) {
 			glm::vec3 planeIntersectionPoint =
-				(colPackage->basePoint - trianglePlane.normal)
-				+ t0 * colPackage->velocity;
+				(eTranslation - trianglePlane.normal)
+				+ t0 * eTravel;
 			if (checkPointInTriangle(planeIntersectionPoint,
 				p1, p2, p3))
 			{
@@ -236,9 +244,7 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 		// gives a collision!
 		if (foundCollison == false) {
 			// some commonly used terms:
-			glm::vec3 velocity = colPackage->velocity;
-			glm::vec3 base = colPackage->basePoint;
-			float velocitySquaredLength = SquaredLength(velocity);
+			float travelSquaredLength = SquaredLength(eTravel);
 			float a, b, c; // Params for equation
 			float newT;
 			// For each vertex or edge a quadratic equation have to
@@ -246,26 +252,26 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			// a*t^2 + b*t + c = 0 and below we calculate the
 			// parameters a,b and c for each test.
 			// Check against points:
-			a = velocitySquaredLength;
+			a = travelSquaredLength;
 			// P1
-			b = 2.0f * glm::dot(velocity, base - p1);
-			c = SquaredLength(p1 - base) - 1.0f;
+			b = 2.0f * glm::dot(eTravel, eTranslation - p1);
+			c = SquaredLength(p1 - eTranslation) - 1.0f;
 			if (getLowestRoot(a, b, c, t, &newT)) {
 				t = newT;
 				foundCollison = true;
 				collisionPoint = p1;
 			}
 			// P2
-			b = 2.0f * glm::dot(velocity, base - p2);
-			c = SquaredLength(p2 - base) - 1.0f;
+			b = 2.0f * glm::dot(eTravel, eTranslation - p2);
+			c = SquaredLength(p2 - eTranslation) - 1.0f;
 			if (getLowestRoot(a, b, c, t, &newT)) {
 				t = newT;
 				foundCollison = true;
 				collisionPoint = p2;
 			}
 			// P3
-			b = 2.0f * glm::dot(velocity, base - p3);
-			c = SquaredLength(p3 - base) - 1.0f;
+			b = 2.0f * glm::dot(eTravel, eTranslation - p3);
+			c = SquaredLength(p3 - eTranslation) - 1.0f;
 			if (getLowestRoot(a, b, c, t, &newT)) {
 				t = newT;
 				foundCollison = true;
@@ -274,14 +280,14 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			// Check agains edges:
 			// p1 -> p2:
 			glm::vec3 edge = p2 - p1;
-			glm::vec3 baseToVertex = p1 - base;
+			glm::vec3 baseToVertex = p1 - eTranslation;
 			float edgeSquaredLength = SquaredLength(edge);
-			float edgeDotVelocity = glm::dot(edge, velocity);
+			float edgeDotVelocity = glm::dot(edge, eTravel);
 			float edgeDotBaseToVertex = glm::dot(edge, baseToVertex);
 			// Calculate parameters for equation
-			a = edgeSquaredLength * -velocitySquaredLength +
+			a = edgeSquaredLength * -travelSquaredLength +
 				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength * (2.0f * glm::dot(velocity, baseToVertex)) -
+			b = edgeSquaredLength * (2.0f * glm::dot(eTravel, baseToVertex)) -
 				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
 			c = edgeSquaredLength * (1.0f - SquaredLength(baseToVertex)) +
 				edgeDotBaseToVertex * edgeDotBaseToVertex;
@@ -299,13 +305,13 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			}
 			// p2 -> p3:
 			edge = p3 - p2;
-			baseToVertex = p2 - base;
+			baseToVertex = p2 - eTranslation;
 			edgeSquaredLength = SquaredLength(edge);
-			edgeDotVelocity = glm::dot(edge, velocity);
+			edgeDotVelocity = glm::dot(edge, eTravel);
 			edgeDotBaseToVertex = glm::dot(edge, baseToVertex);
-			a = edgeSquaredLength * -velocitySquaredLength +
+			a = edgeSquaredLength * -travelSquaredLength +
 				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength * (2.0f * glm::dot(velocity, baseToVertex)) -
+			b = edgeSquaredLength * (2.0f * glm::dot(eTravel, baseToVertex)) -
 				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
 			c = edgeSquaredLength * (1 - SquaredLength(baseToVertex)) +
 				edgeDotBaseToVertex * edgeDotBaseToVertex;
@@ -320,13 +326,13 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 			}
 			// p3 -> p1:
 			edge = p1 - p3;
-			baseToVertex = p3 - base;
+			baseToVertex = p3 - eTranslation;
 			edgeSquaredLength = SquaredLength(edge);
-			edgeDotVelocity = glm::dot(edge, velocity);
+			edgeDotVelocity = glm::dot(edge, eTravel);
 			edgeDotBaseToVertex = glm::dot(edge, baseToVertex);
-			a = edgeSquaredLength * -velocitySquaredLength +
+			a = edgeSquaredLength * -travelSquaredLength +
 				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength * (2.0f * glm::dot(velocity, baseToVertex)) -
+			b = edgeSquaredLength * (2.0f * glm::dot(eTravel, baseToVertex)) -
 				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
 			c = edgeSquaredLength * (1 - SquaredLength(baseToVertex)) +
 				edgeDotBaseToVertex * edgeDotBaseToVertex;
@@ -343,120 +349,101 @@ void MotionHandler::CheckTriangle(CollisionPacket* colPackage,
 		// Set result:
 		if (foundCollison == true) {
 			// distance to collision: ’t’ is time of collision
-			float distToCollision = t * (colPackage->velocity - colPackage->basePoint).length();
+			float distToCollision = t * (eTravel - eTranslation).length();
 			// Does this triangle qualify for the closest hit?
 			// it does if it’s the first hit or the closest
-			if (colPackage->foundCollision == false ||
-				distToCollision < colPackage->nearestDistance) {
+			if (!colliding ||
+				distToCollision < nearestDistance) {
 				normal = trianglePlane.normal;
 				// Collision information nessesary for sliding
-				colPackage->nearestDistance = distToCollision;
-				colPackage->intersectionPoint = collisionPoint;
-				colPackage->foundCollision = true;
+				nearestDistance = distToCollision;
+				intersectionPoint = collisionPoint;
+				colliding = true;
 			}
 		}
 	} // if not backface
 }
 
 // Set this to match application scale..
-glm::vec3 MotionHandler::CollideWithWorld(const glm::vec3& pos, const glm::vec3& vel, glm::vec3& normal, int collisionRecursionDepth)
+glm::vec3 MotionHandler::CollideWithWorld(glm::vec3& normal, int collisionRecursionDepth)
 {
-	CollisionPacket* collisionPackage = &packet;
+	if (collisionRecursionDepth > maxRecursionDepth)
+		return eTranslation;
 
-	//TODO: should be dependent on max time delta and velocity (For variable computer cpu speed)
-	const float veryCloseDistance = 0.0001;
-
-	// Give up on Resolution after checking too many times
-	if (collisionRecursionDepth > maxRecursionDepth) 
-		return pos;
-	// Ok, we need to worry:
-	collisionPackage->velocity = vel;
-
-	collisionPackage->normalizedVelocity = normalize(vel);
-	collisionPackage->basePoint = pos;
-	collisionPackage->foundCollision = false;
-	// Check for collision (calls the collision routines)
-	// Application specific!!
-	CheckCollision(collisionPackage, normal);
+	const float veryCloseDistance = 0.001;
+	CheckCollision(normal);
 	// If no collision we just move along the velocity
-	if (collisionPackage->foundCollision == false) {
-		return pos + vel;
+	glm::vec3 destinationPoint = eTranslation + eTravel;
+	if (!colliding) {
+		return destinationPoint;
 	}
 	// *** Collision occured ***
 	// The original destination point
-	glm::vec3 destinationPoint = pos + vel;
-	glm::vec3 newBasePoint = pos;
+	glm::vec3 newBasePoint = eTranslation;
+
 	// only update if we are not already very close
 	// and if so we only move very close to intersection..not
 	// to the exact spot.
-	if (collisionPackage->nearestDistance >= veryCloseDistance)
+	if (nearestDistance >= veryCloseDistance)
 	{
-		glm::vec3 V = normalize(vel) * (collisionPackage->nearestDistance - veryCloseDistance);
-		newBasePoint = collisionPackage->basePoint + V;
+		glm::vec3 V = normalize(eTravel) * (nearestDistance - veryCloseDistance);
+		newBasePoint = eTranslation + V;
 		// Adjust polygon intersection point (so sliding
 		// plane will be unaffected by the fact that we
 		// move slightly less than collision tells us)
 		V = normalize(V);
-		collisionPackage->intersectionPoint -=
-			veryCloseDistance * V;
+		intersectionPoint -= veryCloseDistance * V;
 	}
 	// Determine the sliding plane
-	glm::vec3 slidePlaneOrigin = collisionPackage->intersectionPoint;
-	glm::vec3 slidePlaneNormal = normalize(newBasePoint - collisionPackage->intersectionPoint);
+	glm::vec3 slidePlaneOrigin = intersectionPoint;
+	glm::vec3 slidePlaneNormal = normalize(newBasePoint - intersectionPoint);
 	PLANE slidingPlane(slidePlaneOrigin, slidePlaneNormal);
+
 	// Again, sorry about formatting.. but look carefully ;)
-	glm::vec3 newDestinationPoint = destinationPoint -
-		slidingPlane.SignedDistanceTo(destinationPoint) *
-		slidePlaneNormal;
+	glm::vec3 newDestinationPoint = destinationPoint - slidingPlane.SignedDistanceTo(destinationPoint) * slidePlaneNormal;
 	// Generate the slide vector, which will become our new
+
 	// velocity vector for the next iteration
-	glm::vec3 newVelocityVector = newDestinationPoint -
-		collisionPackage->intersectionPoint;
+	glm::vec3 newVelocityVector = newDestinationPoint - intersectionPoint;
+
 	// Recurse:
 	// dont recurse if the new velocity is very small
 	if (newVelocityVector.length() < veryCloseDistance) {
 		return newBasePoint;
 	}
 
-	return CollideWithWorld(newBasePoint, newVelocityVector, normal, ++collisionRecursionDepth);
+	eTranslation = eTranslation;
+	eTravel = newVelocityVector;
+	return CollideWithWorld(normal, ++collisionRecursionDepth);
 }
 
-glm::vec3 MotionHandler::CollideAndSlide(const glm::vec3& position, const glm::vec3& vel, glm::vec3& normal)
+glm::vec3 MotionHandler::CollideAndSlide(glm::vec3 translation, glm::vec3 velocity, double timeDelta, glm::vec3& normal)
 {
-	glm::vec3 gravity(0.0f, -5.0f, 0.0f);
+	glm::vec3 travel = velocity * (float)timeDelta;
 
 	normal = glm::vec3(0.0f, 0.0f, 0.0f);
-	CollisionPacket* collisionPackage = &packet;
-	// Do collision detection:
-	collisionPackage->R3Position = position;
-	collisionPackage->R3Velocity = vel;
 
 	// calculate position and velocity in eSpace
-	glm::vec3 eSpacePosition = collisionPackage->R3Position /
-		collisionPackage->eRadius;
-	glm::vec3 eSpaceVelocity = collisionPackage->R3Velocity /
-		collisionPackage->eRadius;
 
+	eTranslation.x = translation.x / collisionEllipse.x;
+	eTranslation.y = translation.y / collisionEllipse.y;
+	eTranslation.z = translation.z / collisionEllipse.z;
+
+	eTravel.x = travel.x / collisionEllipse.x;
+	eTravel.y = travel.y / collisionEllipse.y;
+	eTravel.z = travel.z / collisionEllipse.z;
+
+	colliding = false;
 	// Iterate until we have our final position.
-	glm::vec3 finalPosition = CollideWithWorld(eSpacePosition,
-		eSpaceVelocity, normal);
+	glm::vec3 newETranslation = CollideWithWorld(normal);
 
-	// Add gravity pull:
-	/*
-	// To remove gravity comment from here .....
-	if (normal == glm::vec3(0.0f, 0.0f, 0.0f))
-	{
-		collisionPackage->R3Position =
-			finalPosition * collisionPackage->eRadius;
-		collisionPackage->R3Velocity = gravity;
-		eSpaceVelocity = gravity / collisionPackage->eRadius;
-		finalPosition = CollideWithWorld(finalPosition,
-			eSpaceVelocity, normal);
-	}
-	// ... to here
-	*/
 	// Convert final result back to R3:
-	finalPosition = finalPosition * collisionPackage->eRadius;
+	glm::vec3 newPosition;
+
+	newPosition.x = newETranslation.x * collisionEllipse.x;
+	newPosition.y = newETranslation.y * collisionEllipse.y;
+	newPosition.z = newETranslation.z * collisionEllipse.z;
+
 	// Move the entity (application specific function)
-	return finalPosition;
+	return newPosition;
 }
