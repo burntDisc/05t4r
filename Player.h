@@ -74,9 +74,10 @@ private:
 	Opponent& opponent;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
-	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady, JumpReady;
+	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady;
 	void DirectionalDash(glm::vec3 direction, bool& ready);
 
+	const float preGravTravel = 0.1;
 	const float collisionAcceleration = 2000.0f;
 	const float friction = 200.0f;
 	const float minGroundVelocity = 10.0f;

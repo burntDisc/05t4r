@@ -12,7 +12,6 @@
 #include "InputHandler.h"
 
 Player::Player(glm::vec3 startPosition, Opponent& opponent, ProjectileStream& projectileStream) :
-	JumpReady(true),
 	DashForwardReady(true),
 	DashBackReady(true), 
 	DashLeftReady(true), 
@@ -211,15 +210,9 @@ void Player::Update(double time)
 		if (!flatNav)
 		{
 
-			if (glm::length(translation - lastCollision) > 0.01)
+			if (glm::length(translation - lastCollision) > preGravTravel)
 			{
-				JumpReady = false;
 				velocity.y -= gravity * (float)timeDelta;
-			}
-			else
-			{
-
-				JumpReady = true;
 			}
 		}
 		else
@@ -237,8 +230,6 @@ void Player::Update(double time)
 	{
 		translation = MotionHandler::CollideAndSlide(translation, velocity, timeDelta, surfaceNormal);
 	}
-	//std::cout << "Velocity X: " << velocity.x << " Y: " << velocity.y << " Z: " << velocity.z;
-	//std::cout << " |" << colliding << "| Translation X : " << translation.x << " Y : " << translation.y << " Z : " << translation.z << std::endl;
 
 	// stop on ground
 	if (glm::length(velocity) < minGroundVelocity && surfaceNormal != glm::vec3(0.0f, 0.0f, 0.0f))
@@ -246,7 +237,6 @@ void Player::Update(double time)
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	}
-	std::cout << (surfaceNormal != glm::vec3(0.0f, 0.0f, 0.0f)) << std::endl;
 
 	NetworkHandler::SetLocalGamestate(NetworkHandler::translation, &translation);
 	NetworkHandler::SetLocalGamestate(NetworkHandler::orientation, &orientation);
