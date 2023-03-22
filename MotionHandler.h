@@ -36,7 +36,7 @@ private:
 	};
 
 
-	const static glm::vec3 collisionEllipse; // ellipsoid radius
+	const static glm::vec3 collisionEllipse; // ellipsoid hitbox radii
 
 	const static glm::mat3 ellipseTransform;
 	static void CheckTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& triNormal, glm::vec3& normal);

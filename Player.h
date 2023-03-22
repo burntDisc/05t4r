@@ -80,7 +80,7 @@ private:
 	const float collisionAcceleration = 2000.0f;
 	const float friction = 200.0f;
 	const float minGroundVelocity = 10.0f;
-
+	const float energyBound = 4000.0f;
 	const float airAcceleration = 1000.0f;
 
 	const float breakFactor = 10.0f;

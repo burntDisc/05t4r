@@ -175,10 +175,13 @@ void Player::Update(double time)
 	}
 
 	// regen energy--------------------------------------------------------------------------------------------
-	float energyDelta = energyRegenRate * timeDelta * (energy + 0.1);
+	if (glm::length(translation) < energyBound || energy < 0.1f)
+	{
+		float energyDelta = energyRegenRate * timeDelta * (energy + 0.1);
 
-	if (energy <= 1.0f - energyDelta) {
-		energy += energyDelta;
+		if (energy <= 1.0f - energyDelta) {
+			energy += energyDelta;
+		}
 	}
 
 	// adjust velocity based on collision ------------------------------------------------------------------------
@@ -228,8 +231,6 @@ void Player::Update(double time)
 	//apply friction-----------------------------------------------------------------
 	if (velocity != glm::vec3(0.0f, 0.0f, 0.0f))
 		velocity -= normalize(velocity) * friction * (float)timeDelta;
-
-
 
 	// Translate player----------------------------------------------------------------------------------
 	if (length(velocity) > 0)
