@@ -23,7 +23,7 @@ Scene* Title::Update(double time)
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_START])
 	{
 		std::string ip = ipSelector->GetIP();
-		NetworkHandler::StartMatch(ip);
+		//NetworkHandler::StartMatch(ip);
 		return preLoadedGame;
 	}
 	else

@@ -8,7 +8,7 @@
 #include <vector>
 #include <mutex>
 
-enum sound {mainTheme, shoot, dash, breaking, collision};
+enum sound {mainTheme, shoot, dash, breakSound, collision, specTheme};
 
 struct AudioFile {
 	SNDFILE* file = nullptr;
@@ -45,5 +45,6 @@ private:
 	static std::vector<std::thread*> audioThreads;
 	static std::vector<AudioFile> sounds;
 	static std::mutex completionsMutex;
+	static std::mutex initMutex;
 	static std::vector<bool> completions;
 };

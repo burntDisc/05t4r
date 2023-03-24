@@ -15,6 +15,7 @@ bool Audio::themeReset;
 bool Audio::mute;
 std::thread* Audio::themeThread;
 std::mutex Audio::themeResetMutex;
+std::mutex Audio::initMutex;
 
 Audio::Audio(bool mute)
 {
@@ -27,6 +28,7 @@ Audio::Audio(bool mute)
     sounds.push_back(loadFile(parentDir + "/sounds/Glitch_dash.wav"));        // dash
     sounds.push_back(loadFile(parentDir + "/sounds/Glitch_break.wav"));       // breaking
     sounds.push_back(loadFile(parentDir + "/sounds/Glitch_collision.wav"));   // collision
+    sounds.push_back(loadFile(parentDir + "/sounds/rootTheme.wav"));          // newTheme
 }
 
 Audio::~Audio() {
@@ -148,7 +150,10 @@ void Audio::LoopFile(AudioFile file)
 
 void Audio::PlayFile(AudioFile file, int threadIndex) 
 {
+    initMutex.lock();
     PaError err = Pa_Initialize();
+    initMutex.unlock();
+
     if (err != paNoError) std::cerr << "Initialization Error: " << err << std::endl;
 
     PaStream* stream = nullptr;

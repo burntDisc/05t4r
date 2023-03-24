@@ -35,7 +35,7 @@ namespace fs = std::experimental::filesystem;
 int main()
 {
 	// start audio
-	Audio audio = Audio(true);
+	Audio audio = Audio();
 
 	Audio::PlayTheme(mainTheme);
 

@@ -58,6 +58,8 @@ public:
 	// TODO auto-zoom
 private:
 
+	const double paceLength = 10;
+	glm::vec3 stepPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 	ProjectileStream& projectileStream;
 	void Reset();
 
@@ -74,12 +76,13 @@ private:
 	Opponent& opponent;
 	glm::vec3 surfaceNormal = glm::vec3(0.0f,0.0f,0.0f);
 
-	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady;
+	bool DashForwardReady, DashBackReady, DashLeftReady, DashRightReady, breaking;
 	void DirectionalDash(glm::vec3 direction, bool& ready);
 
 	const float preGravTravel = 0.1;
 	const float collisionAcceleration = 2000.0f;
 	const float friction = 200.0f;
+	const float minVelocity = 1.0f;
 	const float minGroundVelocity = 10.0f;
 	const float energyBound = 4000.0f;
 	const float airAcceleration = 1000.0f;

@@ -49,10 +49,12 @@ void Player::FireProjectile(float intensity)
 
 void Player::Jump()
 {
-	if (surfaceNormal != glm::vec3(0.0f, 0.0f, 0.0f) && currentTime > prevJumpTime + jumpInterval)
+	if ((surfaceNormal != glm::vec3(0.0f, 0.0f, 0.0f) && currentTime > prevJumpTime + jumpInterval)
+		|| velocity == glm::vec3(0.0f, 0.0f, 0.0f))
 	{
 		prevJumpTime = currentTime;
 		velocity = jumpVelocity * up + velocity;
+		stepPosition.y += paceLength;
 	}
 
 }
@@ -127,7 +129,11 @@ void Player::DashRight()
 
 void Player::Break()
 {
-	Audio::Play(breaking);
+	if (!breaking)
+	{
+		Audio::Play(breakSound);
+	}
+	breaking = true;
 	velocity -= velocity * breakFactor * (float)timeDelta;
 }
 
@@ -151,7 +157,7 @@ void Player::Update(double time)
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER]) DashRight(); else ReadyDashRight();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_Y]) DashForward(); else ReadyDashForward();
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_X]) DashBack(); else ReadyDashBack();
-	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_B]) Break();
+	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_B]) Break(); else breaking = false;
 	if (InputHandler::state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB])
 	{
 		if (!lockPressed)
@@ -170,7 +176,7 @@ void Player::Update(double time)
 	glm::vec3 oppDirection = glm::normalize(opponent.translation - translation);
 	if (locked)
 	{
-		orientation = normalize(orientation + zoomFac * zoomFac * oppDirection);
+		orientation = normalize(orientation + zoomFac * oppDirection);
 	}
 
 	// regen energy--------------------------------------------------------------------------------------------
@@ -178,6 +184,10 @@ void Player::Update(double time)
 	{
 		float energyDelta = energyRegenRate * timeDelta * (energy + 0.1);
 
+		if (breaking)
+		{
+			energyDelta *= 0.5;
+		}
 		if (energy <= 1.0f - energyDelta) {
 			energy += energyDelta;
 		}
@@ -191,8 +201,12 @@ void Player::Update(double time)
 		lastCollision = translation;
 		if (!flatNav)
 		{
+			if (length(translation - stepPosition) > paceLength)
+			{
+				stepPosition = translation;
+				Audio::Play(collision);
+			}
 			flatNav = true;
-			Audio::Play(collision);
 		}
 
 		// newVelocity for bounce
@@ -226,9 +240,13 @@ void Player::Update(double time)
 		velocity -= normalize(velocity) * friction * (float)timeDelta;
 
 	// Translate player----------------------------------------------------------------------------------
-	if (length(velocity) > 0)
+	if (length(velocity) > minVelocity)
 	{
 		translation = MotionHandler::CollideAndSlide(translation, velocity, timeDelta, surfaceNormal);
+	}
+	else
+	{
+		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
 	// stop on ground
