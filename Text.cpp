@@ -18,9 +18,21 @@ size_t Text::size()
 }
 void Text::Draw()
 {
-	for (int i = 0; i < chars.size(); ++i)
+	if (visible)
 	{
-		chars[i].Draw();
+		for (int i = 0; i < chars.size(); ++i)
+		{
+			chars[i].Draw();
+		}
+	}
+}
+
+void Text::Update(double time)
+{
+	if (time - lastBlink > blinkInterval)
+	{
+		lastBlink = time;
+		visible = !visible;
 	}
 }
 

@@ -5,13 +5,17 @@ Title::Title(int width, int height):
 	Scene(width,height)
 {
 	shaders.push_back(shader2D);
+	Text* gameName = new Text(shader2D, "05t4r", glm::vec2(-0.75f, 0.5f), 0.28f);
+	drawables.push_back(gameName);
+	deletables.push_back(gameName);
 
-	ipSelector = new IPSelector(shader2D, glm::vec2(-0.5f, 0.5f), 0.05f);
+	ipSelector = new IPSelector(shader2D, glm::vec2(-0.7f, 0.0f), 0.09f);
 	updatables.push_back(ipSelector);
 	drawables.push_back(ipSelector);
 	deletables.push_back(ipSelector);
 
-	Text* text = new Text(shader2D, "press start", glm::vec2(-0.5f, 0.0f), 0.05f);
+	Text* text = new Text(shader2D, "press start", glm::vec2(-0.5f, -0.5f), 0.09f);
+	updatables.push_back(text);
 	drawables.push_back(text);
 	deletables.push_back(text);
 
@@ -28,8 +32,8 @@ Scene* Title::Update(double time)
 	}
 	else
 	{
-		return Scene::Update(time);
-	}
+	return Scene::Update(time);
+}
 }
 
 void Title::Draw()

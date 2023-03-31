@@ -56,10 +56,10 @@ int main()
 	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
 	// Set Screen and Size
-	int width = 1500; //mode->width;//1500;
-	int height = 900; //mode->height;//900;
-	GLFWwindow* window = glfwCreateWindow(width, height, "5t4r", NULL, NULL);
-	//GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
+	int width = mode->width;//1500;
+	int height = mode->height;//900;
+	//GLFWwindow* window = glfwCreateWindow(width, height, "5t4r", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "5t4r", monitor, NULL);
 
 	if (window == NULL)
 	{
