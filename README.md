@@ -1,6 +1,8 @@
 
 This is an aimless exploration into opengl....only to be worked on as a stress reliever.... so far it supports mouse and keyboard and gamepads(tested xbox one) on windows (tested Windows 11)
 
+THIS IS AN ACTIVE PROJECT WITH UNSCREENED COMMITS. THIS IS NOT PRODUCTION CODE AND IT DEFINITELY NEEDS CLEANUP.
+
 (Possible WinRT nuget dependency issues when building in Visual studio versions older than Visual Studio 2022 where it is included by default)
 
 References:
